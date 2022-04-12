@@ -37,6 +37,7 @@ create table task_work(
 	userid int foreign key references [user](id),
 	work nvarchar(255) not null,
 	mark int default -1,
+	comment text,
 	doneAt datetime default getDate()
 );
 insert into [user](name,dob,roleID,gender) values ('admin','1920-09-02',0,1)

@@ -16,9 +16,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
     <link rel="stylesheet" href="assests/css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.18/mammoth.browser.min.js"
-        integrity="sha512-Z8jpnlnXO9rena5GNKiX0EHQRNLLh0LobtlTESOc55UMcQPOdxBpSMrU9MMZI1b5Xoph9bPMFbNyi9s33Du0EA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.4.8/mammoth.browser.min.js"></script>
 </head>
 
 <body>
@@ -72,8 +70,22 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                             <a class="list-group-item active" data-toggle="list" href="#file1">An item</a>
                             <a class="list-group-item" data-toggle="list" href="#file2">A second item</a>
                             <a class="list-group-item" data-toggle="list" href="#file3">A third item</a>
-                            <a class="list-group-item" data-toggle="list" href="#file4">A fourth item</a>
-                            <a class="list-group-item" data-toggle="list" href="#file5">And a fifth one</a>
+                            <label class="list-group-item" data-toggle="list" for="addDocHW">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Thêm Bài Doc</span>
+                            </label>
+                            <label class="list-group-item" data-toggle="list" for="addImgHW">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Thêm Bài Ảnh</span>
+                            </label>
+                            <label class="list-group-item" data-toggle="list" for="addPDFHW">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Thêm Bài PDF</span>
+                            </label>
+                            <input hidden type="file" name="" id="addImgHW" accept="image/*">
+                            <input hidden type="file" name="" id="addDocHW" onchange="parseWordDocxFile(this)"
+                                accept=".doc, .docx">
+                            <input hidden type="file" name="" id="addPDFHW" accept=".pdf">
                         </div>
                         <div class="comment">
                             <label for="status">Tình trạng</label>
@@ -95,8 +107,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                             <div class="tab-pane fade h-100" id="file2">
                                 <img src="assests/image/JS.png" alt="">
                             </div>
-                            <div class="tab-pane fade h-100" id="file3">
-                                <!-- <input type="file" id="file" name="document" accept=".doc, .docx" /> -->
+                            <div class="tab-pane fade h-100" id="documentPreview">
                                 <a href="assignment.docx" hidden></a>
                                 <div id="docPreview"></div>
                             </div>
@@ -300,7 +311,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             reader.onloadend = function (event) {
                 var arrayBuffer = reader.result;
                 // debugger
-                console.log(file);
+
                 mammoth.convertToHtml({
                     arrayBuffer: arrayBuffer
                 }).then(function (resultObject) {
@@ -325,41 +336,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             };
             reader.readAsArrayBuffer(file);
         }
-
-        function parseWordDocxFile(inputElement, showDiv) {
-            var files = inputElement || [];
-            if (!files.length) return;
-            var file = files[0];
-            console.time();
-            var reader = new FileReader();
-            reader.onloadend = function (event) {
-                console.log(file);
-                var arrayBuffer = reader.result;
-                mammoth.convertToHtml({
-                    arrayBuffer: arrayBuffer
-                }).then(function (resultObject) {
-                    console.log(resultObject.value);
-                    $(showDiv).html(resultObject.value);
-                    console.log(resultObject.value);
-                })
-                console.timeEnd();
-                mammoth.extractRawText({
-                    arrayBuffer: arrayBuffer
-                }).then(function (resultObject) {
-                    result2.innerHTML = resultObject.value;
-                    console.log(resultObject.value);
-                })
-
-                mammoth.convertToMarkdown({
-                    arrayBuffer: arrayBuffer
-                }).then(function (resultObject) {
-                    result3.innerHTML = resultObject.value;
-                    console.log(resultObject.value);
-                })
-            };
-            reader.readAsArrayBuffer(file);
-        }
-        // var mammoth = require("mammoth");
+    </script>
+    <script>
         var item = document.querySelectorAll('.list-group-item');
         item.forEach((value) => {
             value.addEventListener('click', function () {
@@ -368,26 +346,37 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                     get.classList.remove('active');
                     get.classList.remove('show');
                 });
-                var show = document.querySelector('#' + value.href.split("#")[1]);
-                if (show.querySelector('a') != null) {
-                    if (show.querySelector('a').href.includes('doc')) {
-                        // const docFile = new FileReader(show.querySelector('a').href);
-                        // console.log(docFile);
-                        var link = show.querySelector('a').href;
-                        fetch(link)
-                            .then(res => res.blob())
-                            .then(blob => {
-                                console.log(blob);
-                                let objectURL = blobToFile(blob, link.split('/')[link.split('/')
-                                    .length - 1]);
-                                console.log(objectURL);
-                                parseWordDocxFile(objectURL);
-                            });
+                if (value.href != null) {
+                    var show = document.querySelector('#' + value.href.split("#")[1]);
+                    if (show.querySelector('a') != null) {
+                        if (show.querySelector('a').href.includes('doc')) {
+                            // const docFile = new FileReader(show.querySelector('a').href);
+                            // console.log(docFile);
+                            var link = show.querySelector('a').href;
+                            // fetch(link)
+                            //     .then(res => res.blob())
+                            //     .then(blob => {
+                            //         console.log(blob);
+                            //         let objectURL = blobToFile(blob, link.split('/')[link.split('/')
+                            //             .length - 1]);
+                            //         console.log(objectURL);
+                            //         parseWordDocxFile(objectURL);
+                            //     });
+                            convertToHtml({
+                                    path: link
+                                })
+                                .then(function (result) {
+                                    var html = result.value; // The generated HTML 
+                                    var messages = result
+                                        .messages; // Any messages, such as warnings during conversion 
+                                })
+                                .done();
+                        }
                     }
+                    show.classList.add('show');
+                    show.classList.add('active');
+                    value.classList.add('active');
                 }
-                show.classList.add('show');
-                show.classList.add('active');
-                value.classList.add('active');
             })
         });
 

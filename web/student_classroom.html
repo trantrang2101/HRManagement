@@ -37,80 +37,46 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             </div>
         </div>
     </div>
-    <div class="modal fade" id="deleteNotice" tabindex="-1" role="dialog" aria-labelledby="deleteClass"
-        aria-hidden="true" style="z-index: 100000000;">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Bạn muốn xóa Thông báo/Bài tập này?</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">Chọn "Xóa" bên dưới nếu bạn đã sẵn sàng xóa lớp này.
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-light" type="button" data-bs-dismiss="modal" aria-label="Close">Hủy
-                        Bỏ</button>
-
-                    <button class="btn btn-danger" name="action" value="Logout">Xóa</button>
-
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal fade" id="viewMark" tabindex="-1" role="dialog" aria-labelledby="logoutModal" aria-hidden="true"
         style="z-index: 100000000;">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Điểm Lớp 7C</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Phạm Thu Hương - Lớp 8A</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body table-mark">
                     <table class="table table-hover" id="tableMark">
                         <thead class="table-primary text-center">
                             <tr>
-                                <th>MSHS</th>
-                                <th>Họ Và Tên</th>
-                                <th>Giới Tính</th>
-                                <th>Computer Project</th>
-                                <th>Computer Project</th>
-                                <th>Computer Project</th>
-                                <th>Computer Project</th>
-                                <th>Computer Project</th>
-                                <th>Computer Project</th>
-                                <th>Computer Project</th>
-                                <th>Computer Project</th>
-                                <th>Computer Project</th>
-                                <th>Computer Project</th>
-                                <th>Computer Project</th>
+                                <th>Tên Bài Tập</th>
+                                <th>Thời gian nạp bài tập</th>
+                                <th>Điểm</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>1</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td><input type="number" value="4" class="border-0 text-center bg-transparent"></td>
-                                <td><input type="number" value="4" class="border-0 text-center bg-transparent"></td>
-                                <td><input type="number" value="4" class="border-0 text-center bg-transparent"></td>
-                                <td><input type="number" value="4" class="border-0 text-center bg-transparent"></td>
-                                <td><input type="number" value="4" class="border-0 text-center bg-transparent"></td>
-                                <td><input type="number" value="4" class="border-0 text-center bg-transparent"></td>
-                                <td><input type="number" value="4" class="border-0 text-center bg-transparent"></td>
-                                <td><input type="number" value="4" class="border-0 text-center bg-transparent"></td>
-                                <td><input type="number" value="4" class="border-0 text-center bg-transparent"></td>
-                                <td><input type="number" value="4" class="border-0 text-center bg-transparent"></td>
-                                <td><input type="number" value="4" class="border-0 text-center bg-transparent"></td>
+                                <td>Computer Project</td>
+                                <td>23/01 23:10</td>
+                                <td>9.5</td>
+                            </tr>
+                            <tr>
+                                <td>Computer Project</td>
+                                <td>23/01 23:10</td>
+                                <td>9.5</td>
+                            </tr>
+                            <tr>
+                                <td>Computer Project</td>
+                                <td>23/01 23:10</td>
+                                <td>9.5</td>
+                            </tr>
+                            <tr>
+                                <td>Computer Project</td>
+                                <td>23/01 23:10</td>
+                                <td>9.5</td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal" aria-label="Close">Hủy
-                        Bỏ</button>
-
-                    <button class="btn btn-primary" name="action" value="Logout">Lưu Lại</button>
-
                 </div>
             </div>
         </div>
@@ -119,16 +85,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <div class="container container-fluid">
             <div class="d-flex flex-column">
                 <h1>Lớp 8A</h1>
-                <h2>Chào cô <i>Phạm Thu Hương</i>!</h2>
+                <h2>Chào bạn <i>Phạm Thu Hương</i>!</h2>
             </div>
             <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
         </div>
     </nav>
     <nav class="container d-flex justify-content-end">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNotice">
-            <i class="fa-solid fa-plus"></i>
-            <span>Thêm Thông Báo</span>
-        </button>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewMark">
             <i class="fa-solid fa-eye"></i>
             <span>Xem Điểm</span>
@@ -169,32 +131,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <div class="accordion-header notice rounded-top rounded-3" id="heading1">
                 <a class="w-100" type="button" data-bs-toggle="collapse" href="#notice1" aria-expanded="true"
                     aria-controls="panelsStayOpen-collapseOne">
-                    <div class="d-flex justify-content-between">
-                        <div class="d-flex justify-content-start">
-                            <div class="icon rounded-circle bg-primary">
-                                <i class="fa-solid fa-list-check text-white"></i>
-                            </div>
-                            <div class="card-text d-flex flex-column justify-content-between">
-                                <h5 class="carrd-title">Phạm Thu Hương đã đăng một bài tập: Bài tập về nhà</h5>
-                                <span class="card-subtitle mb-2 text-muted text-start">4 Nov 2021</span>
-                            </div>
+                    <div class="d-flex justify-content-start">
+                        <div class="icon rounded-circle bg-primary">
+                            <i class="fa-solid fa-list-check text-white"></i>
                         </div>
-                        <div class="dropdown">
-                            <a class="btn bg-transparent" type="button" href="#dropdownMenuButton1"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" id="dropdownMenuButton1">
-                                <li><a class="dropdown-item" href="#">Edit</a></li>
-                                <li><a class="dropdown-item" href="#">Delete</a></li>
-                            </ul>
+                        <div class="card-text d-flex flex-column justify-content-between">
+                            <h5 class="carrd-title">Phạm Thu Hương đã đăng một bài tập: Bài tập về nhà</h5>
+                            <span class="card-subtitle mb-2 text-muted text-start">4 Nov 2021</span>
                         </div>
                     </div>
                 </a>
             </div>
             <div id="notice1" class="accordion-collapse collapse" aria-labelledby="heading1">
-                <div class="accordion-body row">
-                    <div class="col-10">
+                <div class="accordion-body ">
+                    <div class="">
                         <strong>This is the first item's accordion body.</strong> It is shown by default, until the
                         collapse
                         plugin adds the appropriate classes that we use to style each element. These classes control the
@@ -202,16 +152,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                         this with custom CSS or overriding our default variables. It's also worth noting that just about
                         any
                         HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-                    </div>
-                    <div class="col-2 row row-cols-2">
-                        <div class="col d-flex flex-column">
-                            <h2>4</h2>
-                            <p>Đã nộp</p>
-                        </div>
-                        <div class="col d-flex flex-column">
-                            <h2>30</h2>
-                            <p>Đã giao</p>
-                        </div>
                     </div>
                 </div>
                 <div class="accordion-footer">
@@ -223,27 +163,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <div class="accordion-header notice rounded-top rounded-3" id="heading2">
                 <a class="w-100" type="button" data-bs-toggle="collapse" href="#notice2" aria-expanded="true"
                     aria-controls="panelsStayOpen-collapseOne">
-                    <div class="d-flex justify-content-between">
-                        <div class="d-flex justify-content-start">
-                            <div class="icon rounded-circle bg-primary">
-                                <i class="fa-solid fa-note-sticky text-white"></i>
-                            </div>
-                            <div class="card-text d-flex flex-column justify-content-between">
-                                <h5 class="carrd-title">Phạm Thu Hương đã đăng một thông báo: Ngày 20/4 kiểm tra 1 tiết
-                                </h5>
-                                <span class="card-subtitle mb-2 text-muted text-start">4 Nov 2021</span>
-                            </div>
+                    <div class="d-flex justify-content-start">
+                        <div class="icon rounded-circle bg-primary">
+                            <i class="fa-solid fa-note-sticky text-white"></i>
                         </div>
-                        <div class="dropdown">
-                            <a class="btn bg-transparent" type="button" href="#dropdownMenuButton1"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" id="dropdownMenuButton1">
-                                <li><a class="dropdown-item" href="#">Edit</a></li>
-                                <li><button class="dropdown-item" href="#" data-bs-toggle="modal"
-                                        data-bs-target="#deleteNotice">Delete</button></li>
-                            </ul>
+                        <div class="card-text d-flex flex-column justify-content-between">
+                            <h5 class="carrd-title">Phạm Thu Hương đã đăng một thông báo: Ngày 20/4 kiểm tra 1 tiết
+                            </h5>
+                            <span class="card-subtitle mb-2 text-muted text-start">4 Nov 2021</span>
                         </div>
                     </div>
                 </a>
