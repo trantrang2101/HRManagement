@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+
+<head>
+    <title>Giáo Viên - Trang Chủ</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="assests/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.18/mammoth.browser.min.js"
+        integrity="sha512-Z8jpnlnXO9rena5GNKiX0EHQRNLLh0LobtlTESOc55UMcQPOdxBpSMrU9MMZI1b5Xoph9bPMFbNyi9s33Du0EA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModal"
+        aria-hidden="true" style="z-index: 100000000;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Bạn muốn đăng xuất?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">Chọn "Đăng xuất" bên dưới nếu bạn đã sẵn sàng kết thúc phiên hiện tại của mình.
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal" aria-label="Close">Hủy
+                        Bỏ</button>
+                    <button class="btn btn-danger" name="action" value="Logout">Đăng Xuất</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteNotice" tabindex="-1" role="dialog" aria-labelledby="deleteClass"
+        aria-hidden="true" style="z-index: 100000000;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Bạn muốn xóa Thông báo/Bài tập này?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">Chọn "Xóa" bên dưới nếu bạn đã sẵn sàng xóa thông báo/ bài tập này.
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal" aria-label="Close">Hủy
+                        Bỏ</button>
+                    <button class="btn btn-danger" name="action" value="Logout">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="fileOpen" tabindex="-1" role="dialog" aria-labelledby="fileOpen" aria-hidden="true"
+        style="z-index: 100000000;">
+        <div class="modal-dialog modal-fullscreen" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Bài Tập của Phạm Tường</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body row">
+                    <div class="col-2 d-flex flex-column justify-content-between">
+                        <div class="list-group list-group-flush">
+                            <a class="list-group-item active" data-toggle="list" href="#file1">An item</a>
+                            <a class="list-group-item" data-toggle="list" href="#file2">A second item</a>
+                            <a class="list-group-item" data-toggle="list" href="#file3">A third item</a>
+                            <a class="list-group-item" data-toggle="list" href="#file4">A fourth item</a>
+                            <a class="list-group-item" data-toggle="list" href="#file5">And a fifth one</a>
+                        </div>
+                        <div class="comment">
+                            <label for="mark">Điểm Bài Tập</label>
+                            <div class="d-flex justify-content-start align-items-center" id="mark">
+                                <input type="number" class="mark bg-transparent">
+                                <span>/10</span>
+                            </div>
+                            <label for="comment">Nhận xét bài tập</label>
+                            <textarea name="comment" id="comment" rows="10"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-10">
+                        <div class="tab-content h-100">
+                            <div class="tab-pane fade active show h-100" id="file1">
+                                <embed src="1.pdf" type="application/pdf" />
+                            </div>
+                            <div class="tab-pane fade h-100" id="file2">
+                                <img src="assests/image/JS.png" alt="">
+                            </div>
+                            <div class="tab-pane fade h-100" id="file3">
+                                <!-- <input type="file" id="file" name="document" accept=".doc, .docx" /> -->
+                                <a href="assignment.docx" hidden></a>
+                                <div id="docPreview"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal" aria-label="Close">Hủy
+                        Bỏ</button>
+                    <button class="btn btn-danger" name="action" value="Save">Lưu lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+        <div class="container container-fluid">
+            <div class="d-flex flex-column">
+                <h1>Lớp 8A</h1>
+                <h2>Chào cô <i>Phạm Thu Hương</i>!</h2>
+            </div>
+            <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+        </div>
+    </nav>
+    <nav class="container d-flex justify-content-end">
+        <button type="button" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i>
+            <span>Thêm Lớp</span>
+        </button>
+    </nav>
+    <div class="row">
+        <div class="col-2 student-mark-list">
+            <select class="form-select border-0" aria-label="Default select example">
+                <option selected value="0">Sắp xếp theo trạng thái</option>
+                <option value="1">Sắp xếp theo họ và tên</option>
+                <option value="2">Sắp xếp theo mã số học sinh</option>
+            </select>
+            <table class="table table-hover">
+                <tr>
+                    <th colspan="3">Đã Nộp</th>
+                </tr>
+                <tr class="">
+                    <th>1</th>
+                    <td class="d-flex flex-column">
+                        <span>Tường Phạm</span>
+                        <a href="" class="more"><span>Xem chi Tiết<i class="fas fa-long-arrow-alt-right"></i></span></a>
+                    </td>
+                    <td class="text-danger"><input type="number" max="10" min="0" maxlength="2" name="" id="">/10
+                    </td>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td class="d-flex flex-column">
+                        <span>Tường Phạm</span>
+                        <a href="" class="more"><span>Xem chi Tiết<i class="fas fa-long-arrow-alt-right"></i></span></a>
+                    </td>
+                    <td class="text-success"><input type="number" max="10" min="0" maxlength="2" name="" id="">/10
+                    </td>
+                </tr>
+                <tr class="">
+                    <th>1</th>
+                    <td class="d-flex flex-column">
+                        <span>Tường Phạm</span>
+                        <a href="" class="more"><span>Xem chi Tiết<i class="fas fa-long-arrow-alt-right"></i></span></a>
+                    </td>
+                    <td class="text-danger"><input type="number" max="10" min="0" maxlength="2" name="" id="">/10
+                    </td>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td class="d-flex flex-column">
+                        <span>Tường Phạm</span>
+                        <a href="" class="more"><span>Xem chi Tiết<i class="fas fa-long-arrow-alt-right"></i></span></a>
+                    </td>
+                    <td class="text-success"><input type="number" max="10" min="0" maxlength="2" name="" id="">/10
+                    </td>
+                </tr>
+                <tr class="">
+                    <th>1</th>
+                    <td class="d-flex flex-column">
+                        <span>Tường Phạm</span>
+                        <a href="" class="more"><span>Xem chi Tiết<i class="fas fa-long-arrow-alt-right"></i></span></a>
+                    </td>
+                    <td class="text-danger"><input type="number" max="10" min="0" maxlength="2" name="" id="">/10
+                    </td>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td class="d-flex flex-column">
+                        <span>Tường Phạm</span>
+                        <a href="" class="more"><span>Xem chi Tiết<i class="fas fa-long-arrow-alt-right"></i></span></a>
+                    </td>
+                    <td class="text-success"><input type="number" max="10" min="0" maxlength="2" name="" id="">/10
+                    </td>
+                </tr>
+                <tr class="">
+                    <th>1</th>
+                    <td class="d-flex flex-column">
+                        <span>Tường Phạm</span>
+                        <a href="" class="more"><span>Xem chi Tiết<i class="fas fa-long-arrow-alt-right"></i></span></a>
+                    </td>
+                    <td class="text-danger"><input type="number" max="10" min="0" maxlength="2" name="" id="">/10
+                    </td>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td class="d-flex flex-column">
+                        <span>Tường Phạm</span>
+                        <a href="" class="more"><span>Xem chi Tiết<i class="fas fa-long-arrow-alt-right"></i></span></a>
+                    </td>
+                    <td class="text-success"><input type="number" max="10" min="0" maxlength="2" name="" id="">/10
+                    </td>
+                </tr>
+                <tr class="">
+                    <th>1</th>
+                    <td class="d-flex flex-column">
+                        <span>Tường Phạm</span>
+                        <a href="" class="more"><span>Xem chi Tiết<i class="fas fa-long-arrow-alt-right"></i></span></a>
+                    </td>
+                    <td class="text-danger"><input type="number" max="10" min="0" maxlength="2" name="" id="">/10
+                    </td>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td class="d-flex flex-column">
+                        <span>Tường Phạm</span>
+                        <a href="" class="more"><span>Xem chi Tiết<i class="fas fa-long-arrow-alt-right"></i></span></a>
+                    </td>
+                    <td class="text-success"><input type="number" max="10" min="0" maxlength="2" name="" id="">/10
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="3">Chưa Nộp</th>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td>Tường Phạm</td>
+                    <td class="text-danger text-center">Thiếu</td>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td>Tường Phạm</td>
+                    <td class="text-danger text-center">Thiếu</td>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td>Tường Phạm</td>
+                    <td class="text-danger text-center">Thiếu</td>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td>Tường Phạm</td>
+                    <td class="text-danger text-center">Thiếu</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-10">
+            <nav class="container">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-start">
+                        <div class="icon rounded-circle bg-primary">
+                            <i class="fa-solid fa-list-check text-white"></i>
+                        </div>
+                        <div class="card-text d-flex flex-column justify-content-between">
+                            <h5 class="carrd-title">Bài tập về nhà</h5>
+                            <span class="card-subtitle mb-2 text-muted text-start">Phạm Thu Hương · 4 Nov
+                                2021</span>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <a class="btn bg-transparent" type="button" href="#dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" id="dropdownMenuButton1">
+                            <li><a class="dropdown-item" href="#">Edit</a></li>
+                            <li><button class="dropdown-item" href="#" data-bs-toggle="modal"
+                                    data-bs-target="#deleteNotice">Delete</button></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <strong>This is the first item's accordion body.</strong> It is shown by default, until the
+                        collapse
+                        plugin adds the appropriate classes that we use to style each element. These classes control
+                        the
+                        overall appearance, as well as the showing and hiding via CSS transitions. You can modify
+                        any of
+                        this with custom CSS or overriding our default variables. It's also worth noting that just
+                        about
+                        any
+                        HTML can go within the <code>.accordion-body</code>, though the transition does limit
+                        overflow.
+                    </div>
+                    <div class="col-2 row row-cols-2">
+                        <div class="col d-flex flex-column">
+                            <h2>4</h2>
+                            <p>Đã nộp</p>
+                        </div>
+                        <div class="col d-flex flex-column">
+                            <h2>30</h2>
+                            <p>Đã giao</p>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="container">
+                <select class="form-select border-0 w-25" aria-label="Default select example">
+                    <option selected value="0">Tất cả</option>
+                    <option value="1">Đã nộp</option>
+                    <option value="2">Chưa nộp</option>
+                    <option value="3">Điểm</option>
+                </select>
+                <div class="d-flex flex-wrap justify-content-start submit-list">
+                    <div class="shadow-sm rounded-2">
+                        <h6>Tường Phạm</h6>
+                        <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#fileOpen">
+                            <i class="fa-solid fa-folder"></i>
+                            <p>abxcuz-dhalkshdfl</p>
+                        </button>
+                        <p class="text-success">Đã nộp bài</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function parseWordDocxFile(inputElement) {
+            var files = inputElement.files || [];
+            if (!files.length) return;
+            var file = files[0];
+
+            console.time();
+            var reader = new FileReader();
+            reader.onloadend = function (event) {
+                var arrayBuffer = reader.result;
+                // debugger
+                console.log(file);
+                mammoth.convertToHtml({
+                    arrayBuffer: arrayBuffer
+                }).then(function (resultObject) {
+                    result1.innerHTML = resultObject.value
+                    console.log(resultObject.value)
+                })
+                console.timeEnd();
+
+                mammoth.extractRawText({
+                    arrayBuffer: arrayBuffer
+                }).then(function (resultObject) {
+                    result2.innerHTML = resultObject.value
+                    console.log(resultObject.value)
+                })
+
+                mammoth.convertToMarkdown({
+                    arrayBuffer: arrayBuffer
+                }).then(function (resultObject) {
+                    result3.innerHTML = resultObject.value
+                    console.log(resultObject.value)
+                })
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function parseWordDocxFile(inputElement, showDiv) {
+            var files = inputElement || [];
+            if (!files.length) return;
+            var file = files[0];
+            console.time();
+            var reader = new FileReader();
+            reader.onloadend = function (event) {
+                console.log(file);
+                var arrayBuffer = reader.result;
+                mammoth.convertToHtml({
+                    arrayBuffer: arrayBuffer
+                }).then(function (resultObject) {
+                    console.log(resultObject.value);
+                    $(showDiv).html(resultObject.value);
+                    console.log(resultObject.value);
+                })
+                console.timeEnd();
+                mammoth.extractRawText({
+                    arrayBuffer: arrayBuffer
+                }).then(function (resultObject) {
+                    result2.innerHTML = resultObject.value;
+                    console.log(resultObject.value);
+                })
+
+                mammoth.convertToMarkdown({
+                    arrayBuffer: arrayBuffer
+                }).then(function (resultObject) {
+                    result3.innerHTML = resultObject.value;
+                    console.log(resultObject.value);
+                })
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        // var mammoth = require("mammoth");
+        var item = document.querySelectorAll('.list-group-item');
+        item.forEach((value) => {
+            value.addEventListener('click', function () {
+                var active = document.querySelectorAll('.active');
+                active.forEach((get) => {
+                    get.classList.remove('active');
+                    get.classList.remove('show');
+                });
+                var show = document.querySelector('#' + value.href.split("#")[1]);
+                if (show.querySelector('a') != null) {
+                    if (show.querySelector('a').href.includes('doc')) {
+                        // const docFile = new FileReader(show.querySelector('a').href);
+                        // console.log(docFile);
+                        var link = show.querySelector('a').href;
+                        fetch(link)
+                            .then(res => res.blob())
+                            .then(blob => {
+                                console.log(blob);
+                                let objectURL = blobToFile(blob, link.split('/')[link.split('/')
+                                    .length - 1]);
+                                console.log(objectURL);
+                                parseWordDocxFile(objectURL);
+                            });
+                    }
+                }
+                show.classList.add('show');
+                show.classList.add('active');
+                value.classList.add('active');
+            })
+        });
+
+        function blobToFile(theBlob, fileName) {
+            //A Blob() is almost a File() - it's just missing the two properties below which we will add
+            theBlob.lastModifiedDate = new Date();
+            theBlob.name = fileName;
+            return theBlob;
+        }
+        // $("body").on("change", "#file", function (e) {
+        // parseWordDocxFile(e.target.files, '#docPreview');
+        // });
+    </script>
+</body>
+
+</html>

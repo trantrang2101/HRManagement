@@ -40,3 +40,4 @@ create table task_work(
 	doneAt datetime default getDate()
 );
 insert into [user](name,dob,roleID,gender) values ('admin','1920-09-02',0,1)
+insert into login values(1,'1')
