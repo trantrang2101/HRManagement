@@ -121,10 +121,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         </div>
     </nav>
     <nav class="container d-flex justify-content-end">
-        <button type="button" class="btn btn-primary">
-            <i class="fa-solid fa-plus"></i>
-            <span>Thêm Lớp</span>
-        </button>
+        <a href="teacher_classroom.html" class="more float-end">
+            <span>Quay lại lớp học<i class="fas fa-long-arrow-alt-right"></i></span>
+        </a>
     </nav>
     <div class="row">
         <div class="col-2 student-mark-list">
@@ -289,118 +288,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             </div>
         </div>
     </div>
-    <script>
-        function parseWordDocxFile(inputElement) {
-            var files = inputElement.files || [];
-            if (!files.length) return;
-            var file = files[0];
-
-            console.time();
-            var reader = new FileReader();
-            reader.onloadend = function (event) {
-                var arrayBuffer = reader.result;
-                // debugger
-                console.log(file);
-                mammoth.convertToHtml({
-                    arrayBuffer: arrayBuffer
-                }).then(function (resultObject) {
-                    result1.innerHTML = resultObject.value
-                    console.log(resultObject.value)
-                })
-                console.timeEnd();
-
-                mammoth.extractRawText({
-                    arrayBuffer: arrayBuffer
-                }).then(function (resultObject) {
-                    result2.innerHTML = resultObject.value
-                    console.log(resultObject.value)
-                })
-
-                mammoth.convertToMarkdown({
-                    arrayBuffer: arrayBuffer
-                }).then(function (resultObject) {
-                    result3.innerHTML = resultObject.value
-                    console.log(resultObject.value)
-                })
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        function parseWordDocxFile(inputElement, showDiv) {
-            var files = inputElement || [];
-            if (!files.length) return;
-            var file = files[0];
-            console.time();
-            var reader = new FileReader();
-            reader.onloadend = function (event) {
-                console.log(file);
-                var arrayBuffer = reader.result;
-                mammoth.convertToHtml({
-                    arrayBuffer: arrayBuffer
-                }).then(function (resultObject) {
-                    console.log(resultObject.value);
-                    $(showDiv).html(resultObject.value);
-                    console.log(resultObject.value);
-                })
-                console.timeEnd();
-                mammoth.extractRawText({
-                    arrayBuffer: arrayBuffer
-                }).then(function (resultObject) {
-                    result2.innerHTML = resultObject.value;
-                    console.log(resultObject.value);
-                })
-
-                mammoth.convertToMarkdown({
-                    arrayBuffer: arrayBuffer
-                }).then(function (resultObject) {
-                    result3.innerHTML = resultObject.value;
-                    console.log(resultObject.value);
-                })
-            };
-            reader.readAsArrayBuffer(file);
-        }
-        // var mammoth = require("mammoth");
-        var item = document.querySelectorAll('.list-group-item');
-        item.forEach((value) => {
-            value.addEventListener('click', function () {
-                var active = document.querySelectorAll('.active');
-                active.forEach((get) => {
-                    get.classList.remove('active');
-                    get.classList.remove('show');
-                });
-                var show = document.querySelector('#' + value.href.split("#")[1]);
-                if (show.querySelector('a') != null) {
-                    if (show.querySelector('a').href.includes('doc')) {
-                        // const docFile = new FileReader(show.querySelector('a').href);
-                        // console.log(docFile);
-                        var link = show.querySelector('a').href;
-                        fetch(link)
-                            .then(res => res.blob())
-                            .then(blob => {
-                                console.log(blob);
-                                let objectURL = blobToFile(blob, link.split('/')[link.split('/')
-                                    .length - 1]);
-                                console.log(objectURL);
-                                parseWordDocxFile(objectURL);
-                            });
-                    }
-                }
-                show.classList.add('show');
-                show.classList.add('active');
-                value.classList.add('active');
-            })
-        });
-
-        function blobToFile(theBlob, fileName) {
-            //A Blob() is almost a File() - it's just missing the two properties below which we will add
-            theBlob.lastModifiedDate = new Date();
-            theBlob.name = fileName;
-            return theBlob;
-        }
-        // $("body").on("change", "#file", function (e) {
-        // parseWordDocxFile(e.target.files, '#docPreview');
-        // });
-    </script>
+    script
 </body>
 
 </html>

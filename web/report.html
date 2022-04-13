@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+
+<head>
+    <title>Giáo Viên - Trang Chủ</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js" crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="assests/image/logo.png" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="assests/css/style.css">
+    <script src="./assests/ckeditor/ckeditor.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <div class="modal fade" id="viewTaskDetail" tabindex="-1" role="dialog" aria-labelledby="logoutModal"
+        aria-hidden="true" style="z-index: 100000000;">
+        <div class="modal-dialog modal-fullscreen" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Điểm Bài Tập #1 - Lớp 7C</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body table-mark row">
+                    <div class="col-8">
+                        <table class="table table-hover" id="taskDetail">
+                            <thead class="table-primary text-center">
+                                <tr>
+                                    <th>MSHS</th>
+                                    <th>Họ Và Tên</th>
+                                    <th>Giới Tính</th>
+                                    <th>Điểm</th>
+                                    <th>Nhận xét</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><a href="" class="">1</a></td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                    <td>4</td>
+                                    <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
+                                        minus aliquam
+                                        laborum? Tempora modi omnis similique totam dolorum provident eveniet
+                                        consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis minus
+                                        officia praesentium expedita labore?</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="" class="">1</a></td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                    <td>4</td>
+                                    <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
+                                        minus aliquam laborum? Tempora modi omnis similique totam dolorum provident
+                                        eveniet consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis
+                                        minus officia praesentium expedita labore?</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="" class="">1</a></td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                    <td>4</td>
+                                    <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
+                                        minus aliquam laborum? Tempora modi omnis similique totam dolorum provident
+                                        eveniet consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis
+                                        minus officia praesentium expedita labore?</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="" class="">1</a></td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                    <td>4</td>
+                                    <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
+                                        minus aliquam laborum? Tempora modi omnis similique totam dolorum provident
+                                        eveniet consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis
+                                        minus officia praesentium expedita labore?</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="" class="">1</a></td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                    <td>4</td>
+                                    <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
+                                        minus aliquam laborum? Tempora modi omnis similique totam dolorum provident
+                                        eveniet consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis
+                                        minus officia praesentium expedita labore?</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="" class="">1</a></td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                    <td>4</td>
+                                    <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
+                                        minus aliquam laborum? Tempora modi omnis similique totam dolorum provident
+                                        eveniet consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis
+                                        minus officia praesentium expedita labore?</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-4 d-flex flex-column">
+                        <canvas id="pieChart"></canvas>
+                        <div class="final d-flex flex-column">
+                            <label for="average" class="fw-bold">Điểm trung bình cả lớp:</label>
+                            <input type="text" disabled class="bg-transparent border-0 text-dark" value="7.5">
+                            <label for="highest" class="fw-bold">Học sinh có số điểm cao nhất (9.5):</label>
+                            <button type="submit" id="highest"
+                                class="text-start bg-transparent border-0 text-dark more">
+                                <span>Phạm Tường<i class="fas fa-long-arrow-alt-right"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="viewStudentDetail" tabindex="-1" role="dialog" aria-labelledby="logoutModal"
+        aria-hidden="true" style="z-index: 100000000;">
+        <div class="modal-dialog modal-fullscreen" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Điểm Bài Tập #1 - Lớp 7C</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body table-mark row">
+                    <div class="col-8">
+                        <table class="table table-hover" id="studentDetail">
+                            <thead class="table-primary text-center">
+                                <tr>
+                                    <th>Tên Bài Tập</th>
+                                    <th>Thời gian nạp bài tập</th>
+                                    <th>Điểm</th>
+                                    <th>Nhận xét</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Computer Project</td>
+                                    <td>23/01 23:10</td>
+                                    <td>9.5</td>
+                                    <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
+                                        minus aliquam
+                                        laborum? Tempora modi omnis similique totam dolorum provident eveniet
+                                        consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis minus
+                                        officia praesentium expedita labore?</td>
+                                </tr>
+                                <tr>
+                                    <td>Computer Project</td>
+                                    <td>23/01 23:10</td>
+                                    <td>4.5</td>
+                                    <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
+                                        minus aliquam
+                                        laborum? Tempora modi omnis similique totam dolorum provident eveniet
+                                        consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis minus
+                                        officia praesentium expedita labore?</td>
+                                </tr>
+                                <tr>
+                                    <td>Computer Project</td>
+                                    <td>23/01 23:10</td>
+                                    <td>5.5</td>
+                                    <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
+                                        minus aliquam
+                                        laborum? Tempora modi omnis similique totam dolorum provident eveniet
+                                        consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis minus
+                                        officia praesentium expedita labore?</td>
+                                </tr>
+                                <tr>
+                                    <td>Computer Project</td>
+                                    <td>23/01 23:10</td>
+                                    <td>9.5</td>
+                                    <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
+                                        minus aliquam
+                                        laborum? Tempora modi omnis similique totam dolorum provident eveniet
+                                        consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis minus
+                                        officia praesentium expedita labore?</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-4 d-flex flex-column">
+                        <canvas id="lineChart"></canvas>
+                        <div class="final d-flex flex-column">
+                            <label for="average" class="fw-bold">Điểm trung bình:</label>
+                            <input type="text" disabled class="bg-transparent border-0 text-dark" value="7.5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModal"
+        aria-hidden="true" style="z-index: 100000000;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Bạn muốn đăng xuất?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">Chọn "Đăng xuất" bên dưới nếu bạn đã sẵn sàng kết thúc phiên hiện tại của mình.
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal" aria-label="Close">Hủy
+                        Bỏ</button>
+                    <button class="btn btn-danger" name="action" value="Logout">Đăng Xuất</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+        <div class="container container-fluid">
+            <div class="d-flex flex-column">
+                <h1>Lớp 8A</h1>
+                <h2>Chào cô <i>Phạm Thu Hương</i>!</h2>
+            </div>
+            <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+        </div>
+    </nav>
+    <nav class="container d-flex justify-content-end">
+        <a href="teacher_classroom.html" class="more float-end">
+            <span>Quay lại lớp học<i class="fas fa-long-arrow-alt-right"></i></span>
+        </a>
+    </nav>
+    <main class="container center">
+        <header>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#taskTableCover">Bài Tập</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#studentTableCover">Học Sinh</a>
+                </li>
+            </ul>
+        </header>
+        <div class="">
+            <div class="cover-body fade active show" id="taskTableCover">
+                <table id="taskTable" class="cover-body table table-hover w-100">
+                    <thead class="table-primary text-center">
+                        <tr>
+                            <th>Bài tập</th>
+                            <th>Hạn nộp</th>
+                            <th>Đã nộp</th>
+                            <th>Chưa nộp</th>
+                            <th>Điểm trung bình</th>
+                            <th>Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Rhona Davidson</td>
+                            <td>Integration Specialist</td>
+                            <td>Tokyo</td>
+                            <td>55</td>
+                            <td>2010/10/14</td>
+                            <td>
+                                <button type="button" class="more btn bg-transparent" data-bs-toggle="modal"
+                                    data-bs-target="#viewTaskDetail" style="margin: 0;">
+                                    <span>Xem Bài Tập<i class="fas fa-long-arrow-alt-right"></i></span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Colleen Hurst</td>
+                            <td>Javascript Developer</td>
+                            <td>San Francisco</td>
+                            <td>39</td>
+                            <td>2009/09/15</td>
+                            <td>$205,500</td>
+                        </tr>
+                        <tr>
+                            <td>Sonya Frost</td>
+                            <td>Software Engineer</td>
+                            <td>Edinburgh</td>
+                            <td>23</td>
+                            <td>2008/12/13</td>
+                            <td>$103,600</td>
+                        </tr>
+                        <tr>
+                            <td>Jena Gaines</td>
+                            <td>Office Manager</td>
+                            <td>London</td>
+                            <td>30</td>
+                            <td>2008/12/19</td>
+                            <td>$90,560</td>
+                        </tr>
+                        <tr>
+                            <td>Quinn Flynn</td>
+                            <td>Support Lead</td>
+                            <td>Edinburgh</td>
+                            <td>22</td>
+                            <td>2013/03/03</td>
+                            <td>$342,000</td>
+                        </tr>
+                        <tr>
+                            <td>Charde Marshall</td>
+                            <td>Regional Director</td>
+                            <td>San Francisco</td>
+                            <td>36</td>
+                            <td>2008/10/16</td>
+                            <td>$470,600</td>
+                        </tr>
+                        <tr>
+                            <td>Haley Kennedy</td>
+                            <td>Senior Marketing Designer</td>
+                            <td>London</td>
+                            <td>43</td>
+                            <td>2012/12/18</td>
+                            <td>$313,500</td>
+                        </tr>
+                        <tr>
+                            <td>Tatyana Fitzpatrick</td>
+                            <td>Regional Director</td>
+                            <td>London</td>
+                            <td>19</td>
+                            <td>2010/03/17</td>
+                            <td>$385,750</td>
+                        </tr>
+                        <tr>
+                            <td>Michael Silva</td>
+                            <td>Marketing Designer</td>
+                            <td>London</td>
+                            <td>66</td>
+                            <td>2012/11/27</td>
+                            <td>$198,500</td>
+                        </tr>
+                        <tr>
+                            <td>Paul Byrd</td>
+                            <td>Chief Financial Officer (CFO)</td>
+                            <td>New York</td>
+                            <td>64</td>
+                            <td>2010/06/09</td>
+                            <td>$725,000</td>
+                        </tr>
+                        <tr>
+                            <td>Gloria Little</td>
+                            <td>Systems Administrator</td>
+                            <td>New York</td>
+                            <td>59</td>
+                            <td>2009/04/10</td>
+                            <td>$237,500</td>
+                        </tr>
+                        <tr>
+                            <td>Bradley Greer</td>
+                            <td>Software Engineer</td>
+                            <td>London</td>
+                            <td>41</td>
+                            <td>2012/10/13</td>
+                            <td>$132,000</td>
+                        </tr>
+                        <tr>
+                            <td>Dai Rios</td>
+                            <td>Personnel Lead</td>
+                            <td>Edinburgh</td>
+                            <td>35</td>
+                            <td>2012/09/26</td>
+                            <td>$217,500</td>
+                        </tr>
+                        <tr>
+                            <td>Jenette Caldwell</td>
+                            <td>Development Lead</td>
+                            <td>New York</td>
+                            <td>30</td>
+                            <td>2011/09/03</td>
+                            <td>$345,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="cover-body fade" id="studentTableCover">
+                <table id="studentTable" class="cover-body table table-hover w-100">
+                    <thead class="table-primary text-center">
+                        <tr>
+                            <th>Mã học sinh</th>
+                            <th>Họ và Tên</th>
+                            <th>Đã nộp</th>
+                            <th>Chưa nộp</th>
+                            <th>Điểm trung bình</th>
+                            <th>Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Herrod Chandler</td>
+                            <td>Sales Assistant</td>
+                            <td>San Francisco</td>
+                            <td>59</td>
+                            <td>2012/08/06</td>
+                            <td>
+                                <button type="button" class="more btn bg-transparent" data-bs-toggle="modal"
+                                    data-bs-target="#viewStudentDetail" style="margin: 0;">
+                                    <span>Xem Bài Tập<i class="fas fa-long-arrow-alt-right"></i></span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Rhona Davidson</td>
+                            <td>Integration Specialist</td>
+                            <td>Tokyo</td>
+                            <td>55</td>
+                            <td>2010/10/14</td>
+                            <td>$327,900</td>
+                        </tr>
+                        <tr>
+                            <td>Colleen Hurst</td>
+                            <td>Javascript Developer</td>
+                            <td>San Francisco</td>
+                            <td>39</td>
+                            <td>2009/09/15</td>
+                            <td>$205,500</td>
+                        </tr>
+                        <tr>
+                            <td>Sonya Frost</td>
+                            <td>Software Engineer</td>
+                            <td>Edinburgh</td>
+                            <td>23</td>
+                            <td>2008/12/13</td>
+                            <td>$103,600</td>
+                        </tr>
+                        <tr>
+                            <td>Jena Gaines</td>
+                            <td>Office Manager</td>
+                            <td>London</td>
+                            <td>30</td>
+                            <td>2008/12/19</td>
+                            <td>$90,560</td>
+                        </tr>
+                        <tr>
+                            <td>Quinn Flynn</td>
+                            <td>Support Lead</td>
+                            <td>Edinburgh</td>
+                            <td>22</td>
+                            <td>2013/03/03</td>
+                            <td>$342,000</td>
+                        </tr>
+                        <tr>
+                            <td>Charde Marshall</td>
+                            <td>Regional Director</td>
+                            <td>San Francisco</td>
+                            <td>36</td>
+                            <td>2008/10/16</td>
+                            <td>$470,600</td>
+                        </tr>
+                        <tr>
+                            <td>Haley Kennedy</td>
+                            <td>Senior Marketing Designer</td>
+                            <td>London</td>
+                            <td>43</td>
+                            <td>2012/12/18</td>
+                            <td>$313,500</td>
+                        </tr>
+                        <tr>
+                            <td>Tatyana Fitzpatrick</td>
+                            <td>Regional Director</td>
+                            <td>London</td>
+                            <td>19</td>
+                            <td>2010/03/17</td>
+                            <td>$385,750</td>
+                        </tr>
+                        <tr>
+                            <td>Michael Silva</td>
+                            <td>Marketing Designer</td>
+                            <td>London</td>
+                            <td>66</td>
+                            <td>2012/11/27</td>
+                            <td>$198,500</td>
+                        </tr>
+                        <tr>
+                            <td>Paul Byrd</td>
+                            <td>Chief Financial Officer (CFO)</td>
+                            <td>New York</td>
+                            <td>64</td>
+                            <td>2010/06/09</td>
+                            <td>$725,000</td>
+                        </tr>
+                        <tr>
+                            <td>Gloria Little</td>
+                            <td>Systems Administrator</td>
+                            <td>New York</td>
+                            <td>59</td>
+                            <td>2009/04/10</td>
+                            <td>$237,500</td>
+                        </tr>
+                        <tr>
+                            <td>Bradley Greer</td>
+                            <td>Software Engineer</td>
+                            <td>London</td>
+                            <td>41</td>
+                            <td>2012/10/13</td>
+                            <td>$132,000</td>
+                        </tr>
+                        <tr>
+                            <td>Dai Rios</td>
+                            <td>Personnel Lead</td>
+                            <td>Edinburgh</td>
+                            <td>35</td>
+                            <td>2012/09/26</td>
+                            <td>$217,500</td>
+                        </tr>
+                        <tr>
+                            <td>Jenette Caldwell</td>
+                            <td>Development Lead</td>
+                            <td>New York</td>
+                            <td>30</td>
+                            <td>2011/09/03</td>
+                            <td>$345,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script>
+        $(document).ready(function () {
+            $('#taskTable').DataTable();
+            $('#studentTable').DataTable();
+            $('#taskDetail').DataTable();
+            $('#studentDetail').DataTable();
+        });
+
+        function getColumn(table_id, col) {
+            var tab = document.getElementById(table_id),
+                n = tab.rows.length,
+                arr = [],
+                row;
+            if (col < 0) {
+                return arr; // Return empty Array.
+            }
+            for (row = 1; row < n; ++row) {
+                if (tab.rows[row].cells.length > col) {
+                    arr.push(tab.rows[row].cells[col].innerText);
+                }
+            }
+            return arr;
+        }
+
+        function sortClass() {
+            var mark = [...getColumn('taskDetail', 3)];
+            var g = 0,
+                kha = 0,
+                k = 0;
+            mark.forEach((item) => {
+                if (item < 5) {
+                    k += 1;
+                } else if (item < 8) {
+                    kha += 1;
+                } else {
+                    gioi += 1;
+                }
+            })
+            var arr = [k, kha, g];
+            console.log(arr);
+            return arr;
+        }
+        const pieChart = new Chart(document.getElementById('pieChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    'Yếu (0-5)',
+                    'Trung bình - Khá (5-8)',
+                    'Giỏi (8-10)'
+                ],
+                datasets: [{
+                    label: 'Điểm bài tập #1',
+                    data: sortClass(),
+                    backgroundColor: [
+                        'rgb(246,151,125)',
+                        'rgb(255,243,121)',
+                        'rgb(150,205,138)'
+                    ],
+                    hoverOffset: 4
+                }]
+            }
+        });
+
+        const lineChart = new Chart(document.getElementById('lineChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: getColumn('studentDetail', 0),
+                datasets: [{
+                    label: '',
+                    data: getColumn('studentDetail', 2),
+                    fill: false,
+                    backgroundColor: 'rgb(246,151,121)',
+                    borderColor: 'rgb(246,151,125)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Điểm của Phạm Tường'
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 10,
+                    },
+                    x: {
+                        ticks: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script>
+        var navItem = document.querySelectorAll('.nav-link');
+        navItem.forEach((item) => {
+            item.addEventListener('click', () => {
+                var active = document.querySelectorAll('.active');
+                active.forEach((value) => {
+                    value.classList.remove('active');
+                    if (value.classList.contains('show')) {
+                        value.classList.remove('show');
+                    }
+                })
+                item.classList.add('active');
+                var ouputTabs = document.querySelector('#' + item.href.split('#')[1]);
+                ouputTabs.classList.add('active', 'show')
+            })
+        })
+    </script>
+</body>
+
+</html>
