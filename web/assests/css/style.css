@@ -7,6 +7,9 @@ html {
   height: 100%;
   scroll-behavior: smooth;
 }
+*:not(i){
+  font-family: "Roboto", sans-serif !important;
+}
 ::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 1rem;
@@ -92,7 +95,6 @@ table#tableMark thead th {
   width: 15vw;
 }
 table#tableMark td {
-  background: black;
   padding: 4px 5px;
   text-align: center;
 }

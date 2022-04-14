@@ -2,6 +2,9 @@
   color: black;
   background-color: #e7f1ff;
 }
+*:not(i){
+  font-family: "Roboto", sans-serif;
+}
 a {
   -webkit-transition: 0.3s all ease;
   -o-transition: 0.3s all ease;

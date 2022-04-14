@@ -1,10 +1,22 @@
 $('input[type="file"]').change(function () {
     $.each(this.files, function () {
         readURL(this);
-    })
+    });
 });
 var listFile = document.querySelector('#listFile');
 var output = document.querySelector('#outputFile');
+var option = document.getElementsByName('option');
+option = [...option];
+option.forEach((item) => {
+    console.log(item);
+    item.addEventListener('click', () => {
+        if (option[0].checked && !option[1].checked) {
+            document.querySelector('#optionMore').classList.remove('fade');
+        } else {
+            document.querySelector('#optionMore').classList.add('fade');
+        }
+    });
+});
 
 function readURL(file) {
     var reader = new FileReader();

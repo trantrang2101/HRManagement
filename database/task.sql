@@ -3,14 +3,10 @@ go
 use QHVinh
 go
 create table [user](
-	id int identity(1,1) not null primary key,
+	id int not null primary key,
 	name nvarchar(100) not null,
 	gender bit default 1,
-	dob date,
 	roleID int,
-);
-create table [login](
-	username int foreign key references [user](id),
 	password nvarchar(10) not null
 );
 create table [classroom](
@@ -27,18 +23,17 @@ create table notice(
 	title nvarchar(50),
 	describe text,
 	classid int foreign key references [classroom](id),
-	createdAt datetime default getDate()
-);
-create table task(
-	id int foreign key references notice(id),
-	deadline datetime,
+	publicAt datetime default getDate(),
+	isTask bit default 0,
+	deadline datetime null
 );
 create table task_work(
+	id int foreign key references notice(id),
 	userid int foreign key references [user](id),
 	work nvarchar(255) not null,
 	mark int default -1,
 	comment text,
 	doneAt datetime default getDate()
 );
-insert into [user](name,dob,roleID,gender) values ('admin','1920-09-02',0,1)
-insert into login values(1,'1')
+insert into [user](id,name,roleID,gender) values (0,'admin',0,1)
+insert into login values(0,'1')
