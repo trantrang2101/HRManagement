@@ -30,7 +30,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
  *
  * @author Tran Trang
  */
-@MultipartConfig(maxFileSize = 16177216)
+@MultipartConfig
 public class LoadExcelInput extends HttpServlet {
 
     private static final String ERROR = "invalid.jsp";
@@ -51,35 +51,37 @@ public class LoadExcelInput extends HttpServlet {
         String build = applicationPath + File.separator + "assests\\img";
         PrintWriter out = response.getWriter();
         try {
-            Part part = request.getPart("file");
-            out.print("<table>");
-            File buildFile = new File(build + File.separator + part.getName());
-            part.write(build + File.separator + part.getName());
-            FileInputStream fis = new FileInputStream(buildFile);
-            XSSFWorkbook wb = new XSSFWorkbook(fis);
-            XSSFSheet sheet = wb.getSheetAt(0);     //creating a Sheet object to retrieve object  
-            Iterator<Row> itr = sheet.iterator();    //iterating over excel file  
-            while (itr.hasNext()) {
-                Row row = itr.next();
-                Iterator<Cell> cellIterator = row.cellIterator();   //iterating over each column  
-                while (cellIterator.hasNext()) {
-                    out.print("<tr>");
-                    Cell cell = cellIterator.next();
-                    switch (cell.getCellType()) {
-                        case Cell.CELL_TYPE_STRING:    //field that represents string cell type  
-                            out.print("<script> alert" + cell.getStringCellValue() + "</script>");
-                            break;
-                        case Cell.CELL_TYPE_NUMERIC:    //field that represents number cell type  
-                            out.print("<td>" + (cell.getNumericCellValue() + "") + "</td>");
-                            break;
-                        default:
+            Collection<Part> parts = request.getParts();
+            for (Part part : parts) {
+                out.print("<table>");
+                File buildFile = new File(build + File.separator + part.getName());
+                part.write(build + File.separator + part.getName());
+                FileInputStream fis = new FileInputStream(buildFile);
+                XSSFWorkbook wb = new XSSFWorkbook(fis);
+                XSSFSheet sheet = wb.getSheetAt(0);     //creating a Sheet object to retrieve object  
+                Iterator<Row> itr = sheet.iterator();    //iterating over excel file  
+                while (itr.hasNext()) {
+                    Row row = itr.next();
+                    Iterator<Cell> cellIterator = row.cellIterator();   //iterating over each column  
+                    while (cellIterator.hasNext()) {
+                        out.print("<tr>");
+                        Cell cell = cellIterator.next();
+                        switch (cell.getCellType()) {
+                            case Cell.CELL_TYPE_STRING:    //field that represents string cell type  
+                                out.print("<script> alert" + cell.getStringCellValue() + "</script>");
+                                break;
+                            case Cell.CELL_TYPE_NUMERIC:    //field that represents number cell type  
+                                out.print("<td>" + (cell.getNumericCellValue() + "") + "</td>");
+                                break;
+                            default:
+                        }
                     }
+                    out.print("</tr>");
+                    System.out.println("");
                 }
-                out.print("</tr>");
-                System.out.println("");
+                out.print("</table>");
+                buildFile.delete();
             }
-            out.print("</table>");
-            buildFile.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
