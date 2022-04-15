@@ -286,7 +286,7 @@
                     <div class="modal-body">
                         <div class="d-flex justify-content-around">
                             <form action="loadExcel" method="POST">
-                                <input type="file" id="inputExcel" hidden="" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" onchange="this.parentNode.submit()"/>
+                                <input type="file" hidden accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" onchange="this.parentNode.submit()" enctype="multipart/form-data" id="inputExcel"/>
                             </form>
                             <label for="inputExcel" class="icon rounded-circle bg-primary">
                                 <i class="text-white fa-solid fa-file-excel"></i>

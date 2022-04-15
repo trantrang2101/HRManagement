@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +30,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
  *
  * @author Tran Trang
  */
+@MultipartConfig(maxFileSize = 16177216)
 public class LoadExcelInput extends HttpServlet {
 
     private static final String ERROR = "invalid.jsp";
@@ -47,34 +49,37 @@ public class LoadExcelInput extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String applicationPath = getServletContext().getRealPath("");
         String build = applicationPath + File.separator + "assests\\img";
-        try ( PrintWriter out = response.getWriter()) {
-            Collection<Part> parts = request.getParts();
-            for (Part part : parts) {
-                File buildFile = new File(build + File.separator + part.getName());
-                part.write(build + File.separator + part.getName());
-                FileInputStream fis = new FileInputStream(buildFile);
-                XSSFWorkbook wb = new XSSFWorkbook(fis);
-                XSSFSheet sheet = wb.getSheetAt(0);     //creating a Sheet object to retrieve object  
-                Iterator<Row> itr = sheet.iterator();    //iterating over excel file  
-                while (itr.hasNext()) {
-                    Row row = itr.next();
-                    Iterator<Cell> cellIterator = row.cellIterator();   //iterating over each column  
-                    while (cellIterator.hasNext()) {
-                        Cell cell = cellIterator.next();
-                        switch (cell.getCellType()) {
-                            case Cell.CELL_TYPE_STRING:    //field that represents string cell type  
-                                System.out.print(cell.getStringCellValue() + "\t\t\t");
-                                break;
-                            case Cell.CELL_TYPE_NUMERIC:    //field that represents number cell type  
-                                System.out.print(cell.getNumericCellValue() + "\t\t\t");
-                                break;
-                            default:
-                        }
+        PrintWriter out = response.getWriter();
+        try {
+            Part part = request.getPart("file");
+            out.print("<table>");
+            File buildFile = new File(build + File.separator + part.getName());
+            part.write(build + File.separator + part.getName());
+            FileInputStream fis = new FileInputStream(buildFile);
+            XSSFWorkbook wb = new XSSFWorkbook(fis);
+            XSSFSheet sheet = wb.getSheetAt(0);     //creating a Sheet object to retrieve object  
+            Iterator<Row> itr = sheet.iterator();    //iterating over excel file  
+            while (itr.hasNext()) {
+                Row row = itr.next();
+                Iterator<Cell> cellIterator = row.cellIterator();   //iterating over each column  
+                while (cellIterator.hasNext()) {
+                    out.print("<tr>");
+                    Cell cell = cellIterator.next();
+                    switch (cell.getCellType()) {
+                        case Cell.CELL_TYPE_STRING:    //field that represents string cell type  
+                            out.print("<script> alert" + cell.getStringCellValue() + "</script>");
+                            break;
+                        case Cell.CELL_TYPE_NUMERIC:    //field that represents number cell type  
+                            out.print("<td>" + (cell.getNumericCellValue() + "") + "</td>");
+                            break;
+                        default:
                     }
-                    System.out.println("");
                 }
-                buildFile.delete();
+                out.print("</tr>");
+                System.out.println("");
             }
+            out.print("</table>");
+            buildFile.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
