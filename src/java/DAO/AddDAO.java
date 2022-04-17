@@ -83,12 +83,17 @@ public class AddDAO {
                 stm.setInt(4, user.getRoleID());
                 stm.setString(5, user.getPassword());
                 if (stm.executeUpdate() > 0) {
-                    sql = "INSERT INTO [teacher] VALUES (?,?)";
-                    stm = conn.prepareStatement(sql);
-                    stm.setInt(1, user.getId());
-                    stm.setInt(3, user.getSubjectID());
-                    check = stm.executeUpdate() > 0;
+                    if (user.getRoleID() == 2) {
+                        sql = "INSERT INTO [teacher] VALUES (?,?)";
+                        stm = conn.prepareStatement(sql);
+                        stm.setInt(1, user.getId());
+                        stm.setInt(2, user.getSubjectID());
+                        check = stm.executeUpdate() > 0;
+                    } else {
+                        check = true;
+                    }
                 }
+
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -5,6 +5,7 @@
 package Controller;
 
 import DAO.DetailDAO;
+import entity.Notice;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,6 +14,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  *
@@ -43,6 +47,9 @@ public class DetailSeverlet extends HttpServlet {
                 request.setAttribute("classNotice", dao.getNoticeList(user, classname));
                 request.getRequestDispatcher("classroom.jsp").forward(request, response);
             } else if (task != null) {
+                Notice taskDetail = dao.getTask(Integer.parseInt(task));
+                request.setAttribute("task", Integer.parseInt(task));
+                request.setAttribute("choosenTask", taskDetail);
                 if (user.getRoleID() == 1) {
                     request.getRequestDispatcher("student_task.jsp").forward(request, response);
                 } else {

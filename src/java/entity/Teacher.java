@@ -15,6 +15,10 @@ public class Teacher extends User {
 
     public Teacher() {
     }
+    
+    public Teacher(int id, String name, boolean gender, String password, int roleID) {
+        super(id, name, gender, password, roleID);
+    }
 
     public Teacher(int id, String name, boolean gender, String password, int roleID,int subjectID) {
         super(id, name, gender, password, roleID);

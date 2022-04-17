@@ -82,8 +82,8 @@
                             <td>
                                 <div class="form-group d-flex bg-transparent border-bottom justify-content-between">
                                     <input type="password" class="input-password input-group bg-transparent" value="<%=t.getPassword()%>" name="password">
-                                    <input type="radio" hidden="" id="password1" onclick="showPassword(this)">
-                                    <label for="password1">
+                                    <input type="radio" hidden="" id="password<%=t.getId()%>" onclick="showPassword(this)">
+                                    <label for="password<%=t.getId()%>">
                                         <i class="fa-solid fa-eye"></i>
                                     </label>
                                 </div>
@@ -155,6 +155,7 @@
             </nav>
         </div>
         <script>
+            
             function showPassword(item) {
                 var inputPW = item.parentElement.children[0];
                 var eye = item.parentElement.getElementsByClassName('fa-solid')[0];

@@ -13,9 +13,9 @@
     <%
                     int task = Integer.parseInt(request.getParameter("task"));
                     DetailDAO dao = new DetailDAO();
-                    Notice noti = (Notice) dao.getTask(task);
+                    Notice noti = (Notice) request.getAttribute("choosenTask");
     %>
-    <title>Task#<%=task%></title>
+    <title><%=noti.getTitle()%></title>
     <script src="assests/js/moment.js"></script>
     <script src="assests/ckeditor/ckeditor.js"></script>
 </head>

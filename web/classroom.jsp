@@ -34,7 +34,7 @@
             <div class="container container-fluid">
                 <div class="d-flex flex-column">
                     <h1>Class ${sessionScope.classChoose.getName()}</h1>
-                    <h2>Hi ${sessionScope.loginUser.isGender()?"Mr.":"Mrs."} <i>${sessionScope.loginUser.getName()}</i>!</h2>
+                    <h2>Hi ${sessionScope.loginUser.getRoleID()!=1?sessionScope.loginUser.isGender()?"Mr.":"Mrs.":""} <i>${sessionScope.loginUser.getName()}</i>!</h2>
                 </div>
                 <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
             </div>

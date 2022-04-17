@@ -90,6 +90,15 @@ table#tableMark {
     height: 50px;
     margin-right: 20px;
 }
+.icon-large{
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+}
+.icon-large i{
+    font-size: 50px;
+    margin: auto;
+}
 .icon i {
     font-size: 30px;
     margin: 10px;

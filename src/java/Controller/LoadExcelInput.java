@@ -4,6 +4,9 @@
  */
 package Controller;
 
+import DAO.AddDAO;
+import entity.Classroom;
+import entity.Teacher;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -14,12 +17,18 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /**
  *
@@ -42,44 +51,72 @@ public class LoadExcelInput extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String applicationPath = getServletContext().getRealPath("");
-        String build = applicationPath + File.separator + "assests\\img";
-        try ( PrintWriter out = response.getWriter();) {
-            Collection<Part> parts = request.getParts();
-            for (Part part : parts) {
-                out.print("<table>");
-                File buildFile = new File(build + File.separator + part.getName());
-                part.write(build + File.separator + part.getName());
-                FileInputStream fis = new FileInputStream(buildFile);
-                XSSFWorkbook wb = new XSSFWorkbook(fis);
-                XSSFSheet sheet = wb.getSheetAt(0);     //creating a Sheet object to retrieve object  
-                Iterator<Row> itr = sheet.iterator();    //iterating over excel file  
-                while (itr.hasNext()) {
-                    Row row = itr.next();
-                    Iterator<Cell> cellIterator = row.cellIterator();   //iterating over each column  
-                    while (cellIterator.hasNext()) {
-                        out.print("<tr>");
-                        Cell cell = cellIterator.next();
-                        switch (cell.getCellType()) {
-                            case Cell.CELL_TYPE_STRING:    //field that represents string cell type  
-                                out.print("<script> alert" + cell.getStringCellValue() + "</script>");
-                                break;
-                            case Cell.CELL_TYPE_NUMERIC:    //field that represents number cell type  
-                                out.print("<td>" + (cell.getNumericCellValue() + "") + "</td>");
-                                break;
-                            default:
+        try ( PrintWriter out = response.getWriter()) {
+            HttpSession session = request.getSession();
+            List<Teacher> listUser = (List<Teacher>) session.getAttribute("listUser");
+            List<Classroom> listClass = (List<Classroom>) session.getAttribute("listClass");
+            Part filePart = request.getPart("excel");
+            String fileName = filePart.getSubmittedFileName();
+            for (Part part : request.getParts()) {
+                String applicationPath = getServletContext().getRealPath("");
+                part.write(applicationPath + File.separator + fileName);
+                File file = new File(applicationPath + File.separator + fileName);   //creating a new file instance  
+                FileInputStream fis = new FileInputStream(file);   //obtaining bytes from the file  
+                if (fileName.endsWith(".xlsx")) {
+                    XSSFWorkbook wb = new XSSFWorkbook(fis);
+                    XSSFSheet sheet = wb.getSheetAt(0);
+                    int rowNo = sheet.getPhysicalNumberOfRows();
+                    for (int i = 1; i < rowNo; i++) {
+                        Row row = sheet.getRow(i); //returns the logical row  
+                        int id = Integer.parseInt(row.getCell(1).getStringCellValue());
+                        String name = row.getCell(2).getStringCellValue();
+                        boolean gender = row.getCell(3).getNumericCellValue() == 1;
+                        String classid = row.getCell(4).getStringCellValue();
+                        String password = row.getCell(6).getStringCellValue();
+                        if (!addStudent(id, name, gender, password, classid,listClass, listUser, out)) {
+                            out.print("<script>alert('Add failed!);</script>");
                         }
                     }
-                    out.print("</tr>");
-                    System.out.println("");
+                } else if (fileName.endsWith(".xls")) {
+                    HSSFWorkbook wb = new HSSFWorkbook(fis);
+                    HSSFSheet sheet = wb.getSheetAt(0);
+                    int rowNo = sheet.getPhysicalNumberOfRows();
+                    for (int i = 1; i < rowNo; i++) {
+                        Row row = sheet.getRow(i); //returns the logical row  
+                        int id = Integer.parseInt(row.getCell(1).getStringCellValue());
+                        String name = row.getCell(2).getStringCellValue();
+                        boolean gender = row.getCell(3).getNumericCellValue() == 1;
+                        String classid = row.getCell(4).getStringCellValue();
+                        String password = row.getCell(6).getStringCellValue();
+                        if (!addStudent(id, name, gender, password, classid,listClass, listUser, out)) {
+                            out.print("<script>alert('Add failed!);</script>");
+                        }
+                    }
                 }
-                out.print("</table>");
-                buildFile.delete();
+                file.delete();
+                session.setAttribute("listClass", listClass);
+                session.setAttribute("listUser", listUser);
+                response.sendRedirect("view_people.jsp");
             }
-            response.sendRedirect("view_people.jsp");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean addStudent(int id, String name, boolean gender, String password, String classid,List<Classroom> listClass, List<Teacher> listUser, PrintWriter out) throws SQLException {
+        if (classid.length() <= 5) {
+            AddDAO dao = new AddDAO();
+            Teacher user = new Teacher(id, name, gender, password, 1);
+            if (dao.addUser(user)) {
+                if (!dao.addUserClass(classid, id)) {
+                    dao.addClass(classid);
+                    listClass.add(new Classroom(classid));
+                }
+                listUser.add(user);
+                return true;
+            }
+        }
+        return false;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
