@@ -5,9 +5,11 @@
 package Controller;
 
 import DAO.AddDAO;
-import com.sun.org.apache.bcel.internal.generic.AALOAD;
+import DAO.LoginDAO;
 import entity.Classroom;
 import entity.Notice;
+import entity.Teacher;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,7 +17,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -40,32 +41,66 @@ public class AddServlet extends HttpServlet {
             AddDAO dao = new AddDAO();
             HttpSession session = request.getSession();
             String action = request.getParameter("action");
-            if (action.equals("addClass")) {
-                String name = request.getParameter("name");
-                if (dao.addClass(name)) {
-                    List<Classroom> list = (List<Classroom>) session.getAttribute("listClass");
-                    list.add(new Classroom(name));
-                    session.setAttribute("listClass", list); 
-                    request.getRequestDispatcher("teacher_home.jsp").include(request, response);
-                } else {
-                    out.print("<script>alert('Add failed!');window.history.back()</script>");
+            User login = (User) session.getAttribute("loginUser");
+            boolean add = false;
+            switch (action) {
+                case "addClass": {
+                    String name = request.getParameter("name");
+                    if (dao.addClass(name)) {
+                        List<Classroom> list = (List<Classroom>) session.getAttribute("listClass");
+                        list.add(new Classroom(name));
+                        session.setAttribute("listClass", list);
+                        request.getRequestDispatcher("teacher_home.jsp").include(request, response);
+                        add = true;
+                    }
+                    break;
                 }
-            }else if (action.equals("addNotice")) {
-                String name = request.getParameter("title");
-                int authorid=Integer.parseInt(request.getParameter("author"));
-                String classid = request.getParameter("classid");
-                boolean isTask =request.getParameter("notice").equals("1");
-                String deadline=!isTask?null:request.getParameter("deadline").replace("T", " ");
-                String publish=request.getParameter("publish").replace("T", " ");
-                String content = request.getParameter("content");
-                Notice noti = new Notice(0, authorid, name, content, classid, publish, isTask, deadline);
-                if (dao.addNotice(noti)) {
-                    response.sendRedirect("detail?class="+classid);
-                } else {
-                    out.print("<script>alert('Add failed!');window.history.back()</script>");
+                case "addNotice": {
+                    String name = request.getParameter("title");
+                    int authorid = Integer.parseInt(request.getParameter("author"));
+                    String classid = request.getParameter("classid");
+                    boolean isTask = request.getParameter("notice").equals("1");
+                    String deadline = !isTask ? null : request.getParameter("deadline").replace("T", " ");
+                    String publish = request.getParameter("publish").replace("T", " ");
+                    String content = request.getParameter("content");
+                    Notice noti = new Notice(0, authorid, name, content, classid, publish, isTask, deadline);
+                    if (dao.addNotice(noti)) {
+                        response.sendRedirect("detail?class=" + classid);
+                        add = true;
+                    }
+                    break;
                 }
-            }else if (action.equals("addPerson")) {
-                
+                case "addPerson": {
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    String name = request.getParameter("name");
+                    boolean gender = request.getParameter("gender").equals("1");
+                    String password = request.getParameter("password");
+                    int role = Integer.parseInt(request.getParameter("role"));
+                    String[] classList = request.getParameterValues("class");
+                    User user = new User(id, name, gender, password, role);
+                    if (dao.addUser(user)) {
+                        if (classList != null && classList.length > 0) {
+                            for (String c : classList) {
+                                if (!dao.addUserClass(c, id)) {
+                                    dao.addClass(c);
+                                }
+                            }
+                        }
+                        if (login.getRoleID() == 0) {
+                            LoginDAO loginDAO = new LoginDAO();
+                            List<Teacher> listUser = loginDAO.getUserList();
+                            session.setAttribute("listUser", listUser);
+                        }
+                        add = true;
+                        request.getRequestDispatcher("teacher_home.jsp").include(request, response);
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+            if (!add) {
+                out.print("<script>alert('Add failed!');window.history.back()</script>");
             }
         } catch (Exception e) {
             e.printStackTrace();

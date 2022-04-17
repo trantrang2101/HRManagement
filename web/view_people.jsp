@@ -5,6 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="entity.*" %>
+<%@ page import="java.util.List, java.text.*" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -24,10 +26,10 @@
                 <i class="fa-solid fa-plus"></i>
                 <span>Add Student/Teacher</span>
             </button>
-            <a class="btn btn-primary" href="report.jsp">
-                <i class="fa-solid fa-eye"></i>
-                <span> Report</span>
-            </a>
+            <!--            <a class="btn btn-primary" href="report.jsp">
+                            <i class="fa-solid fa-eye"></i>
+                            <span> Report</span>
+                        </a>-->
         </nav>
         <nav class="container d-flex justify-content-end">
             <a href="teacher_home.jsp" class="more float-end">
@@ -64,16 +66,22 @@
                             <th>Role</th>
                             <th>Class</th>
                             <th>Notice</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <%
+                            List<Teacher> listUser = (List<Teacher>) session.getAttribute("listUser");
+                            for(Teacher t:listUser){
+                        %>
                     <form method="POST">
                         <tr>
-                            <td>1</td>
-                            <td><input type="text" name="name" value="ABC"></td>
+                            <td><%=t.getId()%></td>
+                            <td><input class="w-100 bg-transparent" type="text" name="name" value="<%=t.getName()%>"></td>
                             <td>
                                 <div class="form-group d-flex bg-transparent border-bottom justify-content-between">
-                                    <input type="password" class="input-password input-group bg-transparent" value="FakePSW" name="password">
+                                    <input type="password" class="input-password input-group bg-transparent" value="<%=t.getPassword()%>" name="password">
                                     <input type="radio" hidden="" id="password1" onclick="showPassword(this)">
                                     <label for="password1">
                                         <i class="fa-solid fa-eye"></i>
@@ -82,28 +90,65 @@
                             </td>
                             <td>
                                 <select name="gender" class="form-select bg-transparent border-0">
-                                    <option value="1">Male</option>
+                                    <%if(t.isGender()){%>
+                                    <option value="1" selected>Male</option>
                                     <option value="0">Female</option>
+                                    <%}else{%>
+                                    <option value="1">Male</option>
+                                    <option value="0"selected>Female</option>
+                                    <%}%>
                                 </select>
                             </td>
                             <td>
+                                <%if(t.getRoleID()==1){%>
+                                Student
+                                <%}else{%>
                                 <select name="roleClass" class="form-select bg-transparent border-0">
-                                    <option value="1">Male</option>
-                                    <option value="0">Female</option>
+                                    <%if(t.getRoleID()==0){%>
+                                    <option value="2">Teacher</option>
+                                    <option value="0" selected="">Admin</option>
+                                    <%}else{%>
+                                    <option value="2" selected="">Teacher</option>
+                                    <option value="0">Teacher</option>
+                                    <%}%>
                                 </select>
+                                <%}%>
                             </td>
                             <td>
+                                <%if(t.getRoleID()!=0){%>
                                 <select name="class" class="form-select bg-transparent">
-                                    <option value="1">7A</option>
-                                    <option value="1">7B</option>
-                                    <option value="1">7C</option>
-                                    <option value="1">7D</option>
+                                    <%
+                                                    List<Classroom> listClass=(List<Classroom>) session.getAttribute("listClass");
+                                                    if(listClass!=null){
+                                                        for(Classroom c : listClass){
+                                    %>
+                                    <option value="<%=c.getName()%>"><%=c.getName()%></option>
+                                    <%
+                                            }
+                                        }
+                                    %>
                                 </select>
+                                <%}%>
                             </td>
                             <td>
-
+                                <%if(t.getRoleID()==2){%>
+                                <select name="roleID" class="form-select bg-transparent">
+                                    <%
+                                        List<Teacher> listSubject=(List<Teacher>) session.getAttribute("listSubject");
+                                        if(listSubject!=null){
+                                        for(Teacher c : listSubject){
+                                            if(c.getSubjectID()==t.getSubjectID()){
+                                    %>
+                                    <option value="<%=c.getSubjectID()%>" selected><%=c.getSubjectName()%></option>
+                                    <%}else{%>
+                                    <option value="<%=c.getSubjectID()%>"><%=c.getSubjectName()%></option>
+                                    <%}}}%>
+                                </select>
+                                <%}%>
                             </td>
+                            <td></td>
                         </tr>
+                        <%}%>
                     </form>
                     </tbody>
                 </table>

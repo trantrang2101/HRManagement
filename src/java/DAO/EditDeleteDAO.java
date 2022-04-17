@@ -17,8 +17,8 @@ import java.sql.SQLException;
  * @author Tran Trang
  */
 public class EditDeleteDAO {
-    
-     public boolean deleteNotice(int id) throws SQLException{
+
+    public boolean deleteNotice(int id) throws SQLException {
         boolean check = false;
         Connection conn = null;
         PreparedStatement stm = null;
@@ -41,7 +41,7 @@ public class EditDeleteDAO {
         }
         return check;
     }
-    
+
     public Notice getNotice(int id) throws SQLException {
         Notice noti = null;
         Connection conn = null;

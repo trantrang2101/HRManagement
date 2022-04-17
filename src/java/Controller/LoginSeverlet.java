@@ -37,25 +37,36 @@ public class LoginSeverlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
             HttpSession session = request.getSession();
-            int id = Integer.parseInt(request.getParameter("id"));
-            String password = request.getParameter("password");
-            LoginDAO dao = new LoginDAO();
-            User user = dao.login(id, password);
-            if (user != null) {
-                session.setAttribute("loginUser", user);
-                if (user.getRoleID() == 1) {
-                    request.getRequestDispatcher("student_classroom.jsp").forward(request, response);
-                } else {
+            String action = request.getParameter("action");
+            if (action.equals("Login")) {
+                int id = Integer.parseInt(request.getParameter("id"));
+                String password = request.getParameter("password");
+                LoginDAO dao = new LoginDAO();
+                User user = dao.login(id, password);
+                if (user != null) {
+                    session.setAttribute("loginUser", user);
                     List<Classroom> list = dao.getClassList(id);
-                    session.setAttribute("listClass", list);
-                    List<Teacher> listSubject = dao.getTeacherRoleList();
-                    session.setAttribute("listSubject", listSubject);
-                    request.getRequestDispatcher("teacher_home.jsp").forward(request, response);
+                    if (user.getRoleID() == 1) {
+                        response.sendRedirect("detail?class=" + list.get(0).getName());
+                    } else {
+                        session.setAttribute("listClass", list);
+                        List<Teacher> listSubject = dao.getTeacherRoleList();
+                        session.setAttribute("listSubject", listSubject);
+                        if (user.getRoleID() == 0) {
+                            List<Teacher> listUser = dao.getUserList();
+                            session.setAttribute("listUser", listUser);
+                        }
+                        request.getRequestDispatcher("teacher_home.jsp").forward(request, response);
+                    }
+                } else {
+                    out.print("<script>alert('Wrong id or password');</script>");
+                    request.getRequestDispatcher("index.html").include(request, response);
                 }
-            } else {
-                out.print("<script>alert('Wrong id or password');</script>");
-                request.getRequestDispatcher("index.html").include(request, response);
+            }else if (action.equals("Logout")) {
+                session.invalidate();
+                response.sendRedirect("index.html");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

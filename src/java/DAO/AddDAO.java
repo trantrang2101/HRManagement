@@ -6,6 +6,7 @@ package DAO;
 
 import connectDB.ConnectJDBC;
 import entity.Notice;
+import entity.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -25,6 +26,61 @@ public class AddDAO {
             if (conn != null) {
                 stm = conn.prepareStatement("INSERT INTO Classroom VALUES (?)");
                 stm.setString(1, name);
+                check = stm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+    
+    public boolean addUserClass(String classid,int userid) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                String sql = "INSERT INTO [classroom_detail] VALUES (?,?)";
+                stm = conn.prepareStatement(sql);
+                stm.setString(1, classid);
+                stm.setInt(2, userid);
+                check = stm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+    
+    public boolean addUser(User user) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                String sql = "INSERT INTO [user] VALUES (?,?,?,?,?)";
+                stm = conn.prepareStatement(sql);
+                stm.setInt(1, user.getId());
+                stm.setNString(2, user.getName());
+                stm.setBoolean(3, user.isGender());
+                stm.setInt(4, user.getRoleID());
+                stm.setString(5, user.getPassword());
                 check = stm.executeUpdate() > 0;
             }
         } catch (Exception e) {

@@ -30,13 +30,11 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                List<User> list = new ArrayList<>();
                 String sql = "select * from [user] where id = ?";
                 stm = conn.prepareStatement(sql);
                 stm.setInt(1, id);
                 rs = stm.executeQuery();
                 while (rs.next()) {
-                    int userid = rs.getInt(1);
                     String name = rs.getString(2);
                     boolean gender = rs.getBoolean(3);
                     String password = "***";
@@ -133,7 +131,7 @@ public class DetailDAO {
         }
         return workDone;
     }
-
+    
     public List<Work> getWorkList(int taskid) throws SQLException {
         List<Work> list = new ArrayList<>();
         Connection conn = null;
@@ -178,7 +176,7 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String sql = user.getRoleID() == 0 ? "select * from notice where classid='" + classid + "' order by publicAt desc" : "select * from notice where classid='" + classid + "' and createdBy=" + user.getId() + " order by publicAt desc";
+                String sql = user.getRoleID() != 2 ? "select * from notice where classid='" + classid + "' order by publicAt desc" : "select * from notice where classid='" + classid + "' and createdBy=" + user.getId() + " order by publicAt desc";
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {

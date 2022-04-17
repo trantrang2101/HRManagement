@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <html lang="vi">
     <head>
-        <title>Teacher - Class ${sessionScope.classChoose.getName()}</title>
+        <title>Class ${sessionScope.classChoose.getName()}</title>
         <script src="assests/js/moment.js"></script>
         <script src="assests/ckeditor/ckeditor.js"></script>
         <script>
@@ -27,6 +27,9 @@
     </head>
     <body>
         <jsp:include page="included/modal.jsp"/>
+        <%
+        User loginUser = (User) session.getAttribute("loginUser");
+        %>
         <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
             <div class="container container-fluid">
                 <div class="d-flex flex-column">
@@ -37,22 +40,24 @@
             </div>
         </nav>
         <nav class="container d-flex justify-content-end">
+            <%if(loginUser.getRoleID()!=1){%>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNotice">
                 <i class="fa-solid fa-plus"></i>
                 <span>Add Notice</span>
-            </button>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewMark">
-                <i class="fa-solid fa-eye"></i>
-                <span>Mark Report</span>
-            </button>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewMark">
-                <i class="fa-solid fa-eye"></i>
-                <span>View Member</span>
             </button>
             <a class="btn btn-primary" href="report.jsp">
                 <i class="fa-solid fa-eye"></i>
                 <span> Report</span>
             </a>
+            <%}%>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewMark">
+                <i class="fa-solid fa-eye"></i>
+                <span>Mark Report</span>
+            </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewStudent">
+                <i class="fa-solid fa-eye"></i>
+                <span>View Member</span>
+            </button>
         </nav>
         <nav class="container d-flex justify-content-end">
             <a href="teacher_home.jsp" class="more float-end">
@@ -89,6 +94,7 @@
         <div class="accordion container" id="notice-list">
             <%
         List<Notice> classNotice=(List<Notice>) request.getAttribute("classNotice");
+        Classroom choosenClass = (Classroom)session.getAttribute("classChoose");
         if(classNotice!=null&&classNotice.size()>0){
             DetailDAO dao = new DetailDAO();
             for(Notice c : classNotice){
@@ -108,6 +114,7 @@
                                     <span class="card-subtitle mb-2 text-muted text-start"><%=c.getPublicAt()%></span>
                                 </div>
                             </div>
+                            <%if(loginUser.getRoleID()!=1){%>
                             <div class="dropdown">
                                 <a class="btn bg-transparent" type="button" href="#dropdownMenuButton1"
                                    data-bs-toggle="dropdown" aria-expanded="false">
@@ -122,6 +129,7 @@
                                     </li>
                                 </ul>
                             </div>
+                            <%}%>
                         </div>
                     </a>
                 </div>
@@ -132,11 +140,11 @@
                         </div>
                         <div class="col-2 row row-cols-2">
                             <div class="col d-flex flex-column">
-                                <h2>4</h2>
+                                <h2><%=dao.getWorkList(c.getId()).size()%></h2>
                                 <p>Done</p>
                             </div>
                             <div class="col d-flex flex-column">
-                                <h2>30</h2>
+                                <h2><%= choosenClass.getList().size()-dao.getWorkList(c.getId()).size()%></h2>
                                 <p>Not Done</p>
                             </div>
                         </div>
@@ -161,12 +169,13 @@
                                     <span class="card-subtitle mb-2 text-muted text-start"><%=c.getPublicAt()%></span>
                                 </div>
                             </div>
+                            <%if(loginUser.getRoleID()!=1){%>
                             <div class="dropdown">
-                                <a class="btn bg-transparent" type="button" href="#dropdownMenuButton<%=c.getId()%>"
+                                <a class="btn bg-transparent" type="button" href="#dropdownMenuButton1"
                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-solid fa-ellipsis-vertical"></i>
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end" id="dropdownMenuButton<%=c.getId()%>">
+                                <ul class="dropdown-menu dropdown-menu-end" id="dropdownMenuButton1">
                                     <li>
                                         <button class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editNotice">Edit</button>
                                     </li>
@@ -175,6 +184,7 @@
                                     </li>
                                 </ul>
                             </div>
+                            <%}%>
                         </div>
                     </a>
                 </div>

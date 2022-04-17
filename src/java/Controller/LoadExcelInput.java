@@ -44,8 +44,7 @@ public class LoadExcelInput extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String applicationPath = getServletContext().getRealPath("");
         String build = applicationPath + File.separator + "assests\\img";
-        PrintWriter out = response.getWriter();
-        try {
+        try ( PrintWriter out = response.getWriter();) {
             Collection<Part> parts = request.getParts();
             for (Part part : parts) {
                 out.print("<table>");
@@ -77,6 +76,7 @@ public class LoadExcelInput extends HttpServlet {
                 out.print("</table>");
                 buildFile.delete();
             }
+            response.sendRedirect("view_people.jsp");
         } catch (Exception e) {
             e.printStackTrace();
         }

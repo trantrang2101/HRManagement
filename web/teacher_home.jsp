@@ -22,6 +22,10 @@
             <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
         </div>
     </nav>
+    <%
+        User user = (User)session.getAttribute("loginUser");
+        if(user.getRoleID()==0){
+    %>
     <nav class="container d-flex justify-content-end">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClass">
             <i class="fa-solid fa-plus"></i>
@@ -36,6 +40,7 @@
             <span>View Student/Teacher</span>
         </a>
     </nav>
+    <%}%>
     <div class="container class-list center d-flex flex-wrap justify-content-between">
         <%
             List<Classroom> listClass=(List<Classroom>) session.getAttribute("listClass");

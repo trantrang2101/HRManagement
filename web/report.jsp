@@ -175,7 +175,7 @@
                     <table id="studentTable" class="cover-body table table-hover w-100">
                         <thead class="table-primary text-center">
                             <tr>
-                                <th>Mã Student</th>
+                                <th>Student ID</th>
                                 <th>Name</th>
                                 <th>Done</th>
                                 <th>Not Done</th>
