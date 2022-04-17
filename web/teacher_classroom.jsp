@@ -5,20 +5,33 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List, java.text.*" %>
+<%@page import="entity.*"%>
+<%@page import="DAO.*"%>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
-        <title>Teacher - Class 8A</title>
+        <title>Teacher - Class ${sessionScope.classChoose.getName()}</title>
         <script src="assests/js/moment.js"></script>
         <script src="assests/ckeditor/ckeditor.js"></script>
+        <script>
+            CKEDITOR.config.pasteFromWord PromptCleanup = true;
+            CKEDITOR.config.pasteFromWordRemoveFontStyles = false;
+            CKEDITOR.config.pasteFromWordRemoveStyles = false;
+            CKEDITOR.config.htmlEncodeOutput = false;
+            CKEDITOR.config.ProcessHTML = false;
+            CKEDITOR.config.entities = false;
+            CKEDITOR.config.entities_latin = false;
+            CKEDITOR.config.ForceSimpleAmpersand = true;
+        </script>
     </head>
     <body>
         <jsp:include page="included/modal.jsp"/>
         <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
             <div class="container container-fluid">
                 <div class="d-flex flex-column">
-                    <h1>Class 8A</h1>
-                    <h2>Hi cô <i>Phạm Thu Hương</i>!</h2>
+                    <h1>Class ${sessionScope.classChoose.getName()}</h1>
+                    <h2>Hi ${sessionScope.loginUser.isGender()?"Mr.":"Mrs."} <i>${sessionScope.loginUser.getName()}</i>!</h2>
                 </div>
                 <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
             </div>
@@ -32,9 +45,13 @@
                 <i class="fa-solid fa-eye"></i>
                 <span>Mark Report</span>
             </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewMark">
+                <i class="fa-solid fa-eye"></i>
+                <span>View Member</span>
+            </button>
             <a class="btn btn-primary" href="report.jsp">
                 <i class="fa-solid fa-eye"></i>
-                <span> Báo Cáo</span>
+                <span> Report</span>
             </a>
         </nav>
         <nav class="container d-flex justify-content-end">
@@ -53,8 +70,6 @@
                         <ul class="dropdown-menu" id="dropdownMenuButton1">
                             <li><a class="dropdown-item" href="#">Newest Posts</a></li>
                             <li><a class="dropdown-item" href="#">Oldest Posts</a></li>
-                            
-                            
                         </ul>
                     </div>
                     <div class="d-flex">
@@ -72,9 +87,16 @@
             </div>
         </div>
         <div class="accordion container" id="notice-list">
+            <%
+        List<Notice> classNotice=(List<Notice>) request.getAttribute("classNotice");
+        if(classNotice!=null&&classNotice.size()>0){
+            DetailDAO dao = new DetailDAO();
+            for(Notice c : classNotice){
+                if(c.isTask()){
+            %>
             <div class="accordion-item rounded-3 shadow-sm">
-                <div class="accordion-header notice rounded-top rounded-3" id="heading1">
-                    <a class="w-100" type="button" data-bs-toggle="collapse" href="#notice1" aria-expanded="true"
+                <div class="accordion-header notice rounded-top rounded-3" id="heading<%=c.getId()%>">
+                    <a class="w-100" type="button" data-bs-toggle="collapse" href="#notice<%=c.getId()%>" aria-expanded="true"
                        aria-controls="panelsStayOpen-collapseOne">
                         <div class="d-flex justify-content-between">
                             <div class="d-flex justify-content-start">
@@ -82,8 +104,8 @@
                                     <i class="fa-solid fa-list-check text-white"></i>
                                 </div>
                                 <div class="card-text d-flex flex-column justify-content-between">
-                                    <h5 class="carrd-title">Phạm Thu Hương post a task: Task về nhà</h5>
-                                    <span class="card-subtitle mb-2 text-muted text-start">4 Nov 2021</span>
+                                    <h5 class="carrd-title"><%=dao.getUser(c.getCreateBy()).getName()%> post a task: <%=c.getTitle()%></h5>
+                                    <span class="card-subtitle mb-2 text-muted text-start"><%=c.getPublicAt()%></span>
                                 </div>
                             </div>
                             <div class="dropdown">
@@ -92,25 +114,21 @@
                                     <i class="fa-solid fa-ellipsis-vertical"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" id="dropdownMenuButton1">
-                                    <li><button class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#editNotice">Edit</button></li>
-                                    <li><button class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#deleteNotice">Delete</button></li>
+                                    <li>
+                                        <button class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editNotice">Edit</button>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="delete?notice=<%=c.getId()%>">Delete</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
                     </a>
                 </div>
-                <div id="notice1" class="accordion-collapse collapse" aria-labelledby="heading1">
+                <div id="notice<%=c.getId()%>" class="accordion-collapse collapse" aria-labelledby="heading1">
                     <div class="accordion-body row">
                         <div class="col-10">
-                            <strong>This is the first item's accordion body.</strong> It is shown by default, until the
-                            collapse
-                            plugin adds the appropriate classes that we use to style each element. These classes control the
-                            overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of
-                            this with custom CSS or overriding our default variables. It's also worth noting that just about
-                            any
-                            HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                            <%=c.getDescribe()%>
                         </div>
                         <div class="col-2 row row-cols-2">
                             <div class="col d-flex flex-column">
@@ -124,13 +142,14 @@
                         </div>
                     </div>
                     <div class="accordion-footer">
-                        <a href="teacher_task.jsp" class="more"><span> More detail<i class="fas fa-long-arrow-alt-right"></i></span></a>
+                        <a href="detail?task=<%=c.getId()%>" class="more"><span> More detail<i class="fas fa-long-arrow-alt-right"></i></span></a>
                     </div>
                 </div>
             </div>
+            <%}else{%>
             <div class="accordion-item rounded-3 shadow-sm">
-                <div class="accordion-header notice rounded-top rounded-3" id="heading2">
-                    <a class="w-100" type="button" data-bs-toggle="collapse" href="#notice2" aria-expanded="true"
+                <div class="accordion-header notice rounded-top rounded-3" id="heading<%=c.getId()%>">
+                    <a class="w-100" type="button" data-bs-toggle="collapse" href="#notice<%=c.getId()%>" aria-expanded="true"
                        aria-controls="panelsStayOpen-collapseOne">
                         <div class="d-flex justify-content-between">
                             <div class="d-flex justify-content-start">
@@ -138,36 +157,39 @@
                                     <i class="fa-solid fa-note-sticky text-white"></i>
                                 </div>
                                 <div class="card-text d-flex flex-column justify-content-between">
-                                    <h5 class="carrd-title">Phạm Thu Hương post a  Notice: Ngày 20/4 kiểm tra 1 tiết
-                                    </h5>
-                                    <span class="card-subtitle mb-2 text-muted text-start">4 Nov 2021</span>
+                                    <h5 class="carrd-title"><%=dao.getUser(c.getCreateBy()).getName()%> post a  Notice:<%=c.getTitle()%></h5>
+                                    <span class="card-subtitle mb-2 text-muted text-start"><%=c.getPublicAt()%></span>
                                 </div>
                             </div>
                             <div class="dropdown">
-                                <a class="btn bg-transparent" type="button" href="#dropdownMenuButton1"
+                                <a class="btn bg-transparent" type="button" href="#dropdownMenuButton<%=c.getId()%>"
                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-solid fa-ellipsis-vertical"></i>
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end" id="dropdownMenuButton1">
-                                    <li><button class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#editNotice">Edit</button></li>
-                                    <li><button class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#deleteNotice">Delete</button></li>
+                                <ul class="dropdown-menu dropdown-menu-end" id="dropdownMenuButton<%=c.getId()%>">
+                                    <li>
+                                        <button class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editNotice">Edit</button>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="delete?notice=<%=c.getId()%>">Delete</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
                     </a>
                 </div>
-                <div id="notice2" class="accordion-collapse collapse" aria-labelledby="heading2">
+                <div id="notice<%=c.getId()%>" class="accordion-collapse collapse" aria-labelledby="heading<%=c.getId()%>">
                     <div class="accordion-body">
-                        Các em chú ý có assignment 2. Deadline là 23h59 CN tuần sau. Quy
-                        định vẫn như lần trước, ngoại trừ hai  đã làm cùng nhau lần trước thì
-                        không được làm cùng nhau lần này. Các em hãy làm sớm nhất có thể nhé,
-                        đừng để đến
-                        cuối.
+                        <%=c.getDescribe()%>
                     </div>
-                </div>
+                </div>            
             </div>
+            <%}}}else{%>
+            <h3 class="text-center text-success">No Notification Yet</h3>
+            <div class="d-flex justify-content-between">
+                <img src="assests/image/noNotification.png" class="center" style="max-width: 100%;height: 300px;object-fit: cover;"/>
+            </div>
+            <%}%>
         </div>
         <script src="./assests/ckeditor/ckeditor.js"></script>
         <script>
@@ -182,12 +204,27 @@
                     }
                 });
             });
+            var optionEdit = document.getElementsByName('noticeEdit');
+            optionEdit = [...optionEdit];
+            optionEdit.forEach((item) => {
+                item.addEventListener('click', () => {
+                    if (optionEdit[0].checked) {
+                        document.querySelector('#deadlineEdit').classList.remove('fade');
+                    } else {
+                        document.querySelector('#deadlineEdit').classList.add('fade');
+                    }
+                });
+            });
             window.addEventListener('DOMContentLoaded', event => {
                 CKEDITOR.replace('postAdd');
                 CKEDITOR.replace('postEdit');
             });
+            var datePublished = document.querySelector('#datePublished');
+            datePublished.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+            datePublished.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
             var newDateInput = document.querySelector('#dateInput');
             newDateInput.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+            newDateInput.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
             var inputDate = document.querySelector('#dateUpdate');
             var date = document.querySelector('#valueDate');
             var day = date.value.split('T')[0].split('-');

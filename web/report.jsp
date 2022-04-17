@@ -16,13 +16,13 @@
             <div class="container container-fluid">
                 <div class="d-flex flex-column">
                     <h1>Class 8A</h1>
-                    <h2>Hi cô <i>Phạm Thu Hương</i>!</h2>
+                    <h2>Hi ${sessionScope.loginUser.isGender()?"Mr.":"Mrs."} <i>${sessionScope.loginUser.getName()}</i>!</h2>
                 </div>
                 <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
             </div>
         </nav>
         <nav class="container d-flex justify-content-end">
-            <a href="teacher_classroom.jsp" class="more float-end">
+            <a href="detail?class=${sessionScope.classChoose.getName()}" class="more float-end">
                 <span>Return Class<i class="fas fa-long-arrow-alt-right"></i></span>
             </a>
         </nav>
@@ -60,7 +60,7 @@
                                 <td>
                                     <button type="button" class="more btn bg-transparent" data-bs-toggle="modal"
                                             data-bs-target="#viewTaskDetail" style="margin: 0;">
-                                        <span>Xem Task<i class="fas fa-long-arrow-alt-right"></i></span>
+                                        <span> Task<i class="fas fa-long-arrow-alt-right"></i></span>
                                     </button>
                                 </td>
                             </tr>
@@ -192,8 +192,8 @@
                                 <td>2012/08/06</td>
                                 <td>
                                     <button type="button" class="more btn bg-transparent" data-bs-toggle="modal"
-                                            data-bs-target="#viewStudentDetail" style="margin: 0;">
-                                        <span>Xem Task<i class="fas fa-long-arrow-alt-right"></i></span>
+                                            data-bs-target="#viewStudentDetail" onclick="getMarkAverage()" style="margin: 0;">
+                                        <span> Task<i class="fas fa-long-arrow-alt-right"></i></span>
                                     </button>
                                 </td>
                             </tr>
@@ -321,7 +321,6 @@
                 $('#taskDetail').DataTable();
                 $('#studentDetail').DataTable();
             });
-
             function getColumn(table_id, col) {
                 var tab = document.getElementById(table_id),
                         n = tab.rows.length,
@@ -337,7 +336,7 @@
                 }
                 return arr;
             }
-
+            var markAvg = 0, count = 0;
             function sortClass() {
                 var mark = [...getColumn('taskDetail', 3)];
                 var g = 0,
@@ -351,10 +350,15 @@
                     } else {
                         gioi += 1;
                     }
-                })
+                    count += 1;
+                    markAvg += Number(item);
+                });
                 var arr = [k, kha, g];
                 console.log(arr);
                 return arr;
+            }
+            function getMarkAverage() {
+                document.querySelector('#averageStudent').value = markAvg / count;
             }
             const pieChart = new Chart(document.getElementById('pieChart').getContext('2d'), {
                 type: 'doughnut',

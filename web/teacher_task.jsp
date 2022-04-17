@@ -17,14 +17,14 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
         <div class="container container-fluid">
             <div class="d-flex flex-column">
-                <h1>Class 8A</h1>
-                <h2>Hi cô <i>Phạm Thu Hương</i>!</h2>
+                <h1>Class ${sessionScope.classChoose.getName()}</h1>
+                <h2>Hi ${sessionScope.loginUser.isGender()?"Mr.":"Mrs."} <i>${sessionScope.loginUser.getName()}</i>!</h2>
             </div>
             <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
         </div>
     </nav>
     <nav class="container d-flex justify-content-end">
-        <a href="teacher_classroom.jsp" class="more float-end">
+        <a href="detail?class=${sessionScope.classChoose}"  class="more float-end">
             <span>Return Class<i class="fas fa-long-arrow-alt-right"></i></span>
         </a>
     </nav>
@@ -166,24 +166,24 @@
                 <div class="d-flex flex-wrap justify-content-start submit-list">
                     <div class="shadow-sm rounded-2">
                         <h6>Tường Phạm</h6>
-                        <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#fileOpenTeacher">
-                            <i class="fa-solid fa-folder"></i>
+                        <button class="btn btn-light d-flex flex-column justify-content-between" data-bs-toggle="modal" data-bs-target="#fileOpenTeacher">
+                            <i class="fa-solid fa-folder center margin-0"></i>
                             <span>abxcuz-dhalkshdfl</span>
                         </button>
                         <p class="text-success">Done on time</p>
                     </div>
                     <div class="shadow-sm rounded-2">
                         <h6>Tường Phạm</h6>
-                        <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#fileOpenTeacher">
-                            <i class="fa-solid fa-folder"></i>
+                        <button class="btn btn-light d-flex flex-column justify-content-between" data-bs-toggle="modal" data-bs-target="#fileOpenTeacher">
+                            <i class="fa-solid fa-folder center margin-0"></i>
                             <span>abxcuz-dhalkshdfl</span>
                         </button>
                         <p class="text-warning">Done late</p>
                     </div>
                     <div class="shadow-sm rounded-2">
                         <h6>Tường Phạm</h6>
-                        <button class="btn btn-light">
-                            <i class="fa-solid fa-folder-open"></i>
+                        <button class="btn btn-light d-flex flex-column justify-content-between">
+                            <i class="fa-solid fa-folder-open center margin-0"></i>
                             <span class="text-muted">Not submitted</span>
                         </button>
                         <p class="text-danger">Not Done</p>

@@ -4,12 +4,18 @@
  */
 package Controller;
 
+import DAO.LoginDAO;
+import entity.Classroom;
+import entity.Teacher;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  *
@@ -29,14 +35,26 @@ public class LoginSeverlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()){
-            String id = request.getParameter("id");
+        try ( PrintWriter out = response.getWriter()) {
+            HttpSession session = request.getSession();
+            int id = Integer.parseInt(request.getParameter("id"));
             String password = request.getParameter("password");
-            if ("1".equals(id)&&"0".equals(password)) {
-                request.getRequestDispatcher("teacher_home.jsp").forward(request, response);
-            }else{
-                out.write("<script>alert('Wrong id or password');</script>");
-                request.getRequestDispatcher("index.html").forward(request, response);
+            LoginDAO dao = new LoginDAO();
+            User user = dao.login(id, password);
+            if (user != null) {
+                session.setAttribute("loginUser", user);
+                if (user.getRoleID() == 1) {
+                    request.getRequestDispatcher("student_classroom.jsp").forward(request, response);
+                } else {
+                    List<Classroom> list = dao.getClassList(id);
+                    session.setAttribute("listClass", list);
+                    List<Teacher> listSubject = dao.getTeacherRoleList();
+                    session.setAttribute("listSubject", listSubject);
+                    request.getRequestDispatcher("teacher_home.jsp").forward(request, response);
+                }
+            } else {
+                out.print("<script>alert('Wrong id or password');</script>");
+                request.getRequestDispatcher("index.html").include(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();

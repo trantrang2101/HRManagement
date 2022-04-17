@@ -11,33 +11,28 @@ import java.util.List;
  * @author Tran Trang
  */
 public class Classroom {
-    private int id;
-    private String name;
+    private String id;
     private List<User> list;
 
     public Classroom() {
     }
 
-    public Classroom(int id, String name, List<User> list) {
+    public Classroom(String id, List<User> list) {
         this.id = id;
-        this.name = name;
         this.list = list;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
+    public Classroom(String id) {
         this.id = id;
+        this.list = null;
     }
 
     public String getName() {
-        return name;
+        return id;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.id = name;
     }
 
     public List<User> getList() {

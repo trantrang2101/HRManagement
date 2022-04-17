@@ -5,6 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="entity.*" %>
+<%@ page import="java.util.List, java.text.*" %>
 <!DOCTYPE html>
 <head>
     <title>Teacher - Homepage</title>
@@ -16,85 +18,43 @@
     <jsp:include page="included/modal.jsp"/>
     <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
         <div class="container container-fluid">
-            <h2>Hi cô <i>Phạm Thu Hương</i>!</h2>
+            <h2>Hi ${sessionScope.loginUser.isGender()?"Mr.":"Mrs."} <i>${sessionScope.loginUser.getName()}</i>!</h2>
             <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
         </div>
     </nav>
     <nav class="container d-flex justify-content-end">
-        <button type="button" class="btn btn-primary">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClass">
             <i class="fa-solid fa-plus"></i>
             <span>Add Class</span>
-        </button>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNotice">
-            <i class="fa-solid fa-plus"></i>
-            <span>Add Notice</span>
         </button>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPerson">
             <i class="fa-solid fa-plus"></i>
             <span>Add Student/Teacher</span>
         </button>
+        <a class="btn btn-primary" href="view_people.jsp">
+            <i class="fa-solid fa-eye"></i>
+            <span>View Student/Teacher</span>
+        </a>
     </nav>
     <div class="container class-list center d-flex flex-wrap justify-content-between">
+        <%
+            List<Classroom> listClass=(List<Classroom>) session.getAttribute("listClass");
+            if(listClass!=null){
+            for(Classroom c : listClass){
+        %>
         <div class="col rounded-2 shadow-sm card">
             <div class="card-body">
                 <div class="card-title d-flex justify-content-between">
-                    <h4>8A</h4>
+                    <h4><%=c.getName()%></h4>
                     <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#deleteClass"
                             aria-label="Close"></button>
                 </div>
-                <a href="teacher_classroom.jsp" class="more float-end">
+                <a href="detail?class=<%=c.getName()%>" class="more float-end">
                     <span>More details<i class="fas fa-long-arrow-alt-right"></i></span>
                 </a>
             </div>
         </div>
-        <div class="col rounded-2 shadow-sm card">
-            <div class="card-body">
-                <div class="card-title d-flex justify-content-between">
-                    <h4>8A</h4>
-                    <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#deleteClass"
-                            aria-label="Close"></button>
-                </div>
-                <a href="teacher_classroom.jsp" class="more float-end">
-                    <span>More details<i class="fas fa-long-arrow-alt-right"></i></span>
-                </a>
-            </div>
-        </div>
-        <div class="col rounded-2 shadow-sm card">
-            <div class="card-body">
-                <div class="card-title d-flex justify-content-between">
-                    <h4>8A</h4>
-                    <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#deleteClass"
-                            aria-label="Close"></button>
-                </div>
-                <a href="teacher_classroom.jsp" class="more float-end">
-                    <span>More details<i class="fas fa-long-arrow-alt-right"></i></span>
-                </a>
-            </div>
-        </div>
-        <div class="col rounded-2 shadow-sm card">
-            <div class="card-body">
-                <div class="card-title d-flex justify-content-between">
-                    <h4>8A</h4>
-                    <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#deleteClass"
-                            aria-label="Close"></button>
-                </div>
-                <a href="teacher_classroom.jsp" class="more float-end">
-                    <span>More details<i class="fas fa-long-arrow-alt-right"></i></span>
-                </a>
-            </div>
-        </div>
-        <div class="col rounded-2 shadow-sm card">
-            <div class="card-body">
-                <div class="card-title d-flex justify-content-between">
-                    <h4>8A</h4>
-                    <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#deleteClass"
-                            aria-label="Close"></button>
-                </div>
-                <a href="teacher_classroom.jsp" class="more float-end">
-                    <span>More details<i class="fas fa-long-arrow-alt-right"></i></span>
-                </a>
-            </div>
-        </div>
+        <%}}%>
     </div>
     <script>
         var option = document.getElementsByName('notice');
@@ -106,10 +66,33 @@
                 } else {
                     document.querySelector('#deadline').classList.add('fade');
                 }
-            })
-        })
+            });
+        });
+        var role = document.getElementsByName('role');
+        role = [...role];
+        role.forEach((item) => {
+            item.addEventListener('click', () => {
+                if (role[0].checked) {
+                    document.querySelector('#studentClass').classList.remove('fade');
+                    document.querySelector('#teacherClasses').classList.add('fade');
+                    document.querySelector('#teacherRole').classList.add('fade');
+                } else if (role[1].checked) {
+                    document.querySelector('#teacherClasses').classList.remove('fade');
+                    document.querySelector('#studentClass').classList.add('fade');
+                    document.querySelector('#teacherRole').classList.remove('fade');
+                } else {
+                    document.querySelector('#teacherRole').classList.add('fade');
+                    document.querySelector('#teacherClasses').classList.add('fade');
+                    document.querySelector('#studentClass').classList.add('fade');
+                }
+            });
+        });
         var newDateInput = document.querySelector('#dateInput');
         newDateInput.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+        newDateInput.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+        var datePublished = document.querySelector('#datePublished');
+        datePublished.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+        datePublished.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
         window.addEventListener('DOMContentLoaded', event => {
             CKEDITOR.replace('postAdd');
         });

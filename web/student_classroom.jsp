@@ -18,7 +18,7 @@
         <div class="container container-fluid">
             <div class="d-flex flex-column">
                 <h1>Class 8A</h1>
-                <h2>Hi  <i>Phạm Thu Hương</i>!</h2>
+                <h2>Hi <i>${sessionScope.loginUser.getName()}</i>!</h2>
             </div>
             <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
         </div>
