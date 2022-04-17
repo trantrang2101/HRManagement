@@ -6,6 +6,7 @@ package DAO;
 
 import connectDB.ConnectJDBC;
 import entity.Notice;
+import entity.Teacher;
 import entity.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,8 +41,8 @@ public class AddDAO {
         }
         return check;
     }
-    
-    public boolean addUserClass(String classid,int userid) throws SQLException {
+
+    public boolean addUserClass(String classid, int userid) throws SQLException {
         boolean check = false;
         Connection conn = null;
         PreparedStatement stm = null;
@@ -66,8 +67,8 @@ public class AddDAO {
         }
         return check;
     }
-    
-    public boolean addUser(User user) throws SQLException {
+
+    public boolean addUser(Teacher user) throws SQLException {
         boolean check = false;
         Connection conn = null;
         PreparedStatement stm = null;
@@ -81,7 +82,13 @@ public class AddDAO {
                 stm.setBoolean(3, user.isGender());
                 stm.setInt(4, user.getRoleID());
                 stm.setString(5, user.getPassword());
-                check = stm.executeUpdate() > 0;
+                if (stm.executeUpdate() > 0) {
+                    sql = "INSERT INTO [teacher] VALUES (?,?)";
+                    stm = conn.prepareStatement(sql);
+                    stm.setInt(1, user.getId());
+                    stm.setInt(3, user.getSubjectID());
+                    check = stm.executeUpdate() > 0;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,8 +110,8 @@ public class AddDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String deadline=noti.getDeadline()==null? "null" : "(CONVERT(datetime,'"+noti.getDeadline()+"',120))";
-                String sql = "INSERT INTO Notice (createdBy,title,describe,classid,publicAt,isTask,deadline) VALUES (?,?,?,?,(CONVERT(datetime,'"+noti.getPublicAt()+"',120)),?,"+deadline+")";
+                String deadline = noti.getDeadline() == null ? "null" : "(CONVERT(datetime,'" + noti.getDeadline() + "',120))";
+                String sql = "INSERT INTO Notice (createdBy,title,describe,classid,publicAt,isTask,deadline) VALUES (?,?,?,?,(CONVERT(datetime,'" + noti.getPublicAt() + "',120)),?," + deadline + ")";
                 stm = conn.prepareStatement(sql);
                 stm.setInt(1, noti.getCreateBy());
                 stm.setNString(2, noti.getTitle());

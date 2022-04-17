@@ -49,11 +49,13 @@
         %>
         <div class="col rounded-2 shadow-sm card">
             <div class="card-body">
-                <div class="card-title d-flex justify-content-between">
-                    <h4><%=c.getName()%></h4>
-                    <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#deleteClass"
-                            aria-label="Close"></button>
-                </div>
+                <form action="delete" method="POST">
+                    <div class="card-title d-flex justify-content-between">
+                        <h4><%=c.getName()%></h4>
+                        <input type="text" hidden="" name="class" value="<%=c.getName()%>"/>
+                        <button type="submit" name="action" value="deleteClass" class="btn-close"></button>
+                    </div>
+                </form>
                 <a href="detail?class=<%=c.getName()%>" class="more float-end">
                     <span>More details<i class="fas fa-long-arrow-alt-right"></i></span>
                 </a>

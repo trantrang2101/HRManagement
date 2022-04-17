@@ -38,15 +38,15 @@ public class DetailSeverlet extends HttpServlet {
             String classname = request.getParameter("class");
             String task = request.getParameter("task");
             User user = (User) session.getAttribute("loginUser");
-            request.setAttribute("classNotice", dao.getNoticeList(user, classname));
-            session.setAttribute("classChoose", dao.getClass(classname));
             if (classname != null) {
+                session.setAttribute("classChoose", dao.getClass(classname));
+                request.setAttribute("classNotice", dao.getNoticeList(user, classname));
                 request.getRequestDispatcher("classroom.jsp").forward(request, response);
             } else if (task != null) {
                 if (user.getRoleID() == 1) {
                     request.getRequestDispatcher("student_task.jsp").forward(request, response);
                 } else {
-                    request.setAttribute("taskChoose", dao.getWorkList(Integer.parseInt(task)));
+                    request.setAttribute("taskWorkChoosen", dao.getWorkList(Integer.parseInt(task)));
                     request.getRequestDispatcher("teacher_task.jsp").forward(request, response);
                 }
             } else {

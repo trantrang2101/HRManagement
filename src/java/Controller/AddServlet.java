@@ -77,7 +77,8 @@ public class AddServlet extends HttpServlet {
                     String password = request.getParameter("password");
                     int role = Integer.parseInt(request.getParameter("role"));
                     String[] classList = request.getParameterValues("class");
-                    User user = new User(id, name, gender, password, role);
+                    int roleID = request.getParameter("roleID")!=null?Integer.parseInt(request.getParameter("roleID")):0;
+                    Teacher user = new Teacher(id, name, gender, password, role,roleID);
                     if (dao.addUser(user)) {
                         if (classList != null && classList.length > 0) {
                             for (String c : classList) {
@@ -87,12 +88,11 @@ public class AddServlet extends HttpServlet {
                             }
                         }
                         if (login.getRoleID() == 0) {
-                            LoginDAO loginDAO = new LoginDAO();
-                            List<Teacher> listUser = loginDAO.getUserList();
+                            List<Teacher> listUser = (List<Teacher>)session.getAttribute("listUser");
                             session.setAttribute("listUser", listUser);
                         }
                         add = true;
-                        request.getRequestDispatcher("teacher_home.jsp").include(request, response);
+                        out.print("<script>window.history.back()</script>");
                     }
                     break;
                 }

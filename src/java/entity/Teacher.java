@@ -8,11 +8,17 @@ package entity;
  *
  * @author Tran Trang
  */
-public class Teacher extends User{
+public class Teacher extends User {
+
     private int subjectID;
     private String subjectName;
 
     public Teacher() {
+    }
+
+    public Teacher(int id, String name, boolean gender, String password, int roleID,int subjectID) {
+        super(id, name, gender, password, roleID);
+        this.subjectID = subjectID;
     }
 
     public Teacher(int subjectID, String subjectName, int id, String name, boolean gender, String password, int roleID) {
@@ -41,5 +47,5 @@ public class Teacher extends User{
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
     }
-    
+
 }

@@ -18,6 +18,30 @@ import java.sql.SQLException;
  */
 public class EditDeleteDAO {
 
+    public boolean deleteClass(String id) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement("delete from notice where id='" + id+"'");
+                check = stm.executeUpdate() > 0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+    
     public boolean deleteNotice(int id) throws SQLException {
         boolean check = false;
         Connection conn = null;

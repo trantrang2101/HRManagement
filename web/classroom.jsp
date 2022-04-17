@@ -180,7 +180,10 @@
                                         <button class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editNotice">Edit</button>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="delete?notice=<%=c.getId()%>">Delete</a>
+                                        <form action="delete" method="POST">
+                                            <input type="text" name="notice" value="<%=c.getId()%>" hidden/>
+                                            <button class="dropdown-item" name="action" value="deleteNotice" type="submit">Delete</button>
+                                        </form>
                                     </li>
                                 </ul>
                             </div>

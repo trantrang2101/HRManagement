@@ -37,14 +37,16 @@ public class DeleteSeverlet extends HttpServlet {
             String action = request.getParameter("action");
             HttpSession session = request.getSession();
             EditDeleteDAO dao = new EditDeleteDAO();
-            Integer notice = Integer.parseInt(request.getParameter("notice"));
-            if (notice!=null) {
+            if (action.equals("deleteNotice")) {
+                int notice = Integer.parseInt(request.getParameter("notice"));
                 if (!dao.deleteNotice(notice)) {
                     out.print("<script>alert('Delete failed!');window.history.back()</script>");
                 } else {
-                    Classroom cl =(Classroom)session.getAttribute("classChoose");
+                    Classroom cl = (Classroom) session.getAttribute("classChoose");
                     response.sendRedirect("detail?class=" + cl.getName());
                 }
+            } else if (action.equals("deleteClass")) {
+                String classid = request.getParameter("class");
             }
         } catch (Exception e) {
             e.printStackTrace();

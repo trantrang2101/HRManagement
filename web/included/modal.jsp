@@ -272,7 +272,7 @@
                         <div class="modal-body">
                             <div class="form-group col">
                                 <label class="form-label">Name</label>
-                                <input type="text" maxlength="3" name="name" class="form-control mb-1">
+                                <input type="text" maxlength="4" name="name" class="form-control mb-1">
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -538,26 +538,6 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="deleteClass" tabindex="-1" role="dialog" aria-labelledby="deleteClass"
-             aria-hidden="true" style="z-index: 100000000;">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel"> Delete this Class</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">Select "Delete " below if you are ready to delete this Class.
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-light" type="button" data-bs-dismiss="modal"
-                                aria-label="Close">Cancel</button>
-
-                        <button class="btn btn-danger" name="action" value="Logout">Delete</button>
-
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="modal fade" id="addNotice" tabindex="-1" role="dialog" aria-labelledby="addNotice" aria-hidden="true"
              style="z-index: 100000000;">
             <div class="modal-dialog modal-xl" role="document">
@@ -782,10 +762,12 @@
                                     <td><a href="" class=""><%=user.getId()%></a></td>
                                     <td><%=user.getName()%></td>
                                     <td><%=user.isGender()?"Male":"Female"%></td>
-                                    <%for(Notice c : classNoticeView){
+                                    <%
+                                        if(classNoticeView!=null){
+                                            for(Notice c : classNoticeView){
                                                 if(c.isTask()){%>
-                                    <td><%=dao.getWork(user.getId(),c.getId())!=null?dao.getWork(user.getId(),c.getId()).getMark():"Not Done"%></td>
-                                    <%}}%>
+                                    <td><%=dao.getWork(c.getId(),user.getId())!=null?dao.getWork(c.getId(),user.getId()).getMark():"Not Done"%></td>
+                                    <%}}}%>
                                 </tr>
                                 <%}}%>
                             </tbody>

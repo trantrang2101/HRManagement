@@ -14,29 +14,29 @@ create table [teacher_role](
 	name nvarchar(50)
 );
 create table teacher(
-	userid int foreign key references [user](id),
-	roleid int foreign key references [teacher_role](id)
+	userid int foreign key references [user](id)  on delete cascade on update cascade,
+	roleid int foreign key references [teacher_role](id)  on delete cascade on update cascade
 );
 create table [classroom](
 	id nvarchar(4) primary key
 );
 create table classroom_detail(
-		id nvarchar(4) foreign key references [classroom](id),
-	userid int foreign key references [user](id)
+	id nvarchar(4) foreign key references [classroom](id) on delete cascade on update cascade,
+	userid int foreign key references [user](id) on delete cascade on update cascade
 );
 create table notice(
 	id int identity(1,1) primary key,
-	createdBy int foreign key references [user](id),
+	createdBy int foreign key references [user](id)  on delete cascade on update cascade,
 	title nvarchar(255),
 	describe nvarchar(max),
-	classid nvarchar(4) foreign key references [classroom](id),
+	classid nvarchar(4) foreign key references [classroom](id)  on delete cascade on update cascade,
 	publicAt datetime default getDate(),
 	isTask bit default 0,
 	deadline datetime null
 );
 create table task_work(
-	id int foreign key references notice(id),
-	userid int foreign key references [user](id),
+	id int foreign key references notice(id)  on delete  NO ACTION on update  NO ACTION,
+	userid int foreign key references [user](id)  on delete  NO ACTION on update  NO ACTION,
 	work nvarchar(255) not null,
 	mark int default -1,
 	comment text,
