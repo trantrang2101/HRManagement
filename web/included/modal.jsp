@@ -25,9 +25,14 @@
 <link rel="stylesheet" href="assests/css/style.css">
 <script src="assests/js/moment.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js" crossorigin="anonymous"></script>
-
+<%
+    User loginUser = (User) session.getAttribute("loginUser");
+    DetailDAO dao = new DetailDAO();
+    List<Teacher> listSubject=(List<Teacher>) session.getAttribute("listSubject");
+    List<Classroom> listClass=(List<Classroom>) session.getAttribute("listClass");
+%>
 <div class="modal fade" id="fileOpenStudent" tabindex="-1" role="dialog" aria-labelledby="fileOpen"
-     aria-hidden="true" style="z-index: 100000000;">
+     aria-hidden="true" style="">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -77,8 +82,114 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="addPersonHand" tabindex="-1" role="dialog" aria-labelledby="addPersonHand" aria-hidden="true" style="overflow-y: scroll;">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Student/Teacher</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="add" method="POST">
+                <div class="modal-body">
+                    <div class="row d-flex justify-content-around align-items-start" style="margin: 0;padding: 0;">
+                        <div class="col-lg-6 col-sm-12" style="margin: 0;padding: 0;">
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label class="form-label">ID</label>
+                                    <input type="text" name="id" pattern="\d*" class="form-control mb-1 bg-transparent">
+                                </div>
+                                <div class="form-group col">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" name="name" class="form-control mb-1">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label class="form-label">Gender</label>
+                                    <select name="gender" class="form-select bg-transparent">
+                                        <option value="1">Male</option>
+                                        <option value="0">Female</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col">
+                                    <label class="form-label">Pasword</label>
+                                    <input type="text" name="password" class="form-control mb-1">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group fade col" id="teacherRole">
+                                    <label class="form-label">Role</label>
+                                    <select name="roleID" class="form-select bg-transparent">
+                                        <%
+                                            if(listSubject!=null){
+                                                for(Teacher c : listSubject){
+                                        %>
+                                        <option value="<%=c.getSubjectID()%>"><%=c.getSubjectName()%></option>
+                                        <%
+                                                }
+                                            }
+                                        %>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 ">
+                            <div class="d-flex justify-content-end">
+                                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                    <input type="radio" class="btn-check" name="role" id="roleStudent" value="1"
+                                           autocomplete="off" checked>
+                                    <label class="btn btn-outline-primary" for="roleStudent">Student</label>
+                                    <input type="radio" class="btn-check" name="role" id="roleTeacher" value="2"
+                                           autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="roleTeacher">Teacher</label>
+                                    <input type="radio" class="btn-check" name="role" id="roleAdmin" value="0"
+                                           autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="roleAdmin">Admin</label>
+                                </div>
+                            </div>
+                            <div class="" id="studentClass">
+                                <div class="form-group">
+                                    <label class="form-label">Class</label>
+                                    <select name="class" class="form-select bg-transparent">
+                                        <%
+                                            if(listClass!=null){
+                                                for(Classroom c : listClass){
+                                        %>
+                                        <option value="<%=c.getName()%>"><%=c.getName()%></option>
+                                        <%
+                                                }
+                                            }
+                                        %>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="fade d-flex flex-wrap justify-content-around" id="teacherClasses">
+                                <%
+                                    if(listClass!=null){
+                                        for(Classroom c : listClass){
+                                %>
+                                <input type="checkbox" class="btn-check" name="class" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="<%=c.getName()%>"><%=c.getName()%></label>
+                                <%
+                                        }
+                                    }
+                                %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal"
+                            aria-label="Close">Cancel</button>
+                    <button class="btn btn-primary" name="action" value="addPerson">Save</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="viewTaskDetail" tabindex="-1" role="dialog" aria-labelledby="viewTaskDetail"
-     aria-hidden="true" style="z-index: 100000000;">
+     aria-hidden="true" style="">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -179,7 +290,7 @@
     </div>
 </div>
 <div class="modal fade" id="viewStudentDetail" tabindex="-1" role="dialog" aria-labelledby="viewStudentDetail"
-     aria-hidden="true" style="z-index: 100000000;">
+     aria-hidden="true" style="">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -253,7 +364,7 @@
     </div>
 </div>
 <div class="modal fade" id="addClass" tabindex="-1" role="dialog" aria-labelledby="addClass"
-     aria-hidden="true" style="z-index: 100000000;">
+     aria-hidden="true" style="">
     <form action="add" method="POST">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -277,7 +388,7 @@
     </form>
 </div>
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModal"
-     aria-hidden="true" style="z-index: 100000000;">
+     aria-hidden="true" style="">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -296,117 +407,8 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="addPersonHand" tabindex="-1" role="dialog" aria-labelledby="addPersonHand"
-     aria-hidden="true" style="z-index: 100000000;">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Student/Teacher</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="add" method="POST">
-                <div class="modal-body">
-                    <div class="row d-flex justify-content-around align-items-start" style="margin: 0;padding: 0;">
-                        <div class="col-lg-6 col-sm-12" style="margin: 0;padding: 0;">
-                            <div class="row">
-                                <div class="form-group col">
-                                    <label class="form-label">ID</label>
-                                    <input type="text" name="id" pattern="\d*" class="form-control mb-1 bg-transparent">
-                                </div>
-                                <div class="form-group col">
-                                    <label class="form-label">Name</label>
-                                    <input type="text" name="name" class="form-control mb-1">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col">
-                                    <label class="form-label">Gender</label>
-                                    <select name="gender" class="form-select bg-transparent">
-                                        <option value="1">Male</option>
-                                        <option value="0">Female</option>
-                                    </select>
-                                </div>
-                                <div class="form-group col">
-                                    <label class="form-label">Pasword</label>
-                                    <input type="text" name="password" class="form-control mb-1">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group fade col" id="teacherRole">
-                                    <label class="form-label">Role</label>
-                                    <select name="roleID" class="form-select bg-transparent">
-                                        <%
-                                            List<Teacher> listSubject=(List<Teacher>) session.getAttribute("listSubject");
-                                            if(listSubject!=null){
-                                                for(Teacher c : listSubject){
-                                        %>
-                                        <option value="<%=c.getSubjectID()%>"><%=c.getSubjectName()%></option>
-                                        <%
-                                                }
-                                            }
-                                        %>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-12 ">
-                            <div class="d-flex justify-content-end">
-                                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                                    <input type="radio" class="btn-check" name="role" id="roleStudent" value="1"
-                                           autocomplete="off" checked>
-                                    <label class="btn btn-outline-primary" for="roleStudent">Student</label>
-                                    <input type="radio" class="btn-check" name="role" id="roleTeacher" value="2"
-                                           autocomplete="off">
-                                    <label class="btn btn-outline-primary" for="roleTeacher">Teacher</label>
-                                    <input type="radio" class="btn-check" name="role" id="roleAdmin" value="0"
-                                           autocomplete="off">
-                                    <label class="btn btn-outline-primary" for="roleAdmin">Admin</label>
-                                </div>
-                            </div>
-                            <div class="" id="studentClass">
-                                <div class="form-group">
-                                    <label class="form-label">Class</label>
-                                    <select name="class" class="form-select bg-transparent">
-                                        <%
-                                            List<Classroom> listClass=(List<Classroom>) session.getAttribute("listClass");
-                                            if(listClass!=null){
-                                                for(Classroom c : listClass){
-                                        %>
-                                        <option value="<%=c.getName()%>"><%=c.getName()%></option>
-                                        <%
-                                                }
-                                            }
-                                        %>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="fade d-flex flex-wrap justify-content-around" id="teacherClasses">
-                                <%
-                                    if(listClass!=null){
-                                        for(Classroom c : listClass){
-                                %>
-                                <input type="checkbox" class="btn-check" name="class" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
-                                <label class="btn btn-outline-primary" for="<%=c.getName()%>"><%=c.getName()%></label>
-                                <%
-                                        }
-                                    }
-                                %>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-light" type="button" data-bs-dismiss="modal"
-                            aria-label="Close">Cancel</button>
-                    <button class="btn btn-primary" name="action" value="addPerson">Save</button>
-                </div>
-            </form>
-
-        </div>
-    </div>
-</div>
 <%if(request.getAttribute("choosenPerson")!=null){%>
-<div class="modal" id="editPerson" style="z-index: 100000000;">
+<div class="modal" id="editPerson" style="">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -445,6 +447,7 @@
                                     <label class="form-label">Role</label>
                                     <select name="roleID" class="form-select bg-transparent">
                                         <%
+                                                    
         if(listSubject!=null){
         for(Teacher c : listSubject){
                                         %>
@@ -504,42 +507,47 @@
     </div>
 </div>
 <%}%>
-<div class="modal fade" id="addPerson" tabindex="-1" role="dialog" aria-labelledby="addPerson" aria-hidden="true"
-     style="z-index: 100000000;">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="addPerson" tabindex="-1" role="dialog" aria-labelledby="addPerson" aria-hidden="true" style="">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Add Student / Teacher</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="loadExcel" method="POST" enctype="multipart/form-data">
-                    <input type="file" name="excel" hidden accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                           onchange="this.parentNode.submit()" id="inputExcel" />
-                </form>
-                <div class="d-flex justify-content-around align-items-center">
-                    <label for="inputExcel" class="btn padding-0 icon rounded-circle bg-primary">
-                        <i class="text-white fa-solid fa-file-excel center"></i>
-                    </label>
-                    <button class="btn icon rounded-circle bg-primary padding-0" data-bs-dismiss="modal"
-                            aria-label="Close" data-bs-toggle="modal" data-bs-target="#addPersonHand">
-                        <i class="fa-solid fa-keyboard text-white center"></i>
-                    </button>
+                <div class="d-flex flex-column justify-content-around">
+                    <form action="loadExcel" method="POST" enctype="multipart/form-data">
+                        <input type="file" name="excel" hidden accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                               onchange="this.parentNode.submit()" id="inputExcel" />
+                    </form>
+                    <div class="w-100 d-flex justify-content-around">
+                        <label for="inputExcel" class="btn padding-0 icon rounded-circle bg-primary">
+                            <i class="text-white fa-solid fa-file-excel center"></i>
+                        </label>
+                        <button type="button" class="btn icon rounded-circle bg-primary padding-0"  data-bs-dismiss="modal" aria-label="Close" data-bs-toggle="modal" data-bs-target="#addPersonHand">
+                            <i class="fa-solid fa-keyboard text-white center"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <h2>Guide insert Excel</h2>
+                        <i class="text-muted">If you do not follow this guide you cannot insert <strong>Student</strong> into data</i>
+                        <img class="w-100" src="assests/image/guid.png" alt="alt"/>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <div class="modal fade" id="addNotice" tabindex="-1" role="dialog" aria-labelledby="addNotice" aria-hidden="true"
-     style="z-index: 100000000;">
+     style="">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Add Notice/Task </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <form action="add" method="POST">
+            <form action="add" method="POST">
+                <div class="modal-body">
                     <div class="row" style="margin: 0;padding: 0;">
                         <div class="col-lg-6 col-sm-12" style="margin: 0;padding: 0;">
                             <div class="form-group">
@@ -564,7 +572,7 @@
                                 <label class="form-label">Author</label>
                                 <input type="number" name="author" hidden class="form-control mb-1" value="${sessionScope.loginUser.getId()}">
                                 <input type="text" name="author" class="form-control mb-1 bg-transparent"
-                                       value="Phạm Thu Hương" disabled>
+                                       value="<%=dao.getUser(loginUser.getId()).getName()%>" disabled>
                             </div>
                             <div class="form-group col">
                                 <label class="form-label">Class</label>
@@ -590,18 +598,96 @@
                         <label class="form-label">content</label>
                         <textarea id="postAdd" class="form-control mb-1" name="content"></textarea>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal"
+                            aria-label="Close">Cancel</button>
+                    <button class="btn btn-primary" name="action" value="addNotice">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addNoticeTeacher" tabindex="-1" role="dialog" aria-labelledby="addNoticeTeacher" aria-hidden="true"
+     style="">
+    <div class="modal-dialog modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Notice/Task </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-light" type="button" data-bs-dismiss="modal"
-                        aria-label="Close">Cancel</button>
-                <button class="btn btn-primary" name="action" value="addNotice">Save</button>
-            </div>
+            <form action="add" method="POST">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-around align-items-center" style="margin: 0;padding: 0;">
+                        <div class="col-lg-6 col-sm-12" style="margin: 0;padding: 0;">
+                            <div class="form-group">
+                                <label class="form-label">Title</label>
+                                <input type="text" required name="title" class="form-control mb-1" value="">
+                            </div>
+                            <div class="form-group col">
+                                <label class="form-label">Author</label>
+                                <input type="number" name="author" hidden class="form-control mb-1" value="${sessionScope.loginUser.getId()}">
+                                <input type="text" name="author" class="form-control mb-1 bg-transparent"
+                                       value="<%=dao.getUser(loginUser.getId()).getName()%>" disabled>
+                            </div>
+                            <div class="form-group col d-flex justify-content-between align-items-center">
+                                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                    <input type="radio" class="btn-check" name="notice" id="noticeEx" value="1"
+                                           autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="noticeEx">Task</label>
+                                    <input type="radio" class="btn-check" name="notice" id="noticeNo" value="0"
+                                           autocomplete="off" checked>
+                                    <label class="btn btn-outline-primary" for="noticeNo">Notice</label>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <input type="checkbox" class="btn-check" name="selectAll" id="selectAll" value="1" onclick="toggle(this)"
+                                           autocomplete="off">
+                                    <label class="btn btn-outline-primary" id="selectAllLabel" for="selectAll">Select All Classes</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col form-group">
+                                    <label class="form-label">Published At</label>
+                                    <input required type="datetime-local" id="datePublishedAll" name="publish"
+                                           class="form-control mb-1" min="">
+                                </div>
+                                <div class="col form-group fade" id="deadlineAll">
+                                    <label class="form-label">Deadline</label>
+                                    <input required type="datetime-local" id="dateInputAll" name="deadline"
+                                           class="form-control mb-1" min="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">content</label>
+                                <textarea id="postAddAll" class="form-control mb-1" name="content"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 d-flex flex-wrap justify-content-end" id="noticeFast">
+                            <%
+                                
+                                if(listClass!=null){
+                                    for(Classroom c : listClass){
+                            %>
+                            <input type="checkbox" class="btn-check" name="class" value="<%=c.getName()%>" id="classid<%=c.getName()%>">
+                            <label class="btn btn-outline-primary" for="classid<%=c.getName()%>"><%=c.getName()%></label>
+                            <%
+                                    }
+                                }
+                            %>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal"
+                            aria-label="Close">Cancel</button>
+                    <button class="btn btn-primary" name="action" value="addNotice">Save</button>
+                </div>
             </form>
         </div>
     </div>
 </div>
 <div class="modal fade" id="fileOpenTeacher" tabindex="-1" role="dialog" aria-labelledby="fileOpenTeacher"
-     aria-hidden="true" style="z-index: 100000000;">
+     aria-hidden="true" style="">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -654,7 +740,7 @@
     </div>
 </div>
 <div class="modal fade" id="editNotice" tabindex="-1" role="dialog" aria-labelledby="editNotice" aria-hidden="true"
-     style="z-index: 100000000;">
+     style="">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -718,11 +804,11 @@
     </div>
 </div>
 <div class="modal fade" id="viewMark" tabindex="-1" role="dialog" aria-labelledby="viewMark" aria-hidden="true"
-     style="z-index: 100000000;">
+     style="">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Mark Class 7C</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Mark Class ${sessionScope.classChoose.getName()}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body table-mark">
@@ -735,7 +821,6 @@
                                 <%
                                     List<Notice> classNoticeView=(List<Notice>) request.getAttribute("classNotice");
                                     if(classNoticeView!=null){
-                                    DetailDAO dao = new DetailDAO();
                                         for(Notice c : classNoticeView){
                                         if(c.isTask()){
                                 %>
@@ -746,9 +831,9 @@
                     <tbody>
                         <%
                                         Classroom choosenClass = (Classroom)session.getAttribute("classChoose");
-                                        DetailDAO dao = new DetailDAO();
                                         if(choosenClass!=null){
                                         for(User user : choosenClass.getList()){
+                                        if(user.getRoleID()==1){
                         %>
                         <tr>
                             <td><a href="" class=""><%=user.getId()%></a></td>
@@ -761,7 +846,7 @@
                             <td><%=dao.getWork(c.getId(),user.getId())!=null?dao.getWork(c.getId(),user.getId()).getMark():"Not Done"%></td>
                             <%}}}%>
                         </tr>
-                        <%}}%>
+                        <%}}}%>
                     </tbody>
                 </table>
             </div>
@@ -769,7 +854,7 @@
     </div>
 </div>
 <div class="modal fade" id="viewStudent" tabindex="-1" role="dialog" aria-labelledby="viewStudent" aria-hidden="true"
-     style="z-index: 100000000;">
+     style="">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -790,14 +875,12 @@
                         <%
                                         if(choosenClass!=null){
                                         for(User user : choosenClass.getList()){
-                                        int count = 0;
-                                        int sum = 0;
                         %>
                         <tr>
                             <td><a href="" class=""><%=user.getId()%></a></td>
                             <td><%=user.getName()%></td>
                             <td><%=user.isGender()?"Male":"Female"%></td>
-                            <td><%=user.getRoleID()==1?"Teacher":"Student"%></td>
+                            <td><%=user.getRoleID()!=1?"Teacher":"Student"%></td>
                         </tr>
                         <%}}%>
                     </tbody>

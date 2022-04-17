@@ -5,6 +5,7 @@
 package Controller;
 
 import DAO.AddDAO;
+import DAO.DetailDAO;
 import DAO.LoginDAO;
 import entity.Classroom;
 import entity.Notice;
@@ -58,15 +59,20 @@ public class AddServlet extends HttpServlet {
                 case "addNotice": {
                     String name = request.getParameter("title");
                     int authorid = Integer.parseInt(request.getParameter("author"));
-                    String classid = request.getParameter("classid");
+                    String[] classls = request.getParameterValues("classid");
                     boolean isTask = request.getParameter("notice").equals("1");
                     String deadline = !isTask ? null : request.getParameter("deadline").replace("T", " ");
                     String publish = request.getParameter("publish").replace("T", " ");
                     String content = request.getParameter("content");
-                    Notice noti = new Notice(0, authorid, name, content, classid, publish, isTask, deadline);
-                    if (dao.addNotice(noti)) {
-                        response.sendRedirect("detail?class=" + classid);
-                        add = true;
+                    for (String classid : classls) {
+                        Notice noti = new Notice(0, authorid, name, content, classid, publish, isTask, deadline);
+                        if (dao.addNotice(noti)) {
+                            response.sendRedirect("detail?class=" + classid);
+                            add = true;
+                        } else {
+                            add = false;
+                            break;
+                        }
                     }
                     break;
                 }
@@ -77,13 +83,16 @@ public class AddServlet extends HttpServlet {
                     String password = request.getParameter("password");
                     int role = Integer.parseInt(request.getParameter("role"));
                     String[] classList = request.getParameterValues("class");
-                    int roleID = request.getParameter("roleID") != null ? Integer.parseInt(request.getParameter("roleID")) : 0;
+                    int roleID = request.getParameter("roleID") != null
+                            ? Integer.parseInt(request.getParameter("roleID"))
+                            : 0;
                     Teacher user = new Teacher(id, name, gender, password, role, roleID);
                     if (dao.addUser(user)) {
                         if (classList != null && classList.length > 0) {
                             for (String c : classList) {
                                 if (!dao.addUserClass(c, id)) {
                                     dao.addClass(c);
+                                    dao.addUserClass(c, id);
                                 }
                             }
                         }
@@ -91,10 +100,17 @@ public class AddServlet extends HttpServlet {
                         listUser.add(user);
                         session.setAttribute("listUser", listUser);
                         add = true;
-                        response.sendRedirect("view_people.jsp");
+                        response.sendRedirect("detail");
                     }
                     break;
                 }
+                case "subjectChoosen":
+                    int id = Integer.parseInt(request.getParameter("subject"));
+                    DetailDAO detail = new DetailDAO();
+                    request.setAttribute("subjectClassList", detail.getClassByRole(id));
+                    request.setAttribute("roleID", id);
+                    request.getRequestDispatcher("addPerson.jsp").include(request, response);
+                    break;
                 default:
                     break;
             }
@@ -103,10 +119,11 @@ public class AddServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            response.sendRedirect("error.html");
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

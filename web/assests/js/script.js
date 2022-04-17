@@ -78,3 +78,42 @@ function changeValue(value) {
         }
     }
 }
+window.addEventListener('DOMContentLoaded', event => {
+    CKEDITOR.replace('postAddAll');
+});
+var option = document.getElementsByName('notice');
+option = [...option];
+option.forEach((item) => {
+    item.addEventListener('click', () => {
+        if (option[0].checked) {
+            document.querySelector('#deadlineAll').classList.remove('fade');
+        } else {
+            document.querySelector('#deadlineAll').classList.add('fade');
+        }
+    });
+});
+var role = document.getElementsByName('role');
+role = [...role];
+role.forEach((item) => {
+    item.addEventListener('click', () => {
+        if (role[0].checked) {
+            document.querySelector('#studentClass').classList.remove('fade');
+            document.querySelector('#teacherClasses').classList.add('fade');
+            document.querySelector('#teacherRole').classList.add('fade');
+        } else if (role[1].checked) {
+            document.querySelector('#teacherClasses').classList.remove('fade');
+            document.querySelector('#studentClass').classList.add('fade');
+            document.querySelector('#teacherRole').classList.remove('fade');
+        } else {
+            document.querySelector('#teacherRole').classList.add('fade');
+            document.querySelector('#teacherClasses').classList.add('fade');
+            document.querySelector('#studentClass').classList.add('fade');
+        }
+    });
+});
+var newDateInput = document.querySelector('#dateInputAll');
+newDateInput.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+newDateInput.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+var datePublished = document.querySelector('#datePublishedAll');
+datePublished.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+datePublished.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');

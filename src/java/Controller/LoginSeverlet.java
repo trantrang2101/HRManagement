@@ -52,27 +52,24 @@ public class LoginSeverlet extends HttpServlet {
                         session.setAttribute("listClass", list);
                         List<Teacher> listSubject = dao.getTeacherRoleList();
                         session.setAttribute("listSubject", listSubject);
-                        if (user.getRoleID() == 0) {
-                            List<Teacher> listUser = dao.getUserList();
-                            session.setAttribute("listUser", listUser);
-                        }
                         request.getRequestDispatcher("teacher_home.jsp").forward(request, response);
                     }
                 } else {
                     out.print("<script>alert('Wrong id or password');</script>");
                     request.getRequestDispatcher("index.html").include(request, response);
                 }
-            }else if (action.equals("Logout")) {
+            } else if (action.equals("Logout")) {
                 session.invalidate();
                 response.sendRedirect("index.html");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+            response.sendRedirect("error.html");
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

@@ -15,7 +15,7 @@
         <script src="assests/js/moment.js"></script>
         <script src="assests/ckeditor/ckeditor.js"></script>
         <script>
-            CKEDITOR.config.pasteFromWord PromptCleanup = true;
+            CKEDITOR.config.pasteFromWordPromptCleanup = true;
             CKEDITOR.config.pasteFromWordRemoveFontStyles = false;
             CKEDITOR.config.pasteFromWordRemoveStyles = false;
             CKEDITOR.config.htmlEncodeOutput = false;
@@ -206,6 +206,9 @@
         </div>
         <script src="./assests/ckeditor/ckeditor.js"></script>
         <script>
+            $(document).ready(function () {
+                $('#tableMark').DataTable();
+            });
             var option = document.getElementsByName('notice');
             option = [...option];
             option.forEach((item) => {

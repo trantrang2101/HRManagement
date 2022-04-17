@@ -51,30 +51,29 @@ public class LoadExcelInput extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        List<Teacher> listUser = (List<Teacher>) session.getAttribute("listUser");
+        List<Classroom> listClass = (List<Classroom>) session.getAttribute("listClass");
         try ( PrintWriter out = response.getWriter()) {
-            HttpSession session = request.getSession();
-            List<Teacher> listUser = (List<Teacher>) session.getAttribute("listUser");
-            List<Classroom> listClass = (List<Classroom>) session.getAttribute("listClass");
             Part filePart = request.getPart("excel");
             String fileName = filePart.getSubmittedFileName();
             for (Part part : request.getParts()) {
                 String applicationPath = getServletContext().getRealPath("");
                 part.write(applicationPath + File.separator + fileName);
-                File file = new File(applicationPath + File.separator + fileName);   //creating a new file instance  
-                FileInputStream fis = new FileInputStream(file);   //obtaining bytes from the file  
+                File file = new File(applicationPath + File.separator + fileName); // creating a new file instance
+                FileInputStream fis = new FileInputStream(file); // obtaining bytes from the file
                 if (fileName.endsWith(".xlsx")) {
                     XSSFWorkbook wb = new XSSFWorkbook(fis);
                     XSSFSheet sheet = wb.getSheetAt(0);
                     int rowNo = sheet.getPhysicalNumberOfRows();
                     for (int i = 1; i < rowNo; i++) {
-                        Row row = sheet.getRow(i); //returns the logical row  
+                        Row row = sheet.getRow(i); // returns the logical row
                         int id = Integer.parseInt(row.getCell(1).getStringCellValue());
                         String name = row.getCell(2).getStringCellValue();
                         boolean gender = row.getCell(3).getNumericCellValue() == 1;
                         String classid = row.getCell(4).getStringCellValue();
                         String password = row.getCell(6).getStringCellValue();
-                        if (!addStudent(id, name, gender, password, classid,listClass, listUser, out)) {
-                            out.print("<script>alert('Add failed!);</script>");
+                        if (!addStudent(id, name, gender, password, classid, listClass, listUser, out)) {
                         }
                     }
                 } else if (fileName.endsWith(".xls")) {
@@ -82,35 +81,41 @@ public class LoadExcelInput extends HttpServlet {
                     HSSFSheet sheet = wb.getSheetAt(0);
                     int rowNo = sheet.getPhysicalNumberOfRows();
                     for (int i = 1; i < rowNo; i++) {
-                        Row row = sheet.getRow(i); //returns the logical row  
+                        Row row = sheet.getRow(i); // returns the logical row
                         int id = Integer.parseInt(row.getCell(1).getStringCellValue());
                         String name = row.getCell(2).getStringCellValue();
                         boolean gender = row.getCell(3).getNumericCellValue() == 1;
                         String classid = row.getCell(4).getStringCellValue();
                         String password = row.getCell(6).getStringCellValue();
-                        if (!addStudent(id, name, gender, password, classid,listClass, listUser, out)) {
-                            out.print("<script>alert('Add failed!);</script>");
+                        if (!addStudent(id, name, gender, password, classid, listClass, listUser, out)) {
                         }
                     }
                 }
                 file.delete();
-                session.setAttribute("listClass", listClass);
-                session.setAttribute("listUser", listUser);
-                response.sendRedirect("view_people.jsp");
             }
         } catch (Exception e) {
             e.printStackTrace();
+            response.sendRedirect("error.html");
+        } finally {
+            session.setAttribute("listClass", listClass);
+            session.setAttribute("listUser", listUser);
+            response.sendRedirect("detail");
         }
     }
 
-    public boolean addStudent(int id, String name, boolean gender, String password, String classid,List<Classroom> listClass, List<Teacher> listUser, PrintWriter out) throws SQLException {
+    public boolean addStudent(int id, String name, boolean gender, String password, String classid,
+            List<Classroom> listClass, List<Teacher> listUser, PrintWriter out) throws SQLException {
         if (classid.length() <= 5) {
             AddDAO dao = new AddDAO();
             Teacher user = new Teacher(id, name, gender, password, 1);
             if (dao.addUser(user)) {
                 if (!dao.addUserClass(classid, id)) {
                     dao.addClass(classid);
+                    out.print("<script>alert('Add class " + classid + "!');</script>");
                     listClass.add(new Classroom(classid));
+                    if (!dao.addUserClass(classid, id)) {
+                        return false;
+                    }
                 }
                 listUser.add(user);
                 return true;
@@ -119,7 +124,7 @@ public class LoadExcelInput extends HttpServlet {
         return false;
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

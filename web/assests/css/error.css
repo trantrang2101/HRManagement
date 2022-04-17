@@ -1,0 +1,28 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Apr 17, 2022, 10:55:31 PM
+    Author     : Tran Trang
+*/
+.center {
+    margin: auto!important;
+}
+.menu-navigation-buttons,
+.center-both {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.full-screen {
+  height: 100%;
+  width: 100%;
+}.display-column {
+  display: flex;
+  flex-direction: column;
+}.lg-link-red {
+  color: #a61f12;
+  text-decoration: none;
+  font-weight: 500;
+}

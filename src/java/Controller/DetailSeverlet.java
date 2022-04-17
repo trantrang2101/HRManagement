@@ -6,6 +6,7 @@ package Controller;
 
 import DAO.DetailDAO;
 import entity.Notice;
+import entity.Teacher;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,8 +15,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -57,15 +56,34 @@ public class DetailSeverlet extends HttpServlet {
                     request.getRequestDispatcher("teacher_task.jsp").forward(request, response);
                 }
             } else {
-                request.getRequestDispatcher("teacher_home.jsp").forward(request, response);
+                String[] roleList = {"1","2","0"};
+                String[] roleName = {"Student","Teacher","Admin"};
+                String[] roleSearch = request.getParameterValues("roleSearch");
+                int page = 1;
+                int recordsPerPage = 25;
+                if (request.getParameter("page") != null && !request.getParameter("page").isEmpty()) {
+                    page = Integer.parseInt(request.getParameter("page"));
+                }
+                if (roleSearch==null||roleSearch.length==0) {
+                    roleSearch=roleList;
+                }
+                List<Teacher> listUser = dao.getUserList((page - 1) * recordsPerPage, recordsPerPage,roleSearch);
+                int noPages = (int) Math.ceil(dao.getTotal(roleSearch) * 1.0 / recordsPerPage);
+                session.setAttribute("listUser", listUser);
+                request.setAttribute("roleList", roleList);
+                request.setAttribute("roleName", roleName);
+                request.setAttribute("roleSearch", roleSearch);
+                session.setAttribute("thisPage", page);
+                session.setAttribute("pages", noPages);
+                request.getRequestDispatcher("view_people.jsp").forward(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            request.getRequestDispatcher("login").forward(request, response);
+            response.sendRedirect("error.html");
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

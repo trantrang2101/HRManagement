@@ -21,79 +21,6 @@ import java.util.List;
  */
 public class LoginDAO {
     
-    public Teacher getRoleTeacher(int userid) throws SQLException{
-        Teacher teacher = null;
-        Connection conn = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
-        try {
-            conn=ConnectJDBC.getConnection();
-            if (conn!=null) {
-                stm = conn.prepareStatement("select * from teacher_role,teacher where userid="+userid);
-                rs=stm.executeQuery();
-                while (rs.next()) {
-                    int id = rs.getInt(1);
-                    String name = rs.getString(2);
-                    teacher = new Teacher(id, name);
-                }
-            }
-        } catch (Exception e) {
-        } finally {
-             if (rs != null) {
-                rs.close();
-            }
-            if (stm != null) {
-                stm.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
-        }
-        return teacher;
-    }
-    
-    public List<Teacher> getUserList() throws SQLException{
-        List<Teacher> list = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
-        try {
-            conn = ConnectJDBC.getConnection();
-            if (conn != null) {
-                String sql = "select * from [user]";
-                stm = conn.prepareStatement(sql);
-                rs = stm.executeQuery();
-                while (rs.next()) {
-                    int id =rs.getInt(1);
-                    String name = rs.getString(2);
-                    boolean gender = rs.getBoolean(3);
-                    int roleID = rs.getInt(4);
-                    String password = rs.getString(5);
-                    Teacher user = new Teacher(0,"",id, name, gender, password, roleID);
-                    if (roleID==2) {
-                        Teacher role = getRoleTeacher(id);
-                        user.setSubjectID(role.getSubjectID());
-                        user.setSubjectName(role.getSubjectName());
-                    }
-                    list.add(user);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (stm != null) {
-                stm.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
-        }
-        return list;
-    }
-    
     public List<Teacher> getTeacherRoleList() throws SQLException{
         List<Teacher> list = new ArrayList<>();
         Connection conn = null;
@@ -135,7 +62,7 @@ public class LoginDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String sql = id!=1?"select * from classroom":"select classroom.id from classroom,classroom_detail where classroom.id=classroom_detail.id and userid="+id;
+                String sql = id!=1?"select * from classroom order by id":"select classroom.id from classroom,classroom_detail where classroom.id=classroom_detail.id and userid="+id+"  order by id";
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {

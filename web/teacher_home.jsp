@@ -15,6 +15,16 @@
 </head>
 
 <body>
+    <script>
+        CKEDITOR.config.pasteFromWordPromptCleanup = true;
+        CKEDITOR.config.pasteFromWordRemoveFontStyles = false;
+        CKEDITOR.config.pasteFromWordRemoveStyles = false;
+        CKEDITOR.config.htmlEncodeOutput = false;
+        CKEDITOR.config.ProcessHTML = false;
+        CKEDITOR.config.entities = false;
+        CKEDITOR.config.entities_latin = false;
+        CKEDITOR.config.ForceSimpleAmpersand = true;
+    </script>
     <jsp:include page="included/modal.jsp"/>
     <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
         <div class="container container-fluid">
@@ -22,11 +32,16 @@
             <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
         </div>
     </nav>
-    <%
-        User user = (User)session.getAttribute("loginUser");
-        if(user.getRoleID()==0){
-    %>
+
     <nav class="container d-flex justify-content-end">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNoticeTeacher">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add Notice</span>
+        </button>
+        <%
+       User user = (User)session.getAttribute("loginUser");
+       if(user.getRoleID()==0){
+        %>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClass">
             <i class="fa-solid fa-plus"></i>
             <span>Add Class</span>
@@ -35,12 +50,12 @@
             <i class="fa-solid fa-plus"></i>
             <span>Add Student/Teacher</span>
         </button>
-        <a class="btn btn-primary" href="view_people.jsp">
+        <a class="btn btn-primary" href="detail">
             <i class="fa-solid fa-eye"></i>
             <span>View Student/Teacher</span>
         </a>
+        <%}%>
     </nav>
-    <%}%>
     <div class="container class-list center d-flex flex-wrap justify-content-between">
         <%
             List<Classroom> listClass=(List<Classroom>) session.getAttribute("listClass");
@@ -64,14 +79,24 @@
         <%}}%>
     </div>
     <script>
+        function toggle(source) {
+            var checkboxes = document.getElementsByName('class');
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+            document.querySelector('#selectAllLabel').innerHTML= source.checked ? "Select No Class" : "Select All Classes";
+        }
+        window.addEventListener('DOMContentLoaded', event => {
+            CKEDITOR.replace('postAddAll');
+        });
         var option = document.getElementsByName('notice');
         option = [...option];
         option.forEach((item) => {
             item.addEventListener('click', () => {
                 if (option[0].checked) {
-                    document.querySelector('#deadline').classList.remove('fade');
+                    document.querySelector('#deadlineAll').classList.remove('fade');
                 } else {
-                    document.querySelector('#deadline').classList.add('fade');
+                    document.querySelector('#deadlineAll').classList.add('fade');
                 }
             });
         });
@@ -94,15 +119,12 @@
                 }
             });
         });
-        var newDateInput = document.querySelector('#dateInput');
+        var newDateInput = document.querySelector('#dateInputAll');
         newDateInput.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
         newDateInput.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-        var datePublished = document.querySelector('#datePublished');
+        var datePublished = document.querySelector('#datePublishedAll');
         datePublished.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
         datePublished.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-        window.addEventListener('DOMContentLoaded', event => {
-            CKEDITOR.replace('postAdd');
-        });
     </script>
 </body>
 
