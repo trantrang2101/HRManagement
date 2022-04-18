@@ -42,8 +42,21 @@ public class DetailSeverlet extends HttpServlet {
             String task = request.getParameter("task");
             User user = (User) session.getAttribute("loginUser");
             if (classname != null) {
+                String search = request.getParameter("search");
+                if (search == null) {
+                    search = "";
+                } else {
+                    request.setAttribute("searchWords", search);
+                }
+                String[] value = request.getParameterValues("option");
+                if (value == null || value.length == 0) {
+                    value = new String[2];
+                }
+                if (value.length == 1) {
+                    request.setAttribute("optionChoose", value[0]);
+                }
                 session.setAttribute("classChoose", dao.getClass(classname));
-                request.setAttribute("classNotice", dao.getNoticeList(user, classname));
+                session.setAttribute("classNotice", dao.getNoticeList(user, classname, value, search));
                 request.getRequestDispatcher("classroom.jsp").forward(request, response);
             } else if (task != null) {
                 Notice taskDetail = dao.getTask(Integer.parseInt(task));
@@ -56,19 +69,23 @@ public class DetailSeverlet extends HttpServlet {
                     request.getRequestDispatcher("teacher_task.jsp").forward(request, response);
                 }
             } else {
-                String[] roleList = {"1","2","0"};
-                String[] roleName = {"Student","Teacher","Admin"};
+                String search = request.getParameter("search");
+                String[] roleList = {"1", "2", "0"};
+                String[] roleName = {"Student", "Teacher", "Admin"};
                 String[] roleSearch = request.getParameterValues("roleSearch");
                 int page = 1;
                 int recordsPerPage = 25;
                 if (request.getParameter("page") != null && !request.getParameter("page").isEmpty()) {
                     page = Integer.parseInt(request.getParameter("page"));
                 }
-                if (roleSearch==null||roleSearch.length==0) {
-                    roleSearch=roleList;
+                if (search==null) {
+                    search="";
                 }
-                List<Teacher> listUser = dao.getUserList((page - 1) * recordsPerPage, recordsPerPage,roleSearch);
-                int noPages = (int) Math.ceil(dao.getTotal(roleSearch) * 1.0 / recordsPerPage);
+                if (roleSearch == null || roleSearch.length == 0) {
+                    roleSearch = roleList;
+                }
+                List<Teacher> listUser = dao.getUserList((page - 1) * recordsPerPage, recordsPerPage, roleSearch,search);
+                int noPages = (int) Math.ceil(dao.getTotal(roleSearch,search) * 1.0 / recordsPerPage);
                 session.setAttribute("listUser", listUser);
                 request.setAttribute("roleList", roleList);
                 request.setAttribute("roleName", roleName);

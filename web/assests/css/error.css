@@ -11,18 +11,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 }
 .menu-navigation-buttons,
 .center-both {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .full-screen {
-  height: 100%;
-  width: 100%;
-}.display-column {
-  display: flex;
-  flex-direction: column;
-}.lg-link-red {
-  color: #a61f12;
-  text-decoration: none;
-  font-weight: 500;
+    height: 100%;
+    width: 100%;
+}
+.display-column {
+    display: flex;
+    flex-direction: column;
+}
+.lg-link-red {
+    color: #a61f12;
+    text-decoration: none;
+    font-weight: 500;
 }

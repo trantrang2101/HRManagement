@@ -54,7 +54,8 @@ public class LoadExcelInput extends HttpServlet {
         HttpSession session = request.getSession();
         List<Teacher> listUser = (List<Teacher>) session.getAttribute("listUser");
         List<Classroom> listClass = (List<Classroom>) session.getAttribute("listClass");
-        try ( PrintWriter out = response.getWriter()) {
+        PrintWriter out = response.getWriter();
+        try {
             Part filePart = request.getPart("excel");
             String fileName = filePart.getSubmittedFileName();
             for (Part part : request.getParts()) {
@@ -92,14 +93,14 @@ public class LoadExcelInput extends HttpServlet {
                     }
                 }
                 file.delete();
+                session.setAttribute("listClass", listClass);
+                session.setAttribute("listUser", listUser);
+                response.sendRedirect("detail");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("error.html");
-        } finally {
+            out.print("<script>window.history.back()</script>");
             session.setAttribute("listClass", listClass);
             session.setAttribute("listUser", listUser);
-            response.sendRedirect("detail");
         }
     }
 

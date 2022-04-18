@@ -5,8 +5,10 @@
 package Controller;
 
 import DAO.EditDeleteDAO;
+import DAO.LoginDAO;
 import entity.Classroom;
 import entity.Notice;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,6 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  *
@@ -36,6 +39,7 @@ public class DeleteSeverlet extends HttpServlet {
         try ( PrintWriter out = response.getWriter()) {
             String action = request.getParameter("action");
             HttpSession session = request.getSession();
+            User user = (User)session.getAttribute("loginUser");
             EditDeleteDAO dao = new EditDeleteDAO();
             if (action.equals("deleteNotice")) {
                 int notice = Integer.parseInt(request.getParameter("notice"));
@@ -47,6 +51,21 @@ public class DeleteSeverlet extends HttpServlet {
                 }
             } else if (action.equals("deleteClass")) {
                 String classid = request.getParameter("class");
+                if (!dao.deleteClass(classid)) {
+                    out.print("<script>alert('Delete failed!');window.history.back()</script>");
+                }else{
+                    LoginDAO daoLogin = new LoginDAO();
+                    List<Classroom> list = daoLogin.getClassList(user.getId());
+                    session.setAttribute("listClass", list);
+                    response.sendRedirect("teacher_home.jsp");
+                }
+            }else if (action.equals("deleteUser")) {
+                int getUser = Integer.parseInt(request.getParameter("user"));
+                if (!dao.deleteUser(getUser)) {
+                    out.print("<script>alert('Delete failed!');window.history.back()</script>");
+                } else {
+                    response.sendRedirect("detail");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

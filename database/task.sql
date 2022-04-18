@@ -18,10 +18,10 @@ create table teacher(
 	roleid int foreign key references [teacher_role](id)  on delete cascade on update cascade
 );
 create table [classroom](
-	id nvarchar(4) primary key
+	id nvarchar(5) primary key
 );
 create table classroom_detail(
-	id nvarchar(4) foreign key references [classroom](id) on delete cascade on update cascade,
+	id nvarchar(5) foreign key references [classroom](id) on delete cascade on update cascade,
 	userid int foreign key references [user](id) on delete cascade on update cascade
 );
 create table notice(
@@ -29,7 +29,7 @@ create table notice(
 	createdBy int foreign key references [user](id)  on delete cascade on update cascade,
 	title nvarchar(255),
 	describe nvarchar(max),
-	classid nvarchar(4) foreign key references [classroom](id)  on delete cascade on update cascade,
+	classid nvarchar(5) foreign key references [classroom](id)  on delete cascade on update cascade,
 	publicAt datetime default getDate(),
 	isTask bit default 0,
 	deadline datetime null

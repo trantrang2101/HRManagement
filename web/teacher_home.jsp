@@ -80,11 +80,11 @@
     </div>
     <script>
         function toggle(source) {
-            var checkboxes = document.getElementsByName('class');
+            var checkboxes = document.getElementsByName('classid');
             for (var i = 0, n = checkboxes.length; i < n; i++) {
                 checkboxes[i].checked = source.checked;
             }
-            document.querySelector('#selectAllLabel').innerHTML= source.checked ? "Select No Class" : "Select All Classes";
+            document.querySelector('#selectAllLabel').innerHTML = source.checked ? "Select No Class" : "Select All Classes";
         }
         window.addEventListener('DOMContentLoaded', event => {
             CKEDITOR.replace('postAddAll');
@@ -93,7 +93,7 @@
         option = [...option];
         option.forEach((item) => {
             item.addEventListener('click', () => {
-                if (option[0].checked) {
+                if (option[2].checked) {
                     document.querySelector('#deadlineAll').classList.remove('fade');
                 } else {
                     document.querySelector('#deadlineAll').classList.add('fade');
@@ -126,6 +126,7 @@
         datePublished.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
         datePublished.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
     </script>
+
 </body>
 
 </html>

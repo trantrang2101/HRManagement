@@ -114,7 +114,7 @@
                             <p>Done</p>
                         </div>
                         <div class="col d-flex flex-column">
-                                <h2><%= choosenClass.getList().size()-dao.getWorkList(task).size()%></h2>
+                            <h2><%= choosenClass.getList().size()-dao.getWorkList(task).size()%></h2>
                             <p>Not Done</p>
                         </div>
                     </div>
@@ -181,6 +181,7 @@
             inputDate.min = moment(new Date(day[2], day[1] - 1, day[0], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
         }
     </script>
+
 </body>
 
 </html>

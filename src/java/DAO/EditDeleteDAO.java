@@ -25,7 +25,34 @@ public class EditDeleteDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                stm = conn.prepareStatement("delete from notice where id='" + id+"'");
+                stm = conn.prepareStatement("delete from classroom_detail where id='" + id + "'");
+                if (stm.executeUpdate() > 0) {
+                    stm = conn.prepareStatement("delete from classroom where id='" + id + "'");
+                    check = stm.executeUpdate() > 0;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+
+    public boolean deleteNotice(String id) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement("delete from notice where classid='" + id + "'");
                 check = stm.executeUpdate() > 0;
             }
 
@@ -41,7 +68,31 @@ public class EditDeleteDAO {
         }
         return check;
     }
-    
+
+    public boolean deleteUser(int id) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement("delete from [user] where id=" + id);
+                check = stm.executeUpdate() > 0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+
     public boolean deleteNotice(int id) throws SQLException {
         boolean check = false;
         Connection conn = null;

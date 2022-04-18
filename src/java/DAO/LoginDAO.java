@@ -20,8 +20,8 @@ import java.util.List;
  * @author Tran Trang
  */
 public class LoginDAO {
-    
-    public List<Teacher> getTeacherRoleList() throws SQLException{
+
+    public List<Teacher> getTeacherRoleList() throws SQLException {
         List<Teacher> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stm = null;
@@ -33,7 +33,7 @@ public class LoginDAO {
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {
-                    int id =rs.getInt(1);
+                    int id = rs.getInt(1);
                     String name = rs.getString(2);
                     list.add(new Teacher(id, name));
                 }
@@ -53,8 +53,8 @@ public class LoginDAO {
         }
         return list;
     }
-    
-    public List<Classroom> getClassList(int id) throws SQLException{
+
+    public List<Classroom> getClassList(int id) throws SQLException {
         List<Classroom> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stm = null;
@@ -62,7 +62,7 @@ public class LoginDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String sql = id!=1?"select * from classroom order by id":"select classroom.id from classroom,classroom_detail where classroom.id=classroom_detail.id and userid="+id+"  order by id";
+                String sql = id != 1 ? "select * from classroom order by id" : "select classroom.id from classroom,classroom_detail where classroom.id=classroom_detail.id and userid=" + id + "  order by id";
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {
@@ -85,7 +85,7 @@ public class LoginDAO {
         }
         return list;
     }
-    
+
     public User login(int userID, String password) throws SQLException {
         User login = null;
         Connection conn = null;
@@ -104,7 +104,7 @@ public class LoginDAO {
                     boolean gender = rs.getBoolean(3);
                     int roleID = rs.getInt(4);
 //                    (int id, String name, boolean gender, String password, int roleID)
-                    login = new User(userID,name,gender,password,roleID);
+                    login = new User(userID, name, gender, password, roleID);
                 }
             }
         } catch (Exception e) {

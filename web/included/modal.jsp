@@ -31,6 +31,22 @@
     List<Teacher> listSubject=(List<Teacher>) session.getAttribute("listSubject");
     List<Classroom> listClass=(List<Classroom>) session.getAttribute("listClass");
 %>
+<div id="preloader">
+    <div class="loader">
+        <div class="spinner">
+            <div class="spinner-container">
+                <div class="spinner-rotator">
+                    <div class="spinner-left">
+                        <div class="spinner-circle"></div>
+                    </div>
+                    <div class="spinner-right">
+                        <div class="spinner-circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="fileOpenStudent" tabindex="-1" role="dialog" aria-labelledby="fileOpen"
      aria-hidden="true" style="">
     <div class="modal-dialog modal-fullscreen" role="document">
@@ -609,7 +625,7 @@
     </div>
 </div>
 <div class="modal fade" id="addNoticeTeacher" tabindex="-1" role="dialog" aria-labelledby="addNoticeTeacher" aria-hidden="true"
-     style="">
+     style="overflow-y: scroll;">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -632,12 +648,12 @@
                             </div>
                             <div class="form-group col d-flex justify-content-between align-items-center">
                                 <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                                    <input type="radio" class="btn-check" name="notice" id="noticeEx" value="1"
+                                    <input type="radio" class="btn-check" name="notice" id="noticeExAll" value="1"
                                            autocomplete="off">
-                                    <label class="btn btn-outline-primary" for="noticeEx">Task</label>
-                                    <input type="radio" class="btn-check" name="notice" id="noticeNo" value="0"
+                                    <label class="btn btn-outline-primary" for="noticeExAll">Task</label>
+                                    <input type="radio" class="btn-check" name="notice" id="noticeNoAll" value="0"
                                            autocomplete="off" checked>
-                                    <label class="btn btn-outline-primary" for="noticeNo">Notice</label>
+                                    <label class="btn btn-outline-primary" for="noticeNoAll">Notice</label>
                                 </div>
                                 <div class="btn-group" role="group">
                                     <input type="checkbox" class="btn-check" name="selectAll" id="selectAll" value="1" onclick="toggle(this)"
@@ -668,7 +684,7 @@
                                 if(listClass!=null){
                                     for(Classroom c : listClass){
                             %>
-                            <input type="checkbox" class="btn-check" name="class" value="<%=c.getName()%>" id="classid<%=c.getName()%>">
+                            <input type="checkbox" class="btn-check" name="classid" value="<%=c.getName()%>" id="classid<%=c.getName()%>">
                             <label class="btn btn-outline-primary" for="classid<%=c.getName()%>"><%=c.getName()%></label>
                             <%
                                     }
@@ -803,8 +819,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="viewMark" tabindex="-1" role="dialog" aria-labelledby="viewMark" aria-hidden="true"
-     style="">
+<div class="modal fade" id="viewMark" tabindex="-1" role="dialog" aria-labelledby="viewMark" aria-hidden="true" style="">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -817,7 +832,6 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Gender</th>
                                 <%
                                     List<Notice> classNoticeView=(List<Notice>) request.getAttribute("classNotice");
                                     if(classNoticeView!=null){
@@ -838,7 +852,6 @@
                         <tr>
                             <td><a href="" class=""><%=user.getId()%></a></td>
                             <td><%=user.getName()%></td>
-                            <td><%=user.isGender()?"Male":"Female"%></td>
                             <%
                                 if(classNoticeView!=null){
                                     for(Notice c : classNoticeView){
@@ -892,5 +905,6 @@
 <script>
     $(document).ready(function () {
         $('#tableViewClassStudent').DataTable();
+        $("#preloader").hide();
     });
 </script>

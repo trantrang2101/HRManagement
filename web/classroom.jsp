@@ -29,6 +29,9 @@
         <jsp:include page="included/modal.jsp"/>
         <%
         User loginUser = (User) session.getAttribute("loginUser");
+        Classroom clsl = (Classroom) session.getAttribute("classChoose");
+        String optionChoose = (String) request.getAttribute("optionChoose");
+        String searchWords = request.getAttribute("searchWords")==null?"":(String) request.getAttribute("searchWords");
         %>
         <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
             <div class="container container-fluid">
@@ -77,23 +80,59 @@
                             <li><a class="dropdown-item" href="#">Oldest Posts</a></li>
                         </ul>
                     </div>
-                    <div class="d-flex">
-                        <input class="form-control search-form" type="search" placeholder="Search" aria-label="Search">
+                    <form class="d-flex" action="detail">
+                        <input class="form-control search-form" name="search" type="search" placeholder="Search" value="<%=searchWords%>" aria-label="Search">
+                        <input type="text" hidden="" name="class" value="<%=clsl.getName()%>"/>
+                        <%
+                        if(optionChoose==null){
+                        %>
+                        <input type="checkbox" hidden="" name="option" value="1" checked=""/>
+                        <input type="checkbox" hidden="" name="option" value="0" checked=""/>
+                        <%}else{
+                            if(optionChoose.equals("1")){
+                        %>
+                        <input type="checkbox" hidden="" name="option" value="1" checked=""/>
+                        <input type="checkbox" hidden="" name="option" value="0"/>
+                        <%}else{%>
+                        <input type="checkbox" hidden="" name="option" value="1"/>
+                        <input type="checkbox" hidden="" name="option" value="0" checked=""/>
+                        <%}}%>
                         <button class="btn btn-outline-primary" type="submit">Search</button>
-                    </div>
+                    </form>
                 </div>
                 <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                    <input type="checkbox" class="btn-check" name="option" id="excercise" autocomplete="off" checked>
-                    <label class="btn btn-outline-primary" for="excercise">Task</label>
-
-                    <input type="checkbox" class="btn-check" name="option" id="notice" autocomplete="off" checked>
-                    <label class="btn btn-outline-primary" for="notice">Notice</label>
+                    <form action="detail">
+                        <input class="form-control search-form" hidden="" name="search" type="search" placeholder="Search" value="<%=searchWords%>" aria-label="Search">
+                        <input type="text" hidden="" name="class" value="<%=clsl.getName()%>"/>
+                        <%
+                            if(optionChoose==null){
+                        %>
+                        <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="1" id="excercise" checked>
+                        <label class="btn btn-primary" for="excercise">Task</label>
+                        <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="0" id="notice" checked>
+                        <label class="btn btn-primary" for="notice">Notice</label>
+                        <%}else{
+                            if(optionChoose.equals("1")){
+                        %>
+                        <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="1" id="excercise" checked>
+                        <label class="btn btn-primary" for="excercise">Task</label>
+                        <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="0" id="notice">
+                        <label class="btn btn-outline-primary" for="notice">Notice</label>
+                        <%
+                            }else{
+                        %>
+                        <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="1" id="excercise">
+                        <label class="btn btn-outline-primary" for="excercise">Task</label>
+                        <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="0" id="notice" checked>
+                        <label class="btn btn-primary" for="notice">Notice</label>
+                        <%}}%>
+                    </form>
                 </div>
             </div>
         </div>
         <div class="accordion container" id="notice-list">
             <%
-        List<Notice> classNotice=(List<Notice>) request.getAttribute("classNotice");
+        List<Notice> classNotice=(List<Notice>) session.getAttribute("classNotice");
         Classroom choosenClass = (Classroom)session.getAttribute("classChoose");
         if(classNotice!=null&&classNotice.size()>0){
             DetailDAO dao = new DetailDAO();
@@ -206,51 +245,54 @@
         </div>
         <script src="./assests/ckeditor/ckeditor.js"></script>
         <script>
-            $(document).ready(function () {
-                $('#tableMark').DataTable();
-            });
-            var option = document.getElementsByName('notice');
-            option = [...option];
-            option.forEach((item) => {
-                item.addEventListener('click', () => {
-                    if (option[0].checked) {
-                        document.querySelector('#deadline').classList.remove('fade');
-                    } else {
-                        document.querySelector('#deadline').classList.add('fade');
-                    }
-                });
-            });
-            var optionEdit = document.getElementsByName('noticeEdit');
-            optionEdit = [...optionEdit];
-            optionEdit.forEach((item) => {
-                item.addEventListener('click', () => {
-                    if (optionEdit[0].checked) {
-                        document.querySelector('#deadlineEdit').classList.remove('fade');
-                    } else {
-                        document.querySelector('#deadlineEdit').classList.add('fade');
-                    }
-                });
-            });
-            window.addEventListener('DOMContentLoaded', event => {
-                CKEDITOR.replace('postAdd');
-                CKEDITOR.replace('postEdit');
-            });
-            var datePublished = document.querySelector('#datePublished');
-            datePublished.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-            datePublished.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-            var newDateInput = document.querySelector('#dateInput');
-            newDateInput.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-            newDateInput.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-            var inputDate = document.querySelector('#dateUpdate');
-            var date = document.querySelector('#valueDate');
-            var day = date.value.split('T')[0].split('-');
-            var time = date.value.split('T')[1].split(':');
-            inputDate.value = moment(new Date(day[2], day[1] - 1, day[0], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
-            if (new Date().getTime() < new Date(day[2], day[1] - 1, day[0], time[0], time[1]).getTime()) {
-                inputDate.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-            } else {
-                inputDate.min = moment(new Date(day[2], day[1] - 1, day[0], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
-            }
+                            $(window).load(function () {
+                                $("#preload").hide();
+                            });
+                            $(document).ready(function () {
+                                $('#tableMark').DataTable();
+                            });
+                            var option = document.getElementsByName('notice');
+                            option = [...option];
+                            option.forEach((item) => {
+                                item.addEventListener('click', () => {
+                                    if (option[0].checked) {
+                                        document.querySelector('#deadline').classList.remove('fade');
+                                    } else {
+                                        document.querySelector('#deadline').classList.add('fade');
+                                    }
+                                });
+                            });
+                            var optionEdit = document.getElementsByName('noticeEdit');
+                            optionEdit = [...optionEdit];
+                            optionEdit.forEach((item) => {
+                                item.addEventListener('click', () => {
+                                    if (optionEdit[0].checked) {
+                                        document.querySelector('#deadlineEdit').classList.remove('fade');
+                                    } else {
+                                        document.querySelector('#deadlineEdit').classList.add('fade');
+                                    }
+                                });
+                            });
+                            window.addEventListener('DOMContentLoaded', event => {
+                                CKEDITOR.replace('postAdd');
+                                CKEDITOR.replace('postEdit');
+                            });
+                            var datePublished = document.querySelector('#datePublished');
+                            datePublished.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+                            datePublished.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+                            var newDateInput = document.querySelector('#dateInput');
+                            newDateInput.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+                            newDateInput.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+                            var inputDate = document.querySelector('#dateUpdate');
+                            var date = document.querySelector('#valueDate');
+                            var day = date.value.split('T')[0].split('-');
+                            var time = date.value.split('T')[1].split(':');
+                            inputDate.value = moment(new Date(day[2], day[1] - 1, day[0], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+                            if (new Date().getTime() < new Date(day[2], day[1] - 1, day[0], time[0], time[1]).getTime()) {
+                                inputDate.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+                            } else {
+                                inputDate.min = moment(new Date(day[2], day[1] - 1, day[0], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+                            }
         </script>
     </body>
 

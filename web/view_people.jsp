@@ -15,13 +15,18 @@
         <title>View Students/Teacher</title>
     </head>
     <body>
-        <script>
-            var currentpage = document.querySelector('.page-item.active').querySelector('a').innerHTML;
-            var pageItem = document.querySelector('.page-item.page-normal');
-            for (var i = 0; i < pageItem){
-
-            }
-        </script>
+        <%
+            DetailDAO dao = new DetailDAO();
+            List<Teacher> listUser = (List<Teacher>) session.getAttribute("listUser");
+            String[] roleName = (String[]) request.getAttribute("roleName");
+            String[] roleList = (String[]) request.getAttribute("roleList");
+            String[] roleSearch = (String[]) request.getAttribute("roleSearch");
+            List<Classroom> listClass=(List<Classroom>) session.getAttribute("listClass");
+            List<Teacher> listSubject=(List<Teacher>) session.getAttribute("listSubject");
+            int thisPage = (int)session.getAttribute("thisPage");
+            int pages = (int) session.getAttribute("pages"),k=0;
+            String searchWords = request.getAttribute("searchWords")==null?"":(String) request.getAttribute("searchWords");
+        %>
         <jsp:include page="included/modal.jsp"/>
         <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
             <div class="container container-fluid">
@@ -40,16 +45,13 @@
                 <span>Return list classes<i class="fas fa-long-arrow-alt-right"></i></span>
             </a>
         </nav>
-        <div class="container">
-            <header class="d-flex justify-content-between">
+        <div class="container" style="overflow: hidden;">
+            <header class="d-flex justify-content-between align-items-center">
                 <div class="d-flex justify-content-between">
                     <div class="btn-group" role="group">
                         <form action="detail">
                             <%
-                                String[] roleName = (String[]) request.getAttribute("roleName");
-                                String[] roleList = (String[]) request.getAttribute("roleList");
-                                String[] roleSearch = (String[]) request.getAttribute("roleSearch");
-                                int k = 0;
+                                k = 0;
                                 for(int i =0;i<3;i++){
                                 if(roleSearch[k].equals(roleList[i])){
                             %>
@@ -68,15 +70,27 @@
                     </div>
                 </div>
                 <div class="d-flex">
-                    <form class="form-group input-group" action="MainController">
-                        <span class="btn input-group-text bg-transparent"><i class="fa-solid fa-magnifying-glass"></i></span>
-                        <input type="text" placeholder="ID/Name" class="text-start btn form-control border-bottom" name="search" onchange="this.parentNode.submit()" value="${param.search}"/>
+                    <form class="form-group input-group" action="detail">
+                        <button class="btn input-group-text bg-transparent"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            <%
+                            k=0;
+                            for(int i =0;i<3;i++){
+                                if(roleSearch[k].equals(roleList[i])){
+                            %>
+                        <input type="checkbox" hidden="" class="btn-check" checked onchange="this.parentNode.submit()" name="roleSearch" value="<%=roleList[i]%>">
+                        <%
+                                if(k<roleSearch.length-1){
+                                    k++;
+                                }
+                            }
+                        }%>
+                        <input class="form-control search-form border-0 border-bottom" name="search" type="search" placeholder="Search" value="<%=searchWords%>" aria-label="Search">
                     </form>
                 </div>
             </header>
             <nav>
                 <table class="table table-hover" border="1">
-                    <thead class="table-primary">
+                    <thead class="table-primary text-center">
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
@@ -91,8 +105,7 @@
                     </thead>
                     <tbody>
                         <%
-                            DetailDAO dao = new DetailDAO();
-                            List<Teacher> listUser = (List<Teacher>) session.getAttribute("listUser");
+                            
                             for(Teacher t:listUser){
                         %>
                     <form method="POST">
@@ -108,7 +121,7 @@
                                     </label>
                                 </div>
                             </td>
-                            <td>
+                            <td class="w-10">
                                 <select name="gender" class="form-select bg-transparent border-0">
                                     <%if(t.isGender()){%>
                                     <option value="1" selected>Male</option>
@@ -119,7 +132,7 @@
                                     <%}%>
                                 </select>
                             </td>
-                            <td>
+                            <td class="w-10">
                                 <%if(t.getRoleID()==1){%>
                                 Student
                                 <%}else{%>
@@ -138,7 +151,6 @@
                                 <%if(t.getRoleID()==1){%>
                                 <select name="class" class="form-select bg-transparent">
                                     <%
-                                                    List<Classroom> listClass=(List<Classroom>) session.getAttribute("listClass");
                                                     if(listClass!=null){
                                                         for(Classroom c : listClass){
                                                         if(dao.getClassByID(t.getId()).get(0).equals(c.getName())){
@@ -153,22 +165,21 @@
                                     %>
                                 </select>
                                 <%}else if(t.getRoleID()==2){%>
-                                <div class="d-flex flex-wrap flex-5 justify-content-around">
-                                <%
-                                    List<String> teacherClass = dao.getClassByID(t.getId());
-                                    for(int i =0 ;i<teacherClass.size();i++){
-                                %>
-                                <span><%=teacherClass.get(i)%></span>
-                                <%
+                                <div class="d-flex flex-wrap flex-5 justify-content-between">
+                                    <%
+                                        List<String> teacherClass = dao.getClassByID(t.getId());
+                                        for(int i =0 ;i<teacherClass.size();i++){
+                                    %>
+                                    <span><%=teacherClass.get(i)%></span>
+                                    <%
                                     }%>
                                 </div>
                                 <%  }%>
                             </td>
-                            <td>
+                            <td class="w-10">
                                 <%if(t.getRoleID()==2){%>
                                 <select name="roleID" class="form-select bg-transparent">
                                     <%
-                                        List<Teacher> listSubject=(List<Teacher>) session.getAttribute("listSubject");
                                         if(listSubject!=null){
                                         for(Teacher c : listSubject){
                                             if(c.getSubjectID()==t.getSubjectID()){
@@ -180,56 +191,85 @@
                                 </select>
                                 <%}%>
                             </td>
-                            <td></td>
+                            <td><a href="edit?user=<%=t.getRoleID()%>" class="btn btn-outline-primary">Edit</a></td>
+                            <td><a href="delete?action=deleteUser&user=<%=t.getRoleID()%>" class="btn btn-outline-danger">Delete</a></td>
                         </tr>
                         <%}%>
                     </form>
                     </tbody>
                 </table>
             </nav>
-            <nav class="mt-4" aria-label="">
-                <ul id="pagination" class="pagination">
-                    <%
-                        int thisPage = (int)session.getAttribute("thisPage");
-                        int pages = (int) session.getAttribute("pages");
-                        if(thisPage>1){
-                    %>
-                    <li class="page-item first"><a class="page-link" href="detail?page=1">First</a></li>
-                        <%}
-                            if(thisPage>3){
+            <nav class="" aria-label="">
+                <form action="detail">
+                    <ul id="pagination" class="pagination">
+                        <input hidden="" type="text" name="" id="thisPage" value="<%=thisPage%>">
+                        <input class="form-control search-form border-0 border-bottom" hidden="" name="search" type="search" placeholder="Search" value="<%=searchWords%>" aria-label="Search">
+                        <%
+                        k=0;
+                        for(int i =0;i<3;i++){
+                            if(roleSearch[k].equals(roleList[i])){
                         %>
-                    <li class="page-item previous"><a class="page-link" href="detail?page=<%=thisPage+3%>">«</a></li>
-                        <%}  if(thisPage>1){
-                        %>
-                    <li class="page-item next"><a class="page-link" href="detail?page=<%=thisPage+1%>">❮</a></li>
+                        <input type="checkbox" hidden="" class="btn-check" checked onchange="this.parentNode.submit()" name="roleSearch" value="<%=roleList[i]%>">
                         <%
-                            }
-                            for(int i = 1;i<=pages;i++){
-                            if(thisPage==i){%>
-                    <li class="page-item page-normal active"><a class="page-link" href="detail?page=<%=i%>"><%=i%></a></li>
-                        <%
-                            }else{%>
-                    <li class="page-item page-normal"><a class="page-link" href="detail?page=<%=i%>"><%=i%></a></li>
-                        <%
+                                if(k<roleSearch.length-1){
+                                    k++;
+                                }
                             }
                         }
-                          if(thisPage<pages){
+                        if(thisPage>1){
                         %>
-                    <li class="page-item next"><a class="page-link" href="detail?page=<%=thisPage-1%>">❯</a></li>
-                        <%} 
-                              if(thisPage<pages-3){
-                        %>
-                    <li class="page-item following"><a class="page-link" href="detail?page=<%=thisPage-3%>">»</a></li>
-                        <%
-                            } if(thisPage<pages){
-                        %>
-                    <li class="page-item last"><a class="page-link" href="detail?page=<%=pages%>">Last</a></li>
-                        <%
+                        <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=1%>" type="submit">First</button></li>
+                            <%}
+                                if(thisPage>3){
+                            %>
+                        <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage-3%>" type="submit">«</button></li>
+                            <%}  if(thisPage>1){
+                            %>
+                        <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage-1%>" type="submit">❮</button></li>
+                            <%
+                                }
+                                for(int c = 1;c<=pages;c++){
+                                if(thisPage==c){%>
+                        <li class="page-item page-pagination page-normal active"><button class="page-link" name="page" value="<%=c%>" type="submit"><%=c%></button></li>
+                            <%
+                            }else{%>
+                        <li class="page-item page-pagination page-normal"><button class="page-link" name="page" value="<%=c%>" type="submit"><%=c%></button></li>
+                            <%
+                                }
+                            }
+                              if(thisPage<pages){
+                            %>
+                        <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage+1%>" type="submit">❯</button></li>
+                            <%} 
+                                  if(thisPage<pages-3){
+                            %>
+                        <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage+3%>" type="submit">»</button></li>
+                            <%
+                                } if(thisPage<pages){
+                            %>
+                        <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=pages%>" type="submit">Last</button></li>
+                            <%
                             }%>
-                </ul>
-            </nav> 
+                    </ul>
+                </form>
+            </nav>  
         </div>
         <script>
+            var pagePagnation = document.querySelectorAll('.page-pagination');
+            var pageNormal = document.querySelectorAll('.page-normal');
+            var k = 9 - Number(pagePagnation.length - pageNormal.length);
+            var thisPage = Number(document.querySelectorAll('#thisPage')[0].value);
+            for (var i = 0, max = pageNormal.length; i < max; i++) {
+                if (k === 6) {
+                    if (i > thisPage + k - 2 || i < thisPage - k) {
+                        pageNormal[i].classList.add('fade');
+                    }
+                } else {
+                    if (i < thisPage - Math.floor(k / 2) - 1 || i > thisPage + Math.floor(k / 2) - 1) {
+                        pageNormal[i].classList.add('fade');
+                    }
+                }
+            }
             function showPassword(item) {
                 var inputPW = item.parentElement.children[0];
                 var eye = item.parentElement.getElementsByClassName('fa-solid')[0];
@@ -261,5 +301,6 @@
                 });
             });
         </script>
+
     </body>
 </html>

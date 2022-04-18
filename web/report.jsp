@@ -5,17 +5,27 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List, java.text.*" %>
+<%@page import="entity.*"%>
+<%@page import="DAO.*"%>
 <html lang="vi">
-
+    <%
+    User loginUser = (User) session.getAttribute("loginUser");
+    Classroom choosenClass = (Classroom)session.getAttribute("classChoose");
+    List<Notice> classNoticeView=(List<Notice>) session.getAttribute("classNotice");
+    DetailDAO dao = new DetailDAO();
+    Classroom clsl = (Classroom) session.getAttribute("classChoose");
+    int task = 0;
+    %>
     <head>
-        <title>Teacher - </title>
+        <title>Report ${sessionScope.classChoose.getName()}</title>
     </head>
     <body>
         <jsp:include page="included/modal.jsp"/>
         <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
             <div class="container container-fluid">
                 <div class="d-flex flex-column">
-                    <h1>Class 8A</h1>
+                    <h1>Class ${sessionScope.classChoose.getName()}</h1>
                     <h2>Hi ${sessionScope.loginUser.isGender()?"Mr.":"Mrs."} <i>${sessionScope.loginUser.getName()}</i>!</h2>
                 </div>
                 <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
@@ -51,12 +61,19 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <%
+                                if(classNoticeView!=null){
+                                    for(Notice c : classNoticeView){
+                                        if(c.isTask()){
+                                        task++;
+                                        double average = dao.getAverageTask(c.getId())==-1?0:dao.getAverageTask(c.getId());
+                            %>
                             <tr>
-                                <td>Rhona Davidson</td>
-                                <td>Integration Specialist</td>
-                                <td>Tokyo</td>
-                                <td>55</td>
-                                <td>2010/10/14</td>
+                                <td><%=c.getTitle()%></td>
+                                <td><%=c.getDeadline()%></td>
+                                <td><%=dao.getWorkList(c.getId()).size()%></td>
+                                <td><%= choosenClass.getList().size()-dao.getWorkList(c.getId()).size()%></td>
+                                <td><%=average%></td>
                                 <td>
                                     <button type="button" class="more btn bg-transparent" data-bs-toggle="modal"
                                             data-bs-target="#viewTaskDetail" style="margin: 0;">
@@ -64,110 +81,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Colleen Hurst</td>
-                                <td>Javascript Developer</td>
-                                <td>San Francisco</td>
-                                <td>39</td>
-                                <td>2009/09/15</td>
-                                <td>$205,500</td>
-                            </tr>
-                            <tr>
-                                <td>Sonya Frost</td>
-                                <td>Software Engineer</td>
-                                <td>Edinburgh</td>
-                                <td>23</td>
-                                <td>2008/12/13</td>
-                                <td>$103,600</td>
-                            </tr>
-                            <tr>
-                                <td>Jena Gaines</td>
-                                <td>Office Manager</td>
-                                <td>London</td>
-                                <td>30</td>
-                                <td>2008/12/19</td>
-                                <td>$90,560</td>
-                            </tr>
-                            <tr>
-                                <td>Quinn Flynn</td>
-                                <td>Support Lead</td>
-                                <td>Edinburgh</td>
-                                <td>22</td>
-                                <td>2013/03/03</td>
-                                <td>$342,000</td>
-                            </tr>
-                            <tr>
-                                <td>Charde Marshall</td>
-                                <td>Regional Director</td>
-                                <td>San Francisco</td>
-                                <td>36</td>
-                                <td>2008/10/16</td>
-                                <td>$470,600</td>
-                            </tr>
-                            <tr>
-                                <td>Haley Kennedy</td>
-                                <td>Senior Marketing Designer</td>
-                                <td>London</td>
-                                <td>43</td>
-                                <td>2012/12/18</td>
-                                <td>$313,500</td>
-                            </tr>
-                            <tr>
-                                <td>Tatyana Fitzpatrick</td>
-                                <td>Regional Director</td>
-                                <td>London</td>
-                                <td>19</td>
-                                <td>2010/03/17</td>
-                                <td>$385,750</td>
-                            </tr>
-                            <tr>
-                                <td>Michael Silva</td>
-                                <td>Marketing Designer</td>
-                                <td>London</td>
-                                <td>66</td>
-                                <td>2012/11/27</td>
-                                <td>$198,500</td>
-                            </tr>
-                            <tr>
-                                <td>Paul Byrd</td>
-                                <td>Chief Financial Officer (CFO)</td>
-                                <td>New York</td>
-                                <td>64</td>
-                                <td>2010/06/09</td>
-                                <td>$725,000</td>
-                            </tr>
-                            <tr>
-                                <td>Gloria Little</td>
-                                <td>Systems Administrator</td>
-                                <td>New York</td>
-                                <td>59</td>
-                                <td>2009/04/10</td>
-                                <td>$237,500</td>
-                            </tr>
-                            <tr>
-                                <td>Bradley Greer</td>
-                                <td>Software Engineer</td>
-                                <td>London</td>
-                                <td>41</td>
-                                <td>2012/10/13</td>
-                                <td>$132,000</td>
-                            </tr>
-                            <tr>
-                                <td>Dai Rios</td>
-                                <td>Personnel Lead</td>
-                                <td>Edinburgh</td>
-                                <td>35</td>
-                                <td>2012/09/26</td>
-                                <td>$217,500</td>
-                            </tr>
-                            <tr>
-                                <td>Jenette Caldwell</td>
-                                <td>Development Lead</td>
-                                <td>New York</td>
-                                <td>30</td>
-                                <td>2011/09/03</td>
-                                <td>$345,000</td>
-                            </tr>
+                            <%}}}%>
                         </tbody>
                     </table>
                 </div>
@@ -184,12 +98,17 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <%
+                                        if(choosenClass!=null){
+                                        for(User user : choosenClass.getList()){
+                                        double[] average = dao.getTaskAverage(user.getId());
+                            %>
                             <tr>
-                                <td>Herrod Chandler</td>
-                                <td>Sales Assistant</td>
-                                <td>San Francisco</td>
-                                <td>59</td>
-                                <td>2012/08/06</td>
+                                <td><%=user.getId()%></td>
+                                <td><%=user.getName()%></td>
+                                <td><%=average[0]%></td>
+                                <td><%=(double)task-average[0]%></td>
+                                <td><%=average[2]%></td>
                                 <td>
                                     <button type="button" class="more btn bg-transparent" data-bs-toggle="modal"
                                             data-bs-target="#viewStudentDetail" onclick="getMarkAverage()" style="margin: 0;">
@@ -197,118 +116,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Rhona Davidson</td>
-                                <td>Integration Specialist</td>
-                                <td>Tokyo</td>
-                                <td>55</td>
-                                <td>2010/10/14</td>
-                                <td>$327,900</td>
-                            </tr>
-                            <tr>
-                                <td>Colleen Hurst</td>
-                                <td>Javascript Developer</td>
-                                <td>San Francisco</td>
-                                <td>39</td>
-                                <td>2009/09/15</td>
-                                <td>$205,500</td>
-                            </tr>
-                            <tr>
-                                <td>Sonya Frost</td>
-                                <td>Software Engineer</td>
-                                <td>Edinburgh</td>
-                                <td>23</td>
-                                <td>2008/12/13</td>
-                                <td>$103,600</td>
-                            </tr>
-                            <tr>
-                                <td>Jena Gaines</td>
-                                <td>Office Manager</td>
-                                <td>London</td>
-                                <td>30</td>
-                                <td>2008/12/19</td>
-                                <td>$90,560</td>
-                            </tr>
-                            <tr>
-                                <td>Quinn Flynn</td>
-                                <td>Support Lead</td>
-                                <td>Edinburgh</td>
-                                <td>22</td>
-                                <td>2013/03/03</td>
-                                <td>$342,000</td>
-                            </tr>
-                            <tr>
-                                <td>Charde Marshall</td>
-                                <td>Regional Director</td>
-                                <td>San Francisco</td>
-                                <td>36</td>
-                                <td>2008/10/16</td>
-                                <td>$470,600</td>
-                            </tr>
-                            <tr>
-                                <td>Haley Kennedy</td>
-                                <td>Senior Marketing Designer</td>
-                                <td>London</td>
-                                <td>43</td>
-                                <td>2012/12/18</td>
-                                <td>$313,500</td>
-                            </tr>
-                            <tr>
-                                <td>Tatyana Fitzpatrick</td>
-                                <td>Regional Director</td>
-                                <td>London</td>
-                                <td>19</td>
-                                <td>2010/03/17</td>
-                                <td>$385,750</td>
-                            </tr>
-                            <tr>
-                                <td>Michael Silva</td>
-                                <td>Marketing Designer</td>
-                                <td>London</td>
-                                <td>66</td>
-                                <td>2012/11/27</td>
-                                <td>$198,500</td>
-                            </tr>
-                            <tr>
-                                <td>Paul Byrd</td>
-                                <td>Chief Financial Officer (CFO)</td>
-                                <td>New York</td>
-                                <td>64</td>
-                                <td>2010/06/09</td>
-                                <td>$725,000</td>
-                            </tr>
-                            <tr>
-                                <td>Gloria Little</td>
-                                <td>Systems Administrator</td>
-                                <td>New York</td>
-                                <td>59</td>
-                                <td>2009/04/10</td>
-                                <td>$237,500</td>
-                            </tr>
-                            <tr>
-                                <td>Bradley Greer</td>
-                                <td>Software Engineer</td>
-                                <td>London</td>
-                                <td>41</td>
-                                <td>2012/10/13</td>
-                                <td>$132,000</td>
-                            </tr>
-                            <tr>
-                                <td>Dai Rios</td>
-                                <td>Personnel Lead</td>
-                                <td>Edinburgh</td>
-                                <td>35</td>
-                                <td>2012/09/26</td>
-                                <td>$217,500</td>
-                            </tr>
-                            <tr>
-                                <td>Jenette Caldwell</td>
-                                <td>Development Lead</td>
-                                <td>New York</td>
-                                <td>30</td>
-                                <td>2011/09/03</td>
-                                <td>$345,000</td>
-                            </tr>
+                            <%}}%>
                         </tbody>
                     </table>
                 </div>

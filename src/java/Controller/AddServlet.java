@@ -67,12 +67,17 @@ public class AddServlet extends HttpServlet {
                     for (String classid : classls) {
                         Notice noti = new Notice(0, authorid, name, content, classid, publish, isTask, deadline);
                         if (dao.addNotice(noti)) {
-                            response.sendRedirect("detail?class=" + classid);
                             add = true;
                         } else {
                             add = false;
                             break;
                         }
+                    }
+                    if (classls.length == 1) {
+                        response.sendRedirect("detail?class=" + classls[0]);
+
+                    } else {
+                        response.sendRedirect("teacher_home.jsp");
                     }
                     break;
                 }
