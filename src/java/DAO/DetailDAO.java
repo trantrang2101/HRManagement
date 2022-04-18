@@ -328,7 +328,7 @@ public class DetailDAO {
         }
         return workDone;
     }
-
+    
     public List<Work> getWorkList(int taskid) throws SQLException {
         List<Work> list = new ArrayList<>();
         Connection conn = null;

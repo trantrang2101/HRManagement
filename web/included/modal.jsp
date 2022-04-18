@@ -30,6 +30,10 @@
     DetailDAO dao = new DetailDAO();
     List<Teacher> listSubject=(List<Teacher>) session.getAttribute("listSubject");
     List<Classroom> listClass=(List<Classroom>) session.getAttribute("listClass");
+    Classroom choosenClass = (Classroom)session.getAttribute("classChoose");
+    List<Notice> classNoticeView=(List<Notice>) session.getAttribute("classNotice");
+    Integer taskid = (Integer) request.getAttribute("taskChoose");
+    Integer userChoose = (Integer) request.getAttribute("userChoose");
 %>
 <div id="preloader">
     <div class="loader">
@@ -204,13 +208,13 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="viewTaskDetail" tabindex="-1" role="dialog" aria-labelledby="viewTaskDetail"
-     aria-hidden="true" style="">
+<%if(taskid!=null){%>
+<div class="modal" tabindex="-1" style="display:block;">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Mark Task #1 - Class 7C</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="exampleModalLabel">Mark Task <%=taskid%> - Class 7C</h5>
+                <a type="button" class="btn-close" href="javascript:window.history.back()"></a>
             </div>
             <div class="modal-body table-mark row">
                 <div class="col-8">
@@ -219,73 +223,33 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
-                                <th>Gender</th>
                                 <th>Mark</th>
                                 <th>Comment</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <%
+                                if(choosenClass!=null){
+                                    for(User user : choosenClass.getList()){
+                                        if(user.getRoleID()==1){
+                            %>
                             <tr>
-                                <td><a href="" class="">1</a></td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>4</td>
-                                <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
-                                    minus aliquam
-                                    laborum? Tempora modi omnis similique totam dolorum provident eveniet
-                                    consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis minus
-                                    officia praesentium expedita labore?</td>
+                                <td><%=user.getId()%></td>
+                                <td><%=user.getName()%></td>
+                                <%
+                                            Work studentWork = dao.getWork(taskid,user.getId());
+                                            if(studentWork!=null){
+                                %>
+                                <td><%=studentWork.getMark()%></td>
+                                <td><%=studentWork.getComment()%></td>
+                                <%}else{%>
+                                <td class="text-danger">0</td>
+                                <td class="text-danger fw-bold">Not Done</td>
+                                <%
+                                            }
+                                %>
                             </tr>
-                            <tr>
-                                <td><a href="" class="">1</a></td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>4</td>
-                                <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
-                                    minus aliquam laborum? Tempora modi omnis similique totam dolorum provident
-                                    eveniet consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis
-                                    minus officia praesentium expedita labore?</td>
-                            </tr>
-                            <tr>
-                                <td><a href="" class="">1</a></td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>4</td>
-                                <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
-                                    minus aliquam laborum? Tempora modi omnis similique totam dolorum provident
-                                    eveniet consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis
-                                    minus officia praesentium expedita labore?</td>
-                            </tr>
-                            <tr>
-                                <td><a href="" class="">1</a></td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>4</td>
-                                <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
-                                    minus aliquam laborum? Tempora modi omnis similique totam dolorum provident
-                                    eveniet consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis
-                                    minus officia praesentium expedita labore?</td>
-                            </tr>
-                            <tr>
-                                <td><a href="" class="">1</a></td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>4</td>
-                                <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
-                                    minus aliquam laborum? Tempora modi omnis similique totam dolorum provident
-                                    eveniet consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis
-                                    minus officia praesentium expedita labore?</td>
-                            </tr>
-                            <tr>
-                                <td><a href="" class="">1</a></td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>4</td>
-                                <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
-                                    minus aliquam laborum? Tempora modi omnis similique totam dolorum provident
-                                    eveniet consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis
-                                    minus officia praesentium expedita labore?</td>
-                            </tr>
+                            <%}}}%>
                         </tbody>
                     </table>
                 </div>
@@ -293,8 +257,8 @@
                     <canvas id="pieChart"></canvas>
                     <div class="final d-flex flex-column">
                         <label for="average" class="fw-bold">Average Mark:</label>
-                        <input type="text" disabled class="bg-transparent border-0 text-dark" value="7.5">
-                        <label for="highest" class="fw-bold">Student has highest Mark (9.5):</label>
+                        <input type="number" disabled id="averageStudent" class="bg-transparent border-0 text-dark">
+                        <label for="highest" class="fw-bold">Student has highest Mark (<span id="highestMark"></span>):</label>
                         <button type="submit" id="highest"
                                 class="text-start bg-transparent border-0 text-dark more">
                             <span>Phạm Tường<i class="fas fa-long-arrow-alt-right"></i></span>
@@ -305,66 +269,47 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="viewStudentDetail" tabindex="-1" role="dialog" aria-labelledby="viewStudentDetail"
-     aria-hidden="true" style="">
+<%}%>
+<%if(userChoose!=null){%>
+<div class="modal" tabindex="-1" style="display:block;">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Mark Task #1 - Class 7C</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="exampleModalLabel">Mark Task <%=dao.getUser(userChoose).getName()%> - Class <%=dao.getClassByID(userChoose).get(0)%></h5>
+                <a type="button" class="btn-close" href="javascript:window.history.back()"></a>
             </div>
             <div class="modal-body table-mark row">
                 <div class="col-8">
                     <table class="table table-hover" id="studentDetail">
                         <thead class="table-primary text-center">
                             <tr>
-                                <th> Task</th>
+                                <th>Task</th>
                                 <th>Time finished Task</th>
                                 <th>Mark</th>
                                 <th>Comment</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <%
+                                for(Notice c : classNoticeView){
+                                    if(c.isTask()){
+                                        Work workUser = dao.getWork(c.getId(),userChoose);
+                                        if(workUser!=null){
+                            %>
                             <tr>
-                                <td>Computer Project</td>
-                                <td>23/01 23:10</td>
-                                <td>9.5</td>
-                                <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
-                                    minus aliquam
-                                    laborum? Tempora modi omnis similique totam dolorum provident eveniet
-                                    consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis minus
-                                    officia praesentium expedita labore?</td>
+                                <td><%=c.getTitle()%></td>
+                                <td><%=workUser.getDoneAt()%></td>
+                                <td><%=workUser.getMark()%></td>
+                                <td class="line-5"><%=workUser.getComment()%></td>
                             </tr>
-                            <tr>
-                                <td>Computer Project</td>
-                                <td>23/01 23:10</td>
-                                <td>4.5</td>
-                                <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
-                                    minus aliquam
-                                    laborum? Tempora modi omnis similique totam dolorum provident eveniet
-                                    consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis minus
-                                    officia praesentium expedita labore?</td>
+                            <%}else{%>
+                            <tr class="text-danger">
+                                <td class="text-dark"><%=c.getTitle()%></td>
+                                <td>Not Done</td>
+                                <td>0</td>
+                                <td class="line-5">Not Done</td>
                             </tr>
-                            <tr>
-                                <td>Computer Project</td>
-                                <td>23/01 23:10</td>
-                                <td>5.5</td>
-                                <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
-                                    minus aliquam
-                                    laborum? Tempora modi omnis similique totam dolorum provident eveniet
-                                    consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis minus
-                                    officia praesentium expedita labore?</td>
-                            </tr>
-                            <tr>
-                                <td>Computer Project</td>
-                                <td>23/01 23:10</td>
-                                <td>9.5</td>
-                                <td class="line-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas
-                                    minus aliquam
-                                    laborum? Tempora modi omnis similique totam dolorum provident eveniet
-                                    consectetur voluptates! Ipsum culpa exercitationem doloremque, facilis minus
-                                    officia praesentium expedita labore?</td>
-                            </tr>
+                            <%}}}%>
                         </tbody>
                     </table>
                 </div>
@@ -379,6 +324,7 @@
         </div>
     </div>
 </div>
+<%}%>
 <div class="modal fade" id="addClass" tabindex="-1" role="dialog" aria-labelledby="addClass"
      aria-hidden="true" style="">
     <form action="add" method="POST">
@@ -518,7 +464,6 @@
                     <button class="btn btn-primary" name="action" value="addPerson">Save</button>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
@@ -833,9 +778,8 @@
                             <th>ID</th>
                             <th>Name</th>
                                 <%
-                                    List<Notice> classNoticeView=(List<Notice>) request.getAttribute("classNotice");
-                                    if(classNoticeView!=null){
-                                        for(Notice c : classNoticeView){
+                                if(classNoticeView!=null){
+                                    for(Notice c : classNoticeView){
                                         if(c.isTask()){
                                 %>
                             <th><%=c.getTitle()%></th>
@@ -844,13 +788,12 @@
                     </thead>
                     <tbody>
                         <%
-                                        Classroom choosenClass = (Classroom)session.getAttribute("classChoose");
-                                        if(choosenClass!=null){
-                                        for(User user : choosenClass.getList()){
+                                if(choosenClass!=null){
+                                    for(User user : choosenClass.getList()){
                                         if(user.getRoleID()==1){
                         %>
                         <tr>
-                            <td><a href="" class=""><%=user.getId()%></a></td>
+                            <td><%=user.getId()%></td>
                             <td><%=user.getName()%></td>
                             <%
                                 if(classNoticeView!=null){
@@ -890,7 +833,7 @@
                                         for(User user : choosenClass.getList()){
                         %>
                         <tr>
-                            <td><a href="" class=""><%=user.getId()%></a></td>
+                            <td><%=user.getId()%></td>
                             <td><%=user.getName()%></td>
                             <td><%=user.isGender()?"Male":"Female"%></td>
                             <td><%=user.getRoleID()!=1?"Teacher":"Student"%></td>
@@ -906,5 +849,108 @@
     $(document).ready(function () {
         $('#tableViewClassStudent').DataTable();
         $("#preloader").hide();
+    });
+</script>
+
+<script>
+    function getColumn(table_id, col) {
+        var tab = document.getElementById(table_id),
+                n = tab.rows.length,
+                arr = [],
+                row;
+        if (col < 0) {
+            return arr; // Return empty Array.
+        }
+        for (row = 1; row < n; ++row) {
+            if (tab.rows[row].cells.length > col) {
+                arr.push(tab.rows[row].cells[col].innerText);
+            }
+        }
+        return arr;
+    }
+    var markAvg = 0, count = 0,highest=0;
+    function sortClass() {
+        var mark = getColumn('taskDetail', 2);
+        var g = 0,kha = 0,k = 0;
+        highest = mark[0];
+        mark.forEach((item) => {
+            if (item < 5) {
+                k++;
+            } else if (item < 8) {
+                kha++;
+            } else {
+                g++;
+            }
+            highest=highest<item?item:highest;
+            count += 1;
+            markAvg += Number(item);
+        });
+        var arr = [k, kha, g];
+        console.log(arr);
+        return arr;
+    }
+    $(document).ready(function () {
+        $('#taskTable').DataTable();
+        $('#studentTable').DataTable();
+        $('#taskDetail').DataTable();
+        $('#studentDetail').DataTable();
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelector('#highestMark').innerHTML=highest;
+        document.querySelector('#averageStudent').value = markAvg / count;
+        const pieChart = new Chart(document.getElementById('pieChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    'Yếu (0-5)',
+                    'Trung bình - Khá (5-8)',
+                    'Giỏi (8-10)'
+                ],
+                datasets: [{
+                        label: 'Mark Task #1',
+                        data: sortClass(),
+                        backgroundColor: [
+                            'rgb(246,151,125)',
+                            'rgb(255,243,121)',
+                            'rgb(150,205,138)'
+                        ],
+                        hoverOffset: 4
+                    }]
+            }
+        });
+        const lineChart = new Chart(document.getElementById('lineChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: getColumn('studentDetail', 0),
+                datasets: [{
+                        label: '',
+                        data: getColumn('studentDetail', 2),
+                        fill: false,
+                        backgroundColor: 'rgb(246,151,121)',
+                        borderColor: 'rgb(246,151,125)',
+                        tension: 0.1
+                    }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Mark của <%=userChoose%>'
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 10
+                    },
+                    x: {
+                        ticks: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
     });
 </script>

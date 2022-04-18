@@ -24,7 +24,8 @@
             List<Classroom> listClass=(List<Classroom>) session.getAttribute("listClass");
             List<Teacher> listSubject=(List<Teacher>) session.getAttribute("listSubject");
             int thisPage = (int)session.getAttribute("thisPage");
-            int pages = (int) session.getAttribute("pages"),k=0;
+            int pages = (int) session.getAttribute("pages");
+            int k =0;
             String searchWords = request.getAttribute("searchWords")==null?"":(String) request.getAttribute("searchWords");
         %>
         <jsp:include page="included/modal.jsp"/>
@@ -47,6 +48,60 @@
         </nav>
         <div class="container" style="overflow: hidden;">
             <header class="d-flex justify-content-between align-items-center">
+                <nav class="" aria-label="">
+                    <form action="detail">
+                        <ul id="pagination" class="pagination">
+                            <input hidden="" type="text" name="" id="thisPage" value="<%=thisPage%>">
+                            <input class="form-control search-form border-0 border-bottom" hidden="" name="search" type="search" placeholder="Search" value="<%=searchWords%>" aria-label="Search">
+                            <%
+                            k=0;
+                            for(int i =0;i<3;i++){
+                                if(roleSearch[k].equals(roleList[i])){
+                            %>
+                            <input type="checkbox" hidden="" class="btn-check" checked onchange="this.parentNode.submit()" name="roleSearch" value="<%=roleList[i]%>">
+                            <%
+                                    if(k<roleSearch.length-1){
+                                        k++;
+                                    }
+                                }
+                            }
+                            if(thisPage>1){
+                            %>
+                            <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=1%>" type="submit">First</button></li>
+                                <%}
+                                    if(thisPage>3){
+                                %>
+                            <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage-3%>" type="submit">«</button></li>
+                                <%}  if(thisPage>1){
+                                %>
+                            <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage-1%>" type="submit">❮</button></li>
+                                <%
+                                    }
+                                    for(int c = 1;c<=pages;c++){
+                                    if(thisPage==c){%>
+                            <li class="page-item page-pagination page-normal active"><button class="page-link" name="page" value="<%=c%>" type="submit"><%=c%></button></li>
+                                <%
+                            }else{%>
+                            <li class="page-item page-pagination page-normal"><button class="page-link" name="page" value="<%=c%>" type="submit"><%=c%></button></li>
+                                <%
+                                    }
+                                }
+                                  if(thisPage<pages){
+                                %>
+                            <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage+1%>" type="submit">❯</button></li>
+                                <%} 
+                                      if(thisPage<pages-3){
+                                %>
+                            <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage+3%>" type="submit">»</button></li>
+                                <%
+                                    } if(thisPage<pages){
+                                %>
+                            <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=pages%>" type="submit">Last</button></li>
+                                <%
+                            }%>
+                        </ul>
+                    </form>
+                </nav>  
                 <div class="d-flex justify-content-between">
                     <div class="btn-group" role="group">
                         <form action="detail">
@@ -199,60 +254,6 @@
                     </tbody>
                 </table>
             </nav>
-            <nav class="" aria-label="">
-                <form action="detail">
-                    <ul id="pagination" class="pagination">
-                        <input hidden="" type="text" name="" id="thisPage" value="<%=thisPage%>">
-                        <input class="form-control search-form border-0 border-bottom" hidden="" name="search" type="search" placeholder="Search" value="<%=searchWords%>" aria-label="Search">
-                        <%
-                        k=0;
-                        for(int i =0;i<3;i++){
-                            if(roleSearch[k].equals(roleList[i])){
-                        %>
-                        <input type="checkbox" hidden="" class="btn-check" checked onchange="this.parentNode.submit()" name="roleSearch" value="<%=roleList[i]%>">
-                        <%
-                                if(k<roleSearch.length-1){
-                                    k++;
-                                }
-                            }
-                        }
-                        if(thisPage>1){
-                        %>
-                        <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=1%>" type="submit">First</button></li>
-                            <%}
-                                if(thisPage>3){
-                            %>
-                        <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage-3%>" type="submit">«</button></li>
-                            <%}  if(thisPage>1){
-                            %>
-                        <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage-1%>" type="submit">❮</button></li>
-                            <%
-                                }
-                                for(int c = 1;c<=pages;c++){
-                                if(thisPage==c){%>
-                        <li class="page-item page-pagination page-normal active"><button class="page-link" name="page" value="<%=c%>" type="submit"><%=c%></button></li>
-                            <%
-                            }else{%>
-                        <li class="page-item page-pagination page-normal"><button class="page-link" name="page" value="<%=c%>" type="submit"><%=c%></button></li>
-                            <%
-                                }
-                            }
-                              if(thisPage<pages){
-                            %>
-                        <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage+1%>" type="submit">❯</button></li>
-                            <%} 
-                                  if(thisPage<pages-3){
-                            %>
-                        <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage+3%>" type="submit">»</button></li>
-                            <%
-                                } if(thisPage<pages){
-                            %>
-                        <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=pages%>" type="submit">Last</button></li>
-                            <%
-                            }%>
-                    </ul>
-                </form>
-            </nav>  
         </div>
         <script>
             var pagePagnation = document.querySelectorAll('.page-pagination');
