@@ -67,9 +67,9 @@ function changeValue(value) {
         get.classList.remove('active');
         get.classList.remove('show');
     });
-    if (value.href != null) {
+    if (value.href !== null) {
         var show = document.querySelector('#' + value.href.split("#")[1]);
-        if (show != null) {
+        if (show !== null) {
             show.classList.add('show', 'active');
             value.classList.add('active');
         } else {
@@ -78,9 +78,6 @@ function changeValue(value) {
         }
     }
 }
-window.addEventListener('DOMContentLoaded', event => {
-    CKEDITOR.replace('postAddAll');
-});
 var option = document.getElementsByName('notice');
 option = [...option];
 option.forEach((item) => {
@@ -89,25 +86,6 @@ option.forEach((item) => {
             document.querySelector('#deadlineAll').classList.remove('fade');
         } else {
             document.querySelector('#deadlineAll').classList.add('fade');
-        }
-    });
-});
-var role = document.getElementsByName('role');
-role = [...role];
-role.forEach((item) => {
-    item.addEventListener('click', () => {
-        if (role[0].checked) {
-            document.querySelector('#studentClass').classList.remove('fade');
-            document.querySelector('#teacherClasses').classList.add('fade');
-            document.querySelector('#teacherRole').classList.add('fade');
-        } else if (role[1].checked) {
-            document.querySelector('#teacherClasses').classList.remove('fade');
-            document.querySelector('#studentClass').classList.add('fade');
-            document.querySelector('#teacherRole').classList.remove('fade');
-        } else {
-            document.querySelector('#teacherRole').classList.add('fade');
-            document.querySelector('#teacherClasses').classList.add('fade');
-            document.querySelector('#studentClass').classList.add('fade');
         }
     });
 });

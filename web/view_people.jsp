@@ -246,7 +246,7 @@
                                 </select>
                                 <%}%>
                             </td>
-                            <td><a href="edit?user=<%=t.getRoleID()%>" class="btn btn-outline-primary">Edit</a></td>
+                            <td><a href="edit?action=editPerson&user=<%=t.getRoleID()%>" class="btn btn-outline-primary">Edit</a></td>
                             <td><a href="delete?action=deleteUser&user=<%=t.getRoleID()%>" class="btn btn-outline-danger">Delete</a></td>
                         </tr>
                         <%}%>

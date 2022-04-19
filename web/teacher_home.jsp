@@ -79,16 +79,13 @@
         <%}}%>
     </div>
     <script>
-        function toggle(source) {
-            var checkboxes = document.getElementsByName('classid');
+        function toggle(source,name) {
+            var checkboxes = document.getElementsByName(name);
             for (var i = 0, n = checkboxes.length; i < n; i++) {
                 checkboxes[i].checked = source.checked;
             }
             document.querySelector('#selectAllLabel').innerHTML = source.checked ? "Select No Class" : "Select All Classes";
         }
-        window.addEventListener('DOMContentLoaded', event => {
-            CKEDITOR.replace('postAddAll');
-        });
         var option = document.getElementsByName('notice');
         option = [...option];
         option.forEach((item) => {
@@ -105,13 +102,13 @@
         role.forEach((item) => {
             item.addEventListener('click', () => {
                 if (role[0].checked) {
-                    document.querySelector('#studentClass').classList.remove('fade');
-                    document.querySelector('#teacherClasses').classList.add('fade');
-                    document.querySelector('#teacherRole').classList.add('fade');
-                } else if (role[1].checked) {
                     document.querySelector('#teacherClasses').classList.remove('fade');
                     document.querySelector('#studentClass').classList.add('fade');
                     document.querySelector('#teacherRole').classList.remove('fade');
+                } else if (role[1].checked) {
+                    document.querySelector('#studentClass').classList.remove('fade');
+                    document.querySelector('#teacherClasses').classList.add('fade');
+                    document.querySelector('#teacherRole').classList.add('fade');
                 } else {
                     document.querySelector('#teacherRole').classList.add('fade');
                     document.querySelector('#teacherClasses').classList.add('fade');

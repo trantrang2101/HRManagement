@@ -20,6 +20,10 @@
         <servlet-name>DeleteSeverlet</servlet-name>
         <servlet-class>Controller.DeleteSeverlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EditServlet</servlet-name>
+        <servlet-class>Controller.EditServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginSeverlet</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -39,6 +43,10 @@
     <servlet-mapping>
         <servlet-name>DeleteSeverlet</servlet-name>
         <url-pattern>/delete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditServlet</servlet-name>
+        <url-pattern>/edit</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

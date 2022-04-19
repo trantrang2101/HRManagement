@@ -4,13 +4,8 @@
  */
 package Controller;
 
-import DAO.AddDAO;
-import DAO.DetailDAO;
-import DAO.LoginDAO;
-import entity.Classroom;
-import entity.Notice;
-import entity.Teacher;
-import entity.User;
+import DAO.*;
+import entity.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -42,8 +37,8 @@ public class AddServlet extends HttpServlet {
             AddDAO dao = new AddDAO();
             HttpSession session = request.getSession();
             String action = request.getParameter("action");
-            User login = (User) session.getAttribute("loginUser");
             boolean add = false;
+            DetailDAO detail = new DetailDAO();
             switch (action) {
                 case "addClass": {
                     String name = request.getParameter("name");
@@ -82,36 +77,50 @@ public class AddServlet extends HttpServlet {
                     break;
                 }
                 case "addPerson": {
-                    int id = Integer.parseInt(request.getParameter("id"));
-                    String name = request.getParameter("name");
-                    boolean gender = request.getParameter("gender").equals("1");
-                    String password = request.getParameter("password");
-                    int role = Integer.parseInt(request.getParameter("role"));
-                    String[] classList = request.getParameterValues("class");
-                    int roleID = request.getParameter("roleID") != null
-                            ? Integer.parseInt(request.getParameter("roleID"))
-                            : 0;
-                    Teacher user = new Teacher(id, name, gender, password, role, roleID);
-                    if (dao.addUser(user)) {
-                        if (classList != null && classList.length > 0) {
-                            for (String c : classList) {
-                                if (!dao.addUserClass(c, id)) {
-                                    dao.addClass(c);
-                                    dao.addUserClass(c, id);
-                                }
-                            }
-                        }
-                        List<Teacher> listUser = (List<Teacher>) session.getAttribute("listUser");
-                        listUser.add(user);
-                        session.setAttribute("listUser", listUser);
+                    if (request.getParameter("submit") == null) {
+                        request.setAttribute("submit", "addPerson");
                         add = true;
-                        response.sendRedirect("detail");
+                        request.setAttribute("subjectClassList", detail.getClassByRole(1));
+                        request.getRequestDispatcher("teacher_home.jsp").forward(request, response);
+                    } else {
+                        if (request.getParameter("teacherRole") == null) {
+                            int id = Integer.parseInt(request.getParameter("id"));
+                            String name = request.getParameter("name");
+                            boolean gender = request.getParameter("gender").equals("1");
+                            String password = request.getParameter("password");
+                            int role = Integer.parseInt(request.getParameter("role"));
+                            String[] classList = request.getParameterValues("class");
+                            int roleID = request.getParameter("roleID") != null
+                                    ? Integer.parseInt(request.getParameter("roleID"))
+                                    : 0;
+                            Teacher user = new Teacher(id, name, gender, password, role, roleID);
+                            if (dao.addUser(user)) {
+                                if (classList != null && classList.length > 0) {
+                                    for (String c : classList) {
+                                        if (!dao.addUserClass(c, id)) {
+                                            dao.addClass(c);
+                                            dao.addUserClass(c, id);
+                                        }
+                                    }
+                                }
+                                List<Teacher> listUser = (List<Teacher>) session.getAttribute("listUser");
+                                listUser.add(user);
+                                session.setAttribute("listUser", listUser);
+                                add = true;
+                                response.sendRedirect("detail");
+                            }
+                        } else {
+                            int teacherRole = Integer.parseInt(request.getParameter("teacherRole"));
+                            request.setAttribute("submit", "addPerson");
+                            request.setAttribute("subjectClassList", detail.getClassByRole(teacherRole));
+                            add = true;
+                            request.getRequestDispatcher("teacher_home.jsp").forward(request, response);
+                        }
                     }
                     break;
                 }
                 case "subjectChoosen":
                     int id = Integer.parseInt(request.getParameter("subject"));
-                    DetailDAO detail = new DetailDAO();
                     request.setAttribute("subjectClassList", detail.getClassByRole(id));
                     request.setAttribute("roleID", id);
                     request.getRequestDispatcher("addPerson.jsp").include(request, response);

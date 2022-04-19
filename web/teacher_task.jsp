@@ -172,8 +172,8 @@
     <script>
         var inputDate = document.querySelectorAll('#dateUpdate')[0];
         var date = document.querySelectorAll('#valueDate')[0];
-        var day = date.value.split('T')[0].split('-');
-        var time = date.value.split('T')[1].split(':');
+        var day = date.value.split(' ')[0].split('-');
+        var time = date.value.split(' ')[1].split(':');
         inputDate.value = moment(new Date(day[2], day[1] - 1, day[0], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
         if (new Date().getTime() < new Date(day[2], day[1] - 1, day[0], time[0], time[1]).getTime()) {
             inputDate.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');

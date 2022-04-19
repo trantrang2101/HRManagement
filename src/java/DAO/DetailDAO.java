@@ -199,7 +199,7 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                int i = 0;
+                
                 String sql = "select distinct * from [classroom_detail] where userid=" + userid;
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
@@ -231,8 +231,8 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                int i = 0;
-                String sql = "select * from classroom_detail,teacher where teacher.userid=classroom_detail.userid and roleid==" + role;
+                
+                String sql = "select distinct id from classroom_detail,teacher where teacher.userid=classroom_detail.userid and roleid=" + role;
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {

@@ -1,6 +1,7 @@
 #login {
     color: black;
     background-color: #e7f1ff;
+    margin: auto !important;
 }
 *:not(i){
     font-family: "Roboto", sans-serif;

@@ -4,11 +4,8 @@
  */
 package Controller;
 
-import DAO.EditDeleteDAO;
-import DAO.LoginDAO;
-import entity.Classroom;
-import entity.Notice;
-import entity.User;
+import DAO.*;
+import entity.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;

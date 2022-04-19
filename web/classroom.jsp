@@ -13,17 +13,6 @@
     <head>
         <title>Class ${sessionScope.classChoose.getName()}</title>
         <script src="assests/js/moment.js"></script>
-        <script src="assests/ckeditor/ckeditor.js"></script>
-        <script>
-            CKEDITOR.config.pasteFromWordPromptCleanup = true;
-            CKEDITOR.config.pasteFromWordRemoveFontStyles = false;
-            CKEDITOR.config.pasteFromWordRemoveStyles = false;
-            CKEDITOR.config.htmlEncodeOutput = false;
-            CKEDITOR.config.ProcessHTML = false;
-            CKEDITOR.config.entities = false;
-            CKEDITOR.config.entities_latin = false;
-            CKEDITOR.config.ForceSimpleAmpersand = true;
-        </script>
     </head>
     <body>
         <jsp:include page="included/modal.jsp"/>
@@ -161,7 +150,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" id="dropdownMenuButton1">
                                     <li>
-                                        <button class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editNotice">Edit</button>
+                                        <a class="dropdown-item" href="edit?action=editNotice&id=<%=c.getId()%>" >Edit</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="delete?notice=<%=c.getId()%>">Delete</a>
@@ -216,7 +205,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" id="dropdownMenuButton1">
                                     <li>
-                                        <button class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editNotice">Edit</button>
+                                        <a class="dropdown-item" href="edit?action=editNotice&id=<%=c.getId()%>" >Edit</a>
                                     </li>
                                     <li>
                                         <form action="delete" method="POST">
@@ -273,26 +262,12 @@
                                     }
                                 });
                             });
-                            window.addEventListener('DOMContentLoaded', event => {
-                                CKEDITOR.replace('postAdd');
-                                CKEDITOR.replace('postEdit');
-                            });
                             var datePublished = document.querySelector('#datePublished');
                             datePublished.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
                             datePublished.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
                             var newDateInput = document.querySelector('#dateInput');
                             newDateInput.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
                             newDateInput.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-                            var inputDate = document.querySelector('#dateUpdate');
-                            var date = document.querySelector('#valueDate');
-                            var day = date.value.split('T')[0].split('-');
-                            var time = date.value.split('T')[1].split(':');
-                            inputDate.value = moment(new Date(day[2], day[1] - 1, day[0], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
-                            if (new Date().getTime() < new Date(day[2], day[1] - 1, day[0], time[0], time[1]).getTime()) {
-                                inputDate.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-                            } else {
-                                inputDate.min = moment(new Date(day[2], day[1] - 1, day[0], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
-                            }
         </script>
     </body>
 
