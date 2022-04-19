@@ -89,34 +89,34 @@
                         <button class="btn btn-outline-primary" type="submit">Search</button>
                     </form>
                 </div>
-                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                    <form action="detail">
-                        <input class="form-control search-form" hidden="" name="search" type="search" placeholder="Search" value="<%=searchWords%>" aria-label="Search">
-                        <input type="text" hidden="" name="class" value="<%=clsl.getName()%>"/>
-                        <%
-                            if(optionChoose==null){
-                        %>
-                        <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="1" id="excercise" checked>
-                        <label class="btn btn-primary" for="excercise">Task</label>
-                        <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="0" id="notice" checked>
-                        <label class="btn btn-primary" for="notice">Notice</label>
-                        <%}else{
-                            if(optionChoose.equals("1")){
-                        %>
-                        <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="1" id="excercise" checked>
-                        <label class="btn btn-primary" for="excercise">Task</label>
-                        <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="0" id="notice">
-                        <label class="btn btn-outline-primary" for="notice">Notice</label>
-                        <%
-                            }else{
-                        %>
-                        <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="1" id="excercise">
-                        <label class="btn btn-outline-primary" for="excercise">Task</label>
-                        <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="0" id="notice" checked>
-                        <label class="btn btn-primary" for="notice">Notice</label>
-                        <%}}%>
-                    </form>
-                </div>
+                <form action="detail" class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                    <%
+                        if(optionChoose==null){
+                    %>
+                    <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="1" id="excercise" checked>
+                    <label class="btn btn-primary" for="excercise">Task</label>
+                    <input class="form-control search-form fade" hidden="" name="search" type="search" placeholder="Search" value="<%=searchWords%>" aria-label="Search">
+                    <input type="text" hidden="" class="fade" name="class" value="<%=clsl.getName()%>"/>
+                    <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="0" id="notice" checked>
+                    <label class="btn btn-primary" for="notice">Notice</label>
+                    <%}else{
+                        if(optionChoose.equals("1")){
+                    %>
+                    <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="1" id="excercise" checked>
+                    <label class="btn btn-primary" for="excercise">Task</label>
+                    <input class="form-control search-form fade" hidden="" name="search" type="search" placeholder="Search" value="<%=searchWords%>" aria-label="Search">
+                    <input type="text" hidden="" class="fade" name="class" value="<%=clsl.getName()%>"/>
+                    <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="0" id="notice">
+                    <label class="btn btn-outline-primary" for="notice">Notice</label>
+                    <%
+                        }else{
+                    %>
+                    <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="1" id="excercise">
+                    <label class="btn btn-outline-primary" for="excercise">Task</label>
+                    <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="0" id="notice" checked>
+                    <label class="btn btn-primary" for="notice">Notice</label>
+                    <%}}%>
+                </form>
             </div>
         </div>
         <div class="accordion container" id="notice-list">
@@ -248,17 +248,6 @@
                                         document.querySelector('#deadline').classList.remove('fade');
                                     } else {
                                         document.querySelector('#deadline').classList.add('fade');
-                                    }
-                                });
-                            });
-                            var optionEdit = document.getElementsByName('noticeEdit');
-                            optionEdit = [...optionEdit];
-                            optionEdit.forEach((item) => {
-                                item.addEventListener('click', () => {
-                                    if (optionEdit[0].checked) {
-                                        document.querySelector('#deadlineEdit').classList.remove('fade');
-                                    } else {
-                                        document.querySelector('#deadlineEdit').classList.add('fade');
                                     }
                                 });
                             });

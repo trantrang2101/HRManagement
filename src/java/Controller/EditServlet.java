@@ -43,7 +43,7 @@ public class EditServlet extends HttpServlet {
             if (action.equals("editNotice")) {
                 if (request.getParameter("submit") == null) {
                     int taskid = Integer.parseInt(request.getParameter("id"));
-                    request.setAttribute("chooseNotice", dao.getNotice(taskid));
+                    request.setAttribute("editNotice", dao.getNotice(taskid));
                     edit = true;
                     request.getRequestDispatcher("classroom.jsp").forward(request, response);
                 } else {
@@ -65,42 +65,44 @@ public class EditServlet extends HttpServlet {
                     }
                 }
             } else if (action.equals("editPerson")) {
+                Classroom choosenClass = (Classroom) session.getAttribute("classChoose");
                 if (request.getParameter("submit") == null) {
                     int userid = Integer.parseInt(request.getParameter("user"));
-                    request.setAttribute("choosePerson", detail.getUser(userid));
+                    request.setAttribute("editPerson", detail.getUser(userid));
                     edit = true;
-                    request.getRequestDispatcher("classroom.jsp").forward(request, response);
+                    request.getRequestDispatcher("detail?class=" + choosenClass.getName()).forward(request, response);
                 } else {
                     if (request.getParameter("teacherRole") != null) {
                         int teacherRole = Integer.parseInt(request.getParameter("teacherRole"));
                         request.setAttribute("subjectClassList", detail.getClassByRole(teacherRole));
                         edit = true;
-                        request.getRequestDispatcher("detail").forward(request, response);
+                        request.getRequestDispatcher("detail?class=" + choosenClass.getName()).forward(request, response);
                     } else {
                         int id = Integer.parseInt(request.getParameter("id"));
-                            String name = request.getParameter("name");
-                            boolean gender = request.getParameter("gender").equals("1");
-                            String password = request.getParameter("password");
-                            int role = Integer.parseInt(request.getParameter("role"));
-                            String[] classList = request.getParameterValues("class");
-                            int roleID = request.getParameter("roleID") != null
-                                    ? Integer.parseInt(request.getParameter("roleID"))
-                                    : 0;
-                            Teacher userGet = new Teacher(id, name, gender, password, role, roleID);
-                            if (dao.editUser(userGet)) {
-                                if (classList != null && classList.length > 0) {
-                                    for (String c : classList) {
-                                        if (!dao.editUserClass(c, id)) {
-                                            edit=false;
-                                        }else{
-                                            edit = true;
-                                        }
+                        String name = request.getParameter("name");
+                        boolean gender = request.getParameter("gender").equals("1");
+                        String password = request.getParameter("password");
+                        int role = Integer.parseInt(request.getParameter("role"));
+                        String[] classList = request.getParameterValues("class");
+                        int roleID = request.getParameter("roleID") != null
+                                ? Integer.parseInt(request.getParameter("roleID"))
+                                : 0;
+                        Teacher userGet = new Teacher(id, name, gender, password, role, roleID);
+                        if (dao.editUser(userGet)) {
+                            if (classList != null && classList.length > 0) {
+                                for (String c : classList) {
+                                    if (!dao.editUserClass(c, id)) {
+                                        edit = false;
+                                        break;
+                                    } else {
+                                        edit = true;
                                     }
                                 }
-                                if (edit) {
-                                    response.sendRedirect("detail");
-                                }
                             }
+                            if (edit) {
+                                response.sendRedirect("detail?class=" + choosenClass.getName());
+                            }
+                        }
                     }
                 }
             }

@@ -15,7 +15,7 @@ public class ConnectJDBC {
 
     private static String DB_URL = "jdbc:sqlserver://KOUTAHARA\\SQLEXPRESS:1433;databaseName=QHVinh;encrypt=true;trustServerCertificate=true;";
     private static String USER_NAME = "sa";
-    private static String PASSWORD = "1234";
+    private static String PASSWORD = "123456";
 
     /**
      * create connection

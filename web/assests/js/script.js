@@ -89,9 +89,3 @@ option.forEach((item) => {
         }
     });
 });
-var newDateInput = document.querySelector('#dateInputAll');
-newDateInput.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-newDateInput.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-var datePublished = document.querySelector('#datePublishedAll');
-datePublished.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-datePublished.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');

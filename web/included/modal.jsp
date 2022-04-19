@@ -47,8 +47,8 @@
     Integer taskid = (Integer) request.getAttribute("taskChoose");
     Integer userChoose = (Integer) request.getAttribute("userChoose");
     List<String> subjectClassList = (List<String>)request.getAttribute("subjectClassList");
-    Notice chooseNotice = (Notice) request.getAttribute("chooseNotice");
-    User choosenPerson = (User) request.getAttribute("choosePerson");
+    Notice editNotice = (Notice) request.getAttribute("editNotice");
+    User editPerson = (User) request.getAttribute("editPerson");
 %>
 <div id="preloader">
     <div class="loader">
@@ -404,7 +404,7 @@
         </div>
     </div>
 </div>
-<%if(choosenPerson!=null){%>
+<%if(editPerson!=null){%>
 <div class="modal" id="editPerson" style="">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -420,18 +420,18 @@
                                 <div class="form-group col">
                                     <label class="form-label">ID</label>
                                     <input type="text" name="id" pattern="\d*" class="form-control mb-1 bg-transparent" hidden="">
-                                    <input type="text" name="id" pattern="\d*" value="<%=choosenPerson.getId()%>" disabled="" class="form-control mb-1 bg-transparent">
+                                    <input type="text" name="id" pattern="\d*" value="<%=editPerson.getId()%>" disabled="" class="form-control mb-1 bg-transparent">
                                 </div>
                                 <div class="form-group col">
                                     <label class="form-label">Name</label>
-                                    <input type="text" name="name" value="<%=choosenPerson.getName()%>" class="form-control mb-1">
+                                    <input type="text" name="name" value="<%=editPerson.getName()%>" class="form-control mb-1">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group col">
                                     <label class="form-label">Gender</label>
                                     <select name="gender" class="form-select bg-transparent">
-                                        <%if(choosenPerson.isGender()){%>
+                                        <%if(editPerson.isGender()){%>
                                         <option value="1" selected="">Male</option>
                                         <option value="0">Female</option>
                                         <%}else{%>
@@ -442,7 +442,7 @@
                                 </div>
                                 <div class="form-group col">
                                     <label class="form-label">Pasword</label>
-                                    <input type="text" name="password" value="<%=choosenPerson.getPassword()%>" class="form-control mb-1">
+                                    <input type="text" name="password" value="<%=editPerson.getPassword()%>" class="form-control mb-1">
                                 </div>
                             </div>
                             <div class="row">
@@ -452,7 +452,7 @@
                                         <%
                                         if(listSubject!=null){
                                             for(Teacher c : listSubject){
-                                                if(dao.getRoleTeacher(choosenPerson.getId()).getSubjectID().equals(c.getSubjectID())){
+                                                if(dao.getRoleTeacher(editPerson.getId()).getSubjectID()==c.getSubjectID()){
                                         %>
                                         <option selected="" value="<%=c.getSubjectID()%>"><%=c.getSubjectName()%></option>
                                         <%}else{%>
@@ -484,7 +484,7 @@
                                         <%
                                             if(listClass!=null){
                                                 for(Classroom c : listClass){
-                                                    if(dao.getClassByID(choosenPerson.getId()).get(0).equals(c.getName())){
+                                                    if(dao.getClassByID(editPerson.getId()).get(0).equals(c.getName())){
                                         %>
                                         <option selected value="<%=c.getName()%>"><%=c.getName()%></option>
                                         <%}else{%>
@@ -710,7 +710,7 @@
         </div>
     </div>
 </div>
-<%if(chooseNotice!=null){%>
+<%if(editNotice!=null){%>
 <div class="modal" tabindex="-1" style="display:block; background: rgba(0,0,0,0.5);;overflow-y: scroll;">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -724,25 +724,21 @@
                         <div class="col-lg-6 col-sm-12" style="margin: 0;padding: 0;">
                             <div class="form-group">
                                 <label class="form-label">Title</label>
-                                <input type="text" required name="title" class="form-control mb-1" value="<%=chooseNotice.getTitle()%>">
+                                <input type="text" required name="title" class="form-control mb-1" value="<%=editNotice.getTitle()%>">
                             </div>
                         </div>
                         <div class="col-lg-6 col-sm-12 d-flex justify-content-end">
                             <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                                <%if(chooseNotice.isTask()){%>
-                                <input type="radio" class="btn-check" name="noticeEdit" id="noticeEditEx" value="1"
-                                       autocomplete="off" checked="">
+                                <%if(editNotice.isTask()){%>
+                                <input type="radio" class="btn-check" name="noticeEdit" id="noticeEditEx" value="1" checked="">
                                 <label class="btn btn-outline-primary" for="noticeEx">Task</label>
-                                <input type="radio" class="btn-check" name="noticeEdit" id="noticeEditNo" value="0"
-                                       autocomplete="off" disabled="">
+                                <input type="radio" class="btn-check" name="noticeEdit" id="noticeEditNo" value="0" disabled/>
                                 <label class="btn btn-secondary" for="noticeNo">Notice</label>
                                 <%}else{%>
-                                <input type="radio" class="btn-check" name="noticeEdit" id="noticeEditEx" value="1"
-                                       autocomplete="off">
-                                <label class="btn btn-outline-primary" for="noticeEx">Task</label>
-                                <input type="radio" class="btn-check" name="noticeEdit" id="noticeEditNo" value="0"
-                                       autocomplete="off" checked="">
-                                <label class="btn btn-outline-primary" for="noticeNo">Notice</label>
+                                <input type="radio" class="btn-check" name="noticeEdit" id="noticeEditEx" value="1" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="noticeEditEx">Task</label>
+                                <input type="radio" class="btn-check" name="noticeEdit" id="noticeEditNo" value="0" autocomplete="off" checked>
+                                <label class="btn btn-outline-primary" for="noticeEditNo">Notice</label>
                                 <%}%>
                             </div>
                         </div>
@@ -753,7 +749,7 @@
                                 <label class="form-label">Author</label>
                                 <input type="number" name="author" hidden class="form-control mb-1" value="${sessionScope.loginUser.getId()}">
                                 <input type="text" name="author" class="form-control mb-1 bg-transparent"
-                                       value="<%=dao.getUser(chooseNotice.getCreateBy()).getName()%>" disabled>
+                                       value="<%=dao.getUser(editNotice.getCreateBy()).getName()%>" disabled>
                             </div>
                             <div class="form-group col">
                                 <label class="form-label">Class</label>
@@ -761,7 +757,7 @@
                                     <%
                                         if(listClass!=null){
                                             for(Classroom c : listClass){
-                                                if(chooseNotice.getClassroom()==c.getName()){
+                                                if(editNotice.getClassroom()==c.getName()){
                                     %>
                                     <option value="<%=c.getName()%>" selected=""><%=c.getName()%></option>
                                     <%}else{%>
@@ -771,10 +767,15 @@
                             </div>
                         </div>
                         <div class="col-lg-6 col-sm-12 row row-cols-2">
-                            <%if(chooseNotice.isTask()){%>
+                            <div class="col form-group">
+                                <label class="form-label">Published At</label>
+                                <input type="text" id="valueDatePublic" value="<%=editNotice.getPublicAt()%>" hidden="">
+                                <input type="datetime-local" id="dateInputPublic" name="publish" class="form-control mb-1">                    
+                            </div>
+                            <%if(editNotice.isTask()){%>
                             <div class="col form-group" id="deadlineEdit">
                                 <label class="form-label">Deadline</label>
-                                <input type="text" id="valueDateDeadline" value="<%=chooseNotice.getDeadline()%>" hidden="">
+                                <input type="text" id="valueDateDeadline" value="<%=editNotice.getDeadline()%>" hidden="">
                                 <input type="datetime-local" id="dateInputDeadline" name="deadline" class="form-control mb-1">
                             </div>
                             <%}else{%>
@@ -783,19 +784,15 @@
                                 <input required type="datetime-local" id="dateInputDeadline" name="deadline" class="form-control mb-1" min="">
                             </div>
                             <%}%>
-                            <div class="col form-group">
-                                <label class="form-label">Published At</label>
-                                <input type="text" id="valueDatePublic" value="<%=chooseNotice.getPublicAt()%>" hidden="">
-                                <input type="datetime-local" id="dateInputPublic" name="publish" class="form-control mb-1">                            </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">content</label>
-                        <textarea id="postEdit" class="form-control mb-1" name="content"><%=chooseNotice.getDescribe()%></textarea>
+                        <textarea id="postEdit" class="form-control mb-1" name="content"><%=editNotice.getDescribe()%></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input name="id" value="<%=chooseNotice.getId()%>" hidden="">
+                    <input name="id" value="<%=editNotice.getId()%>" hidden="">
                     <input name="submit" value="edit" hidden="">
                     <a class="btn btn-light" type="button"  href="javascript:window.history.back()">Cancel</a>
                     <button class="btn btn-primary" name="action" value="editNotice">Save</button>
@@ -960,6 +957,12 @@
         } else {
             inputDatePublic.min = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
         }
+        var newDateInput = document.querySelector('#dateInputAll');
+        newDateInput.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+        newDateInput.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+        var datePublished = document.querySelector('#datePublishedAll');
+        datePublished.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+        datePublished.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
         var inputDateDeadline = document.querySelectorAll('#dateInputDeadline')[0];
         var dateDeadline = document.querySelectorAll('#valueDateDeadline')[0];
         if (dateDeadline !== null) {
@@ -1012,6 +1015,18 @@
         console.log(arr);
         return arr;
     }
+    var optionEdit = document.getElementsByName('noticeEdit');
+    optionEdit = [...optionEdit];
+    optionEdit.forEach((item) => {
+        item.addEventListener('click', () => {
+            if (optionEdit[1].checked) {
+                document.querySelector('#deadlineEdit').classList.add('fade');
+            } else {
+                document.querySelector('#deadlineEdit').classList.remove('fade');
+            }
+        });
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('#highestMark').innerHTML = highest;
         document.querySelector('#averageStudent').value = markAvg / count;

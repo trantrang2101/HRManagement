@@ -166,27 +166,17 @@
                     <form method="POST">
                         <tr>
                             <td><%=t.getId()%></td>
-                            <td class="w-25"><input class="w-100 bg-transparent" type="text" name="name" value="<%=t.getName()%>"></td>
+                            <td class="w-25"><%=t.getName()%></td>
                             <td>
                                 <div class="form-group d-flex bg-transparent border-bottom justify-content-between">
-                                    <input type="password" class="input-password input-group bg-transparent" value="<%=t.getPassword()%>" name="password">
+                                    <input type="password" disabled="" class="input-password input-group bg-transparent" value="<%=t.getPassword()%>" name="password">
                                     <input type="radio" hidden="" id="password<%=t.getId()%>" onclick="showPassword(this)">
                                     <label for="password<%=t.getId()%>">
                                         <i class="fa-solid fa-eye"></i>
                                     </label>
                                 </div>
                             </td>
-                            <td class="w-10">
-                                <select name="gender" class="form-select bg-transparent border-0">
-                                    <%if(t.isGender()){%>
-                                    <option value="1" selected>Male</option>
-                                    <option value="0">Female</option>
-                                    <%}else{%>
-                                    <option value="1">Male</option>
-                                    <option value="0"selected>Female</option>
-                                    <%}%>
-                                </select>
-                            </td>
+                            <td class="w-10"><%=t.isGender()?"Male":"Female"%></td>
                             <td class="w-10">
                                 <%if(t.getRoleID()==1){%>
                                 Student
@@ -203,23 +193,9 @@
                                 <%}%>
                             </td>
                             <td>
-                                <%if(t.getRoleID()==1){%>
-                                <select name="class" class="form-select bg-transparent">
-                                    <%
-                                                    if(listClass!=null){
-                                                        for(Classroom c : listClass){
-                                                        if(dao.getClassByID(t.getId()).get(0).equals(c.getName())){
-                                    %>
-                                    <option value="<%=c.getName()%>" selected=""><%=c.getName()%></option>
-                                    <%}else{%>
-                                    <option value="<%=c.getName()%>"><%=c.getName()%></option>
-                                    <%
-                                                }
-                                            }
-                                        }
-                                    %>
-                                </select>
-                                <%}else if(t.getRoleID()==2){%>
+                                <%if(t.getRoleID()==1){
+                                out.print(dao.getClassByID(t.getId()).get(0));
+                                }else if(t.getRoleID()==2){%>
                                 <div class="d-flex flex-wrap flex-5 justify-content-between">
                                     <%
                                         List<String> teacherClass = dao.getClassByID(t.getId());
@@ -231,23 +207,11 @@
                                 </div>
                                 <%  }%>
                             </td>
-                            <td class="w-10">
-                                <%if(t.getRoleID()==2){%>
-                                <select name="roleID" class="form-select bg-transparent">
-                                    <%
-                                        if(listSubject!=null){
-                                        for(Teacher c : listSubject){
-                                            if(c.getSubjectID()==t.getSubjectID()){
-                                    %>
-                                    <option value="<%=c.getSubjectID()%>" selected><%=c.getSubjectName()%></option>
-                                    <%}else{%>
-                                    <option value="<%=c.getSubjectID()%>"><%=c.getSubjectName()%></option>
-                                    <%}}}%>
-                                </select>
-                                <%}%>
+                            <td class="w-10 text-center">
+                                <%if(t.getRoleID()==2){out.print(dao.getRoleTeacher(t.getId()).getSubjectName());}%>
                             </td>
-                            <td><a href="edit?action=editPerson&user=<%=t.getRoleID()%>" class="btn btn-outline-primary">Edit</a></td>
-                            <td><a href="delete?action=deleteUser&user=<%=t.getRoleID()%>" class="btn btn-outline-danger">Delete</a></td>
+                            <td><a href="edit?action=editPerson&user=<%=t.getId()%>" class="btn btn-outline-primary">Edit</a></td>
+                            <td><a href="delete?action=deleteUser&user=<%=t.getId()%>" class="btn btn-outline-danger">Delete</a></td>
                         </tr>
                         <%}%>
                     </form>
