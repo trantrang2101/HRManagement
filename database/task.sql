@@ -42,9 +42,10 @@ create table task_work(
 	comment text,
 	doneAt datetime default getDate()
 );
-insert into [user](id,name,roleID,gender,password) values (0,N'Phạm Thu Hương',0,1,0)
+insert into [user](id,name,roleID,gender,password) values (0,N'Phạm Thu Hương',0,0,0),(1901781017,N'Lô Căm Sánh Anh',1,0,'150049')
 insert into [teacher_role] (name) values (N'Maths'),(N'Literature'),(N'History'),(N'Geography'),(N'Civic Education'),(N'Physics'),(N'Chemistry'),(N'Biology')
 insert into classroom values ('10A1')
+insert into classroom_detail values('10A1',1901781017)
 INSERT INTO Notice (createdBy,title,describe,classid,publicAt,isTask) VALUES (0,'REGARDING PE - WDU202c','<div class="gmail_default">
  <div class="gmail_default"><span style="font-size:large"><span style="font-family:garamond,&quot;times new roman&quot;,serif"><span style="color:#444444">Dear all,&nbsp;</span></span></span></div>
  

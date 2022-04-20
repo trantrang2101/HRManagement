@@ -79,24 +79,13 @@
         <%}}%>
     </div>
     <script>
-        function toggle(source,name) {
+        function toggle(source, name) {
             var checkboxes = document.getElementsByName(name);
             for (var i = 0, n = checkboxes.length; i < n; i++) {
                 checkboxes[i].checked = source.checked;
             }
             document.querySelector('#selectAllLabel').innerHTML = source.checked ? "Select No Class" : "Select All Classes";
         }
-        var option = document.getElementsByName('notice');
-        option = [...option];
-        option.forEach((item) => {
-            item.addEventListener('click', () => {
-                if (option[2].checked) {
-                    document.querySelector('#deadlineAll').classList.remove('fade');
-                } else {
-                    document.querySelector('#deadlineAll').classList.add('fade');
-                }
-            });
-        });
         var role = document.getElementsByName('role');
         role = [...role];
         role.forEach((item) => {

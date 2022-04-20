@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -33,7 +34,8 @@ public class EditServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
+        PrintWriter out = response.getWriter();
+        try {
             String action = request.getParameter("action");
             HttpSession session = request.getSession();
             User user = (User) session.getAttribute("loginUser");
@@ -66,32 +68,31 @@ public class EditServlet extends HttpServlet {
                 }
             } else if (action.equals("editPerson")) {
                 Classroom choosenClass = (Classroom) session.getAttribute("classChoose");
+                int userid = Integer.parseInt(request.getParameter("user"));
+                Teacher previous = detail.getUser(userid);
                 if (request.getParameter("submit") == null) {
-                    int userid = Integer.parseInt(request.getParameter("user"));
-                    request.setAttribute("editPerson", detail.getUser(userid));
+                    request.setAttribute("editPerson", previous);
                     edit = true;
-                    request.getRequestDispatcher("detail?class=" + choosenClass.getName()).forward(request, response);
+                    request.setAttribute("subjectClassList", detail.getClassByRole(1));
+                    request.getRequestDispatcher("detail").forward(request, response);
                 } else {
-                    if (request.getParameter("teacherRole") != null) {
-                        int teacherRole = Integer.parseInt(request.getParameter("teacherRole"));
-                        request.setAttribute("subjectClassList", detail.getClassByRole(teacherRole));
-                        edit = true;
-                        request.getRequestDispatcher("detail?class=" + choosenClass.getName()).forward(request, response);
-                    } else {
-                        int id = Integer.parseInt(request.getParameter("id"));
+                    int role = request.getParameter("roleEdit") == null ? 2 : Integer.parseInt(request.getParameter("roleEdit"));
+                    if (request.getParameter("teacherRole") == null || role != 2) {
                         String name = request.getParameter("name");
                         boolean gender = request.getParameter("gender").equals("1");
                         String password = request.getParameter("password");
-                        int role = Integer.parseInt(request.getParameter("role"));
                         String[] classList = request.getParameterValues("class");
                         int roleID = request.getParameter("roleID") != null
                                 ? Integer.parseInt(request.getParameter("roleID"))
                                 : 0;
-                        Teacher userGet = new Teacher(id, name, gender, password, role, roleID);
+                        Teacher userGet = new Teacher(userid, name, gender, password, role, roleID);
+                        if (previous.getRoleID() == 2 && userGet.getRoleID() != 2) {
+                            dao.deleteTeacher(userid);
+                        }
                         if (dao.editUser(userGet)) {
                             if (classList != null && classList.length > 0) {
                                 for (String c : classList) {
-                                    if (!dao.editUserClass(c, id)) {
+                                    if (!dao.editUserClass(c, userid)) {
                                         edit = false;
                                         break;
                                     } else {
@@ -100,9 +101,17 @@ public class EditServlet extends HttpServlet {
                                 }
                             }
                             if (edit) {
-                                response.sendRedirect("detail?class=" + choosenClass.getName());
+                                response.sendRedirect("detail");
                             }
                         }
+                    } else {
+                        int teacherRole = Integer.parseInt(request.getParameter("teacherRole"));
+                        request.setAttribute("subjectClassList", detail.getClassByRole(teacherRole));
+                        edit = true;
+                        previous.setRoleID(2);
+                        previous.setSubjectID(teacherRole);
+                        request.setAttribute("editPerson", previous);
+                        request.getRequestDispatcher("detail").forward(request, response);
                     }
                 }
             }
@@ -110,8 +119,7 @@ public class EditServlet extends HttpServlet {
                 out.print("<script>alert('Edit failed!');window.history.back()</script>");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("error.html");
+            out.print("<script>window.history.back()</script>");
         }
     }
 

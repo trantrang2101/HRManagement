@@ -112,6 +112,7 @@ public class AddServlet extends HttpServlet {
                         } else {
                             int teacherRole = Integer.parseInt(request.getParameter("teacherRole"));
                             request.setAttribute("submit", "addPerson");
+                            request.setAttribute("teacherRole", teacherRole);
                             request.setAttribute("subjectClassList", detail.getClassByRole(teacherRole));
                             add = true;
                             request.getRequestDispatcher("teacher_home.jsp").forward(request, response);

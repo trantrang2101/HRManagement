@@ -5,9 +5,7 @@
 package Controller;
 
 import DAO.LoginDAO;
-import entity.Classroom;
-import entity.Teacher;
-import entity.User;
+import entity.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -45,14 +43,11 @@ public class LoginSeverlet extends HttpServlet {
                 User user = dao.login(id, password);
                 if (user != null) {
                     session.setAttribute("loginUser", user);
-                    List<Classroom> list = dao.getClassList(id);
                     if (user.getRoleID() == 1) {
+                        List<Classroom> list = dao.getClassList(id);
                         response.sendRedirect("detail?class=" + list.get(0).getName());
                     } else {
-                        session.setAttribute("listClass", list);
-                        List<Teacher> listSubject = dao.getTeacherRoleList();
-                        session.setAttribute("listSubject", listSubject);
-                        request.getRequestDispatcher("teacher_home.jsp").forward(request, response);
+                        response.sendRedirect("detail?action=return");
                     }
                 } else {
                     out.print("<script>alert('Wrong id or password');</script>");

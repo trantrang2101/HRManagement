@@ -52,7 +52,7 @@
             </button>
         </nav>
         <nav class="container d-flex justify-content-end">
-            <a href="teacher_home.jsp" class="more float-end">
+            <a href="detail?action=return" class="more float-end">
                 <span>Return list classes<i class="fas fa-long-arrow-alt-right"></i></span>
             </a>
         </nav>
@@ -209,7 +209,7 @@
                                     </li>
                                     <li>
                                         <form action="delete" method="POST">
-                                            <input type="text" name="notice" value="<%=c.getId()%>" hidden/>
+                                            <input type="text" name="noticeDelete" value="<%=c.getId()%>" hidden/>
                                             <button class="dropdown-item" name="action" value="deleteNotice" type="submit">Delete</button>
                                         </form>
                                     </li>
@@ -234,29 +234,12 @@
         </div>
         <script src="./assests/ckeditor/ckeditor.js"></script>
         <script>
-                            $(window).load(function () {
-                                $("#preload").hide();
-                            });
-                            $(document).ready(function () {
-                                $('#tableMark').DataTable();
-                            });
-                            var option = document.getElementsByName('notice');
-                            option = [...option];
-                            option.forEach((item) => {
-                                item.addEventListener('click', () => {
-                                    if (option[0].checked) {
-                                        document.querySelector('#deadline').classList.remove('fade');
-                                    } else {
-                                        document.querySelector('#deadline').classList.add('fade');
-                                    }
-                                });
-                            });
-                            var datePublished = document.querySelector('#datePublished');
-                            datePublished.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-                            datePublished.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-                            var newDateInput = document.querySelector('#dateInput');
-                            newDateInput.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-                            newDateInput.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+                        document.querySelector('#datePublished').oninput(function () {
+                            var day = this.value.split('T')[0].split('-');
+                            var time = this.value.split('T')[1].split(':');
+                            document.querySelector('#datePublished').min = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+                            document.querySelector('#datePublished').value = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+                        });
         </script>
     </body>
 

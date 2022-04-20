@@ -36,32 +36,50 @@ public class DeleteSeverlet extends HttpServlet {
         try ( PrintWriter out = response.getWriter()) {
             String action = request.getParameter("action");
             HttpSession session = request.getSession();
-            User user = (User)session.getAttribute("loginUser");
+            DetailDAO detail = new DetailDAO();
+            User user = (User) session.getAttribute("loginUser");
+            Classroom cl = (Classroom) session.getAttribute("classChoose");
             EditDeleteDAO dao = new EditDeleteDAO();
             if (action.equals("deleteNotice")) {
-                int notice = Integer.parseInt(request.getParameter("notice"));
-                if (!dao.deleteNotice(notice)) {
-                    out.print("<script>alert('Delete failed!');window.history.back()</script>");
+                int notice = Integer.parseInt(request.getParameter("noticeDelete"));
+                if (request.getParameter("submit") != null) {
+                    if (!dao.deleteNotice(notice)) {
+                        out.print("<script>window.history.back()</script>");
+                    } else {
+                        response.sendRedirect("detail?submit=deleteNotice&class=" + cl.getName());
+                    }
                 } else {
-                    Classroom cl = (Classroom) session.getAttribute("classChoose");
+                    session.setAttribute("deleteNotice", dao.getNotice(notice));
                     response.sendRedirect("detail?class=" + cl.getName());
                 }
             } else if (action.equals("deleteClass")) {
                 String classid = request.getParameter("class");
-                if (!dao.deleteClass(classid)) {
-                    out.print("<script>alert('Delete failed!');window.history.back()</script>");
-                }else{
-                    LoginDAO daoLogin = new LoginDAO();
-                    List<Classroom> list = daoLogin.getClassList(user.getId());
-                    session.setAttribute("listClass", list);
-                    response.sendRedirect("teacher_home.jsp");
-                }
-            }else if (action.equals("deleteUser")) {
-                int getUser = Integer.parseInt(request.getParameter("user"));
-                if (!dao.deleteUser(getUser)) {
-                    out.print("<script>alert('Delete failed!');window.history.back()</script>");
+                if (request.getParameter("submit") != null) {
+                    if (!dao.deleteClass(classid)) {
+                        out.print("<script>window.history.back()</script>");
+                    } else {
+                        response.sendRedirect("detail?action=return&submit=deleteClass");
+                    }
                 } else {
-                    response.sendRedirect("detail");
+                    session.setAttribute("deleteClass", classid);
+                    response.sendRedirect("detail?action=return");
+                }
+            } else if (action.equals("deleteUser")) {
+                int getUser = Integer.parseInt(request.getParameter("user"));
+                if (request.getParameter("submit") != null) {
+                    if (!dao.deleteUser(getUser)) {
+                        out.print("<script>window.history.back()</script>");
+                    } else {
+                        response.sendRedirect("detail?submit=deleteUser");
+                    }
+                } else {
+                    Teacher get = detail.getUser(getUser);
+                    if (user.getId() == get.getId()) {
+                        out.print("<script>alert('You cannot delete yourself!');window.history.back()</script>");
+                    } else {
+                        session.setAttribute("deletePerson", get);
+                        response.sendRedirect("detail");
+                    }
                 }
             }
         } catch (Exception e) {

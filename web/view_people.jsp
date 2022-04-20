@@ -42,7 +42,7 @@
             </button>
         </nav>
         <nav class="container d-flex justify-content-end">
-            <a href="teacher_home.jsp" class="more float-end">
+            <a href="detail?action=return" class="more float-end">
                 <span>Return list classes<i class="fas fa-long-arrow-alt-right"></i></span>
             </a>
         </nav>
@@ -51,8 +51,6 @@
                 <nav class="" aria-label="">
                     <form action="detail">
                         <ul id="pagination" class="pagination">
-                            <input hidden="" type="text" name="" id="thisPage" value="<%=thisPage%>">
-                            <input class="form-control search-form border-0 border-bottom" hidden="" name="search" type="search" placeholder="Search" value="<%=searchWords%>" aria-label="Search">
                             <%
                             k=0;
                             for(int i =0;i<3;i++){
@@ -85,9 +83,12 @@
                             <li class="page-item page-pagination page-normal"><button class="page-link" name="page" value="<%=c%>" type="submit"><%=c%></button></li>
                                 <%
                                     }
-                                }
-                                  if(thisPage<pages){
-                                %>
+                                }%>
+                            <input hidden="" type="text" name="" id="thisPage" value="<%=thisPage%>">
+                            <input class="form-control search-form border-0 border-bottom" hidden="" name="search" type="search" placeholder="Search" value="<%=searchWords%>" aria-label="Search">
+                            <%
+                              if(thisPage<pages){
+                            %>
                             <li class="page-item page-pagination"><button class="page-link" name="page" value="<%=thisPage+1%>" type="submit">❯</button></li>
                                 <%} 
                                       if(thisPage<pages-3){
@@ -103,26 +104,24 @@
                     </form>
                 </nav>  
                 <div class="d-flex justify-content-between">
-                    <div class="btn-group" role="group">
-                        <form action="detail">
-                            <%
-                                k = 0;
-                                for(int i =0;i<3;i++){
-                                if(roleSearch[k].equals(roleList[i])){
-                            %>
-                            <input type="checkbox" class="btn-check" checked onchange="this.parentNode.submit()" name="roleSearch" value="<%=roleList[i]%>" id="role<%=roleList[i]%>">
-                            <label class="btn btn-primary" for="role<%=roleList[i]%>"><%=roleName[i]%></label>
-                            <%
-                                if(k<roleSearch.length-1){
-                                    k++;
-                                }
-                                }else{
-                            %>
-                            <input type="checkbox" class="btn-check" onchange="this.parentNode.submit()" name="roleSearch" value="<%=roleList[i]%>" id="role<%=roleList[i]%>">
-                            <label class="btn btn-outline-primary" for="role<%=roleList[i]%>"><%=roleName[i]%></label>
-                            <%}}%>
-                        </form>
-                    </div>
+                    <form action="detail" class="btn-group" role="group">
+                        <%
+                            k = 0;
+                            for(int i =0;i<3;i++){
+                            if(roleSearch[k].equals(roleList[i])){
+                        %>
+                        <input type="checkbox" class="btn-check" checked onchange="this.parentNode.submit()" name="roleSearch" value="<%=roleList[i]%>" id="role<%=roleList[i]%>">
+                        <label class="btn btn-primary" for="role<%=roleList[i]%>"><%=roleName[i]%></label>
+                        <%
+                            if(k<roleSearch.length-1){
+                                k++;
+                            }
+                            }else{
+                        %>
+                        <input type="checkbox" class="btn-check" onchange="this.parentNode.submit()" name="roleSearch" value="<%=roleList[i]%>" id="role<%=roleList[i]%>">
+                        <label class="btn btn-outline-primary" for="role<%=roleList[i]%>"><%=roleName[i]%></label>
+                        <%}}%>
+                    </form>
                 </div>
                 <div class="d-flex">
                     <form class="form-group input-group" action="detail">
@@ -147,6 +146,7 @@
                 <table class="table table-hover" border="1">
                     <thead class="table-primary text-center">
                         <tr>
+                            <th>No</th>
                             <th>ID</th>
                             <th>Name</th>
                             <th>Password</th>
@@ -160,11 +160,12 @@
                     </thead>
                     <tbody>
                         <%
-                            
+                            int stt=(thisPage-1)*25;
                             for(Teacher t:listUser){
                         %>
                     <form method="POST">
                         <tr>
+                            <td><%=++stt%></td>
                             <td><%=t.getId()%></td>
                             <td class="w-25"><%=t.getName()%></td>
                             <td>

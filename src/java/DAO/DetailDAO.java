@@ -65,13 +65,13 @@ public class DetailDAO {
                 String sql = "";
                 switch (roleSearch.length) {
                     case 3:
-                        sql = "select count(distinct [user].id) from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+"%' or classroom_detail.id like'%"+search+"%')";
+                        sql = "select top 1  row_number() OVER(ORDER BY [user].id ASC) as counts from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or (classroom_detail.id like'%"+search+"%' and classroom_detail.userid=[user].id )) group by [user].id order by counts desc";
                         break;
                     case 2:
-                        sql = "select count(distinct [user].id) from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or classroom_detail.id like'%"+search+"%') and roleID = " + roleSearch[0] + " or roleID = " + roleSearch[1];
+                        sql = "select top 1  row_number() OVER(ORDER BY [user].id ASC) as counts from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or (classroom_detail.id like'%"+search+"%' and classroom_detail.userid=[user].id )) and roleID = " + roleSearch[0] + " or roleID = " + roleSearch[1] + " group by [user].id order by counts desc";
                         break;
                     case 1:
-                        sql = "select count(distinct [user].id) from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+"%' or classroom_detail.id like'%"+search+"%') and roleID = " + roleSearch[0];
+                        sql = "select top 1  row_number() OVER(ORDER BY [user].id ASC) as counts from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or (classroom_detail.id like'%"+search+"%' and classroom_detail.userid=[user].id )) and roleID = " + roleSearch[0] + " group by [user].id order by counts desc";
                         break;
                     default:
                         break;
@@ -109,13 +109,13 @@ public class DetailDAO {
                 String sql = "";
                 switch (roleSearch.length) {
                     case 3:
-                        sql = "select distinct [user].id,name,gender,roleID,password from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or classroom_detail.id like'%"+search+"%') order by [user].id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+                        sql = "select distinct [user].id,name,gender,roleID,password from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or (classroom_detail.id like'%"+search+"%' and classroom_detail.userid=[user].id )) order by [user].id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
                         break;
                     case 2:
-                        sql = "select distinct [user].id,name,gender,roleID,password from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or classroom_detail.id like'%"+search+"%') and roleID = " + roleSearch[0] + " or roleID = " + roleSearch[1] + " order by [user].id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+                        sql = "select distinct [user].id,name,gender,roleID,password from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or (classroom_detail.id like'%"+search+"%' and classroom_detail.userid=[user].id )) and roleID = " + roleSearch[0] + " or roleID = " + roleSearch[1] + " order by [user].id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
                         break;
                     case 1:
-                        sql = "select distinct [user].id,name,gender,roleID,password from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or classroom_detail.id like'%"+search+"%') and roleID = " + roleSearch[0] + " order by [user].id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+                        sql = "select distinct [user].id,name,gender,roleID,password from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or (classroom_detail.id like'%"+search+"%' and classroom_detail.userid=[user].id )) and roleID = " + roleSearch[0] + " order by [user].id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
                         break;
                     default:
                         break;
@@ -155,8 +155,8 @@ public class DetailDAO {
         return list;
     }
 
-    public User getUser(int id) throws SQLException {
-        User login = null;
+    public Teacher getUser(int id) throws SQLException {
+        Teacher login = null;
         Connection conn = null;
         PreparedStatement stm = null;
         ResultSet rs = null;
@@ -170,9 +170,16 @@ public class DetailDAO {
                 while (rs.next()) {
                     String name = rs.getString(2);
                     boolean gender = rs.getBoolean(3);
-                    String password = "***";
+                    String password = rs.getString(5);
                     int roleID = rs.getInt(4);
-                    login = new User(id, name, gender, password, roleID);
+                    login = new Teacher(id, name, gender, password, roleID);
+                    if (roleID==2) {
+                        stm = conn.prepareStatement("select * from Teacher where userid="+id);
+                        rs=stm.executeQuery();
+                        while (rs.next()) {                            
+                            login.setSubjectID(rs.getInt(2));
+                        }
+                    }
                 }
             }
         } catch (Exception e) {

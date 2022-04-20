@@ -52,6 +52,32 @@ public class EditDeleteDAO {
         return check;
     }
 
+    public boolean deleteTeacher(int id) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement("delete from teacher where userid=" + id);
+                if (stm.executeUpdate() > 0) {
+                    stm = conn.prepareStatement("delete from classroom_detail where userid=" + id);
+                    check = stm.executeUpdate() > 0;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+
     public boolean deleteClass(String id) throws SQLException {
         boolean check = false;
         Connection conn = null;
@@ -65,7 +91,6 @@ public class EditDeleteDAO {
                     check = stm.executeUpdate() > 0;
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -203,7 +228,8 @@ public class EditDeleteDAO {
                 stm.setInt(3, user.getRoleID());
                 stm.setString(4, user.getPassword());
                 stm.setInt(5, user.getId());
-                if (stm.executeUpdate() > 0) {
+                check = stm.executeUpdate() > 0;
+                if (user.getRoleID() == 2) {
                     stm = conn.prepareStatement("select * from [teacher] where userid = ?");
                     stm.setInt(1, user.getId());
                     if (stm.executeUpdate() > 0) {

@@ -51,9 +51,6 @@ public class LoadExcelInput extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession();
-        List<Teacher> listUser = (List<Teacher>) session.getAttribute("listUser");
-        List<Classroom> listClass = (List<Classroom>) session.getAttribute("listClass");
         PrintWriter out = response.getWriter();
         try {
             Part filePart = request.getPart("excel");
@@ -74,7 +71,9 @@ public class LoadExcelInput extends HttpServlet {
                         boolean gender = row.getCell(3).getNumericCellValue() == 1;
                         String classid = row.getCell(4).getStringCellValue();
                         String password = row.getCell(6).getStringCellValue();
-                        if (!addStudent(id, name, gender, password, classid, listClass, listUser, out)) {
+                        try {
+                            addStudent(id, name, gender, password, classid, out);
+                        } catch (Exception e) {
                         }
                     }
                 } else if (fileName.endsWith(".xls")) {
@@ -85,27 +84,24 @@ public class LoadExcelInput extends HttpServlet {
                         Row row = sheet.getRow(i); // returns the logical row
                         int id = Integer.parseInt(row.getCell(1).getStringCellValue());
                         String name = row.getCell(2).getStringCellValue();
-                        boolean gender = row.getCell(3).getNumericCellValue() == 1;
+                        boolean gender = row.getCell(3).getStringCellValue().equals("1");
                         String classid = row.getCell(4).getStringCellValue();
                         String password = row.getCell(6).getStringCellValue();
-                        if (!addStudent(id, name, gender, password, classid, listClass, listUser, out)) {
+                        try {
+                            addStudent(id, name, gender, password, classid, out);
+                        } catch (Exception e) {
                         }
                     }
                 }
                 file.delete();
-                session.setAttribute("listClass", listClass);
-                session.setAttribute("listUser", listUser);
                 response.sendRedirect("detail");
             }
         } catch (Exception e) {
-            out.print("<script>window.history.back()</script>");
-            session.setAttribute("listClass", listClass);
-            session.setAttribute("listUser", listUser);
+            response.sendRedirect("detail");
         }
     }
 
-    public boolean addStudent(int id, String name, boolean gender, String password, String classid,
-            List<Classroom> listClass, List<Teacher> listUser, PrintWriter out) throws SQLException {
+    public boolean addStudent(int id, String name, boolean gender, String password, String classid, PrintWriter out) throws SQLException {
         if (classid.length() <= 5) {
             AddDAO dao = new AddDAO();
             Teacher user = new Teacher(id, name, gender, password, 1);
@@ -113,12 +109,10 @@ public class LoadExcelInput extends HttpServlet {
                 if (!dao.addUserClass(classid, id)) {
                     dao.addClass(classid);
                     out.print("<script>alert('Add class " + classid + "!');</script>");
-                    listClass.add(new Classroom(classid));
                     if (!dao.addUserClass(classid, id)) {
                         return false;
                     }
                 }
-                listUser.add(user);
                 return true;
             }
         }

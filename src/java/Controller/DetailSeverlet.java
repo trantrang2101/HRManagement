@@ -4,7 +4,10 @@
  */
 package Controller;
 
+import DAO.AddDAO;
 import DAO.DetailDAO;
+import DAO.LoginDAO;
+import entity.Classroom;
 import entity.Notice;
 import entity.Teacher;
 import entity.User;
@@ -37,13 +40,19 @@ public class DetailSeverlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         DetailDAO dao = new DetailDAO();
         HttpSession session = request.getSession();
-        try ( PrintWriter out = response.getWriter()) {
+        PrintWriter out = response.getWriter();
+        try {
             String classname = request.getParameter("class");
             String task = request.getParameter("task");
+            String action = request.getParameter("action");
+            String submit = request.getParameter("submit");
             Integer userid = request.getParameter("userid") != null ? Integer.parseInt(request.getParameter("userid")) : null;
             Integer taskid = request.getParameter("taskid") != null ? Integer.parseInt(request.getParameter("taskid")) : null;
             User user = (User) session.getAttribute("loginUser");
             if (classname != null) {
+                if (submit != null && submit.equals("deleteNotice")) {
+                    session.removeAttribute("deleteNotice");
+                }
                 String search = request.getParameter("search");
                 if (search == null) {
                     search = "";
@@ -60,6 +69,16 @@ public class DetailSeverlet extends HttpServlet {
                 session.setAttribute("classChoose", dao.getClass(classname));
                 session.setAttribute("classNotice", dao.getNoticeList(user, classname, value, search));
                 request.getRequestDispatcher("classroom.jsp").forward(request, response);
+            } else if (action != null) {
+                if (submit != null && submit.equals("deleteClass")) {
+                    session.removeAttribute("deleteClass");
+                }
+                LoginDAO login = new LoginDAO();
+                List<Classroom> list = login.getClassList(user.getId());
+                session.setAttribute("listClass", list);
+                List<Teacher> listSubject = login.getTeacherRoleList();
+                session.setAttribute("listSubject", listSubject);
+                request.getRequestDispatcher("teacher_home.jsp").forward(request, response);
             } else if (userid != null) {
                 request.setAttribute("userChoose", userid);
                 request.getRequestDispatcher("report.jsp").forward(request, response);
@@ -77,6 +96,9 @@ public class DetailSeverlet extends HttpServlet {
                     request.getRequestDispatcher("teacher_task.jsp").forward(request, response);
                 }
             } else {
+                if (submit != null && submit.equals("deleteUser")) {
+                    session.removeAttribute("deletePerson");
+                }
                 String search = request.getParameter("search");
                 String[] roleList = {"1", "2", "0"};
                 String[] roleName = {"Student", "Teacher", "Admin"};
@@ -98,6 +120,7 @@ public class DetailSeverlet extends HttpServlet {
                 request.setAttribute("roleList", roleList);
                 request.setAttribute("roleName", roleName);
                 request.setAttribute("roleSearch", roleSearch);
+                request.setAttribute("searchWords",search);
                 session.setAttribute("thisPage", page);
                 session.setAttribute("pages", noPages);
                 request.getRequestDispatcher("view_people.jsp").forward(request, response);

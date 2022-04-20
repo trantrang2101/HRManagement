@@ -48,7 +48,11 @@
     Integer userChoose = (Integer) request.getAttribute("userChoose");
     List<String> subjectClassList = (List<String>)request.getAttribute("subjectClassList");
     Notice editNotice = (Notice) request.getAttribute("editNotice");
-    User editPerson = (User) request.getAttribute("editPerson");
+    Teacher editPerson = (Teacher) request.getAttribute("editPerson");
+    Teacher deletePerson = (Teacher) session.getAttribute("deletePerson");
+    Notice deleteNotice = (Notice) session.getAttribute("deleteNotice");
+    Integer teacherRole =(Integer) request.getAttribute("teacherRole");
+    String deleteClass = (String) session.getAttribute("deleteClass");
 %>
 <div id="preloader">
     <div class="loader">
@@ -117,132 +121,6 @@
         </div>
     </div>
 </div>
-<%
-    String submit = (String)request.getAttribute("submit");
-    if(submit!=null){
-%>
-<div class="modal" tabindex="-1" style="display:block; background: rgba(0,0,0,0.5);;overflow-y: scroll;">
-    <div class="modal-dialog modal-fullscreen" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Student/Teacher</h5>
-                <a type="button" class="btn-close" href="detail"></a>
-            </div>
-            <form action="add" method="POST">
-                <div class="modal-body">
-                    <div class="row d-flex justify-content-around align-items-start" style="margin: 0;padding: 0;">
-                        <div class="col-lg-6 col-sm-12" style="margin: 0;padding: 0;">
-                            <div class="row">
-                                <div class="form-group col">
-                                    <label class="form-label">ID</label>
-                                    <input type="text" name="id" pattern="\d*" class="form-control mb-1 bg-transparent">
-                                </div>
-                                <div class="form-group col">
-                                    <label class="form-label">Name</label>
-                                    <input type="text" name="name" class="form-control mb-1">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col">
-                                    <label class="form-label">Gender</label>
-                                    <select name="gender" class="form-select bg-transparent">
-                                        <option value="1">Male</option>
-                                        <option value="0">Female</option>
-                                    </select>
-                                </div>
-                                <div class="form-group col">
-                                    <label class="form-label">Pasword</label>
-                                    <input type="text" name="password" class="form-control mb-1">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col" id="teacherRole">
-                                    <label class="form-label">Role</label>
-                                    <select name="roleID" class="form-select bg-transparent" onchange="window.location.href = 'add?action=addPerson&submit=add&teacherRole=' + this.value" class="form-select bg-transparent">
-                                        <%
-                                            if(listSubject!=null){
-                                                for(Teacher c : listSubject){
-                                        %>
-                                        <option value="<%=c.getSubjectID()%>"><%=c.getSubjectName()%></option>
-                                        <%
-                                                }
-                                            }
-                                        %>
-                                    </select>
-                                    <br>
-                                    <span class="text-danger"><strong>Note:</strong> <span id="Notice" class=""><%=subjectClassList.toString()%>&nbsp;has been signed</span></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-12 ">
-                            <div class="d-flex justify-content-end">
-                                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                                    <input type="radio" class="btn-check" name="role" id="roleTeacher" value="2"
-                                           autocomplete="off" checked>
-                                    <label class="btn btn-outline-primary" for="roleTeacher">Teacher</label>
-                                    <input type="radio" class="btn-check" name="role" id="roleStudent" value="1"
-                                           autocomplete="off">
-                                    <label class="btn btn-outline-primary" for="roleStudent">Student</label>
-                                    <input type="radio" class="btn-check" name="role" id="roleAdmin" value="0"
-                                           autocomplete="off">
-                                    <label class="btn btn-outline-primary" for="roleAdmin">Admin</label>
-                                </div>
-                            </div>
-                            <div class="fade" id="studentClass">
-                                <div class="form-group">
-                                    <label class="form-label">Class</label>
-                                    <select name="class" class="form-select bg-transparent">
-                                        <%
-                                            if(listClass!=null){
-                                                for(Classroom c : listClass){
-                                        %>
-                                        <option value="<%=c.getName()%>"><%=c.getName()%></option>
-                                        <%
-                                                }
-                                            }
-                                        %>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-wrap justify-content-around" id="teacherClasses">
-                                <%
-                                    if(listClass!=null){
-                                        int count  = 0;
-                                        if(subjectClassList==null){
-                                            subjectClassList=new ArrayList<>();
-                                        }
-                                        for(Classroom c : listClass){
-                                            if(subjectClassList.size()>0&&c.getName().equals(subjectClassList.get(count))){
-                                %>
-                                <input disabled type="checkbox" class="btn-check" name="class" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
-                                <label class="btn btn-secondary" for="<%=c.getName()%>"><%=c.getName()%></label>
-                                <%
-                                            if(count<subjectClassList.size()-1){
-                                                count++;
-                                            }
-                                        }else{
-                                %>
-                                <input type="checkbox" class="btn-check" name="class" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
-                                <label class="btn btn-outline-primary" for="<%=c.getName()%>"><%=c.getName()%></label>
-                                <%
-                                }
-                            }
-                        }
-                                %>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <input type="text" name="submit" value="add" hidden="">
-                <div class="modal-footer">
-                    <a class="btn btn-light" type="button"  href="javascript:window.history.back()">Cancel</a>
-                    <button class="btn btn-primary" name="action" value="addPerson">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<%}%>
 <%if(taskid!=null){%>
 <div class="modal" tabindex="-1" style="display:block; background: rgba(0,0,0,0.5);;">
     <div class="modal-dialog modal-fullscreen" role="document">
@@ -384,6 +262,69 @@
         </div>
     </form>
 </div>
+<%if(deleteClass!=null){%>
+<div class="modal" id="deleteClass" tabindex="-1" style="display:block; background: rgba(0,0,0,0.5);;">
+    <form action="delete" method="POST">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete class <%=deleteClass%></h5>
+                    <a type="button" class="btn-close" href="detail?action=return&submit=deleteClass"></a>
+                </div>
+                <div class="modal-body">Select "Delete" to delete class <%=deleteClass%></div>
+                <input type="text" name="class" hidden="" value="<%=deleteClass%>">
+                <input type="text" name="submit" hidden="" value="<%=deleteClass%>">
+                <div class="modal-footer">
+                    <a class="btn btn-light" type="button"  href="detail?action=return&submit=deleteClass">Cancel</a>
+                    <button class="btn btn-danger" type="submit" name="action" value="deleteClass">Delete</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<%}%>
+<%if(deletePerson!=null){%>
+<div class="modal" id="deletePerson" tabindex="-1" style="display:block; background: rgba(0,0,0,0.5);;">
+    <form action="delete" method="POST">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete <%=deletePerson.getName()%></h5>
+                    <a type="button" class="btn-close" href="detail?submit=deleteUser"></a>
+                </div>
+                <div class="modal-body">Select "Delete" to delete <%=deletePerson.getRoleID()==1?"Student":(deletePerson.isGender()?"Mrs":"Mr")%> <%=deletePerson.getName()%></div>
+                <input type="text" name="user" hidden="" value="<%=deletePerson.getId()%>">
+                <input type="text" name="submit" hidden="" value="<%=deletePerson.getId()%>">
+                <div class="modal-footer">
+                    <a class="btn btn-light" type="button"  href="detail?submit=deleteUser">Cancel</a>
+                    <button class="btn btn-danger" type="submit" name="action" value="deleteUser">Delete</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<%}%>
+<%if(deleteNotice!=null){%>
+<div class="modal" id="deletePerson" tabindex="-1" style="display:block; background: rgba(0,0,0,0.5);;">
+    <form action="delete" method="POST">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete <%=deleteNotice.getTitle()%></h5>
+                    <a type="button" class="btn-close" href="detail?submit=deleteNotice&class=<%=choosenClass.getName()%>"></a>
+                </div>
+                <div class="modal-body">Select "Delete" to delete <%=deleteNotice.getTitle()%></div>
+                <input type="text" name="noticeDelete" hidden="" value="<%=deleteNotice.getId()%>">
+                <input type="text" name="submit" hidden="" value="<%=deleteNotice.getId()%>">
+                <div class="modal-footer">
+                    <a class="btn btn-light" type="button"  href="detail?submit=deleteNotice&class=<%=choosenClass.getName()%>">Cancel</a>
+                    <button class="btn btn-danger" type="submit" name="action" value="deleteNotice">Delete</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<%}%>
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModal"
      aria-hidden="true" style="">
     <div class="modal-dialog" role="document">
@@ -405,22 +346,23 @@
     </div>
 </div>
 <%if(editPerson!=null){%>
-<div class="modal" id="editPerson" style="">
+<div class="modal" id="editPerson" style="display: block;background: rgba(0,0,0,0.5)">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Edit Student/Teacher</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <a type="button" class="btn-close" href="detail"></a>
             </div>
-            <form action="add" method="POST">
+            <form action="edit" method="POST">
+                <input type="text" hidden="" name="submit" value="editPerson">
                 <div class="modal-body">
                     <div class="row d-flex justify-content-around align-items-start" style="margin: 0;padding: 0;">
                         <div class="col-lg-6 col-sm-12" style="margin: 0;padding: 0;">
                             <div class="row">
                                 <div class="form-group col">
                                     <label class="form-label">ID</label>
-                                    <input type="text" name="id" pattern="\d*" class="form-control mb-1 bg-transparent" hidden="">
-                                    <input type="text" name="id" pattern="\d*" value="<%=editPerson.getId()%>" disabled="" class="form-control mb-1 bg-transparent">
+                                    <input type="text" name="user" pattern="\d*" value="<%=editPerson.getId()%>" class="form-control mb-1 bg-transparent" hidden="">
+                                    <input type="text" name="user" pattern="\d*" value="<%=editPerson.getId()%>" disabled="" class="form-control mb-1 bg-transparent">
                                 </div>
                                 <div class="form-group col">
                                     <label class="form-label">Name</label>
@@ -446,45 +388,69 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="form-group fade col" id="teacherRole">
+                                <div class="form-group fade col" id="teacherRoleEdit">
                                     <label class="form-label">Role</label>
-                                    <select name="roleID" class="form-select bg-transparent" onchange="window.location.href = 'edit?action=editPerson&teacherRole=' + this.value" class="form-select bg-transparent">
+                                    <select name="roleID" class="form-select bg-transparent" onchange="window.location.href = 'edit?submit=editPerson&action=editPerson&user=<%=editPerson.getId()%>&teacherRole=' + this.value" class="form-select bg-transparent">
                                         <%
                                         if(listSubject!=null){
                                             for(Teacher c : listSubject){
-                                                if(dao.getRoleTeacher(editPerson.getId()).getSubjectID()==c.getSubjectID()){
+                                                if(editPerson.getRoleID()==2&&editPerson.getSubjectID()==c.getSubjectID()){
                                         %>
                                         <option selected="" value="<%=c.getSubjectID()%>"><%=c.getSubjectName()%></option>
                                         <%}else{%>
                                         <option value="<%=c.getSubjectID()%>"><%=c.getSubjectName()%></option>
                                         <%}}}%>
                                     </select>
-                                    <span class="text-danger"><strong>Note:</strong> <span id="Notice" class=""><%=subjectClassList.toString()%>&nbsp;has been signed</span></span>
+                                    <span class="text-danger"><strong>Note:</strong> <span id="Notice" class=""><%=subjectClassList!=null?subjectClassList.toString():""%>&nbsp;has been signed</span></span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-6 col-sm-12 ">
                             <div class="d-flex justify-content-end">
                                 <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                    <%switch(editPerson.getRoleID()){
+                                        case 1:
+                                    %>
+                                    <input type="radio" class="btn-check" name="roleEdit" id="roleTeacher" value="2" autocomplete="off" disabled="">
+                                    <label class="btn btn-secondary" for="roleTeacher">Teacher</label>
+                                    <input type="radio" class="btn-check" name="roleEdit" id="roleStudent" value="1" autocomplete="off" checked="">
+                                    <label class="btn btn-primary" for="roleStudent">Student</label>
+                                    <input type="radio" class="btn-check" name="roleEdit" id="roleAdmin" value="0" autocomplete="off" disabled="">
+                                    <label class="btn btn-secondary" for="roleAdmin">Admin</label>
+                                    <%
+                                    break;
+                                case 2:
+                                    %>
+                                    <input type="radio" class="btn-check" name="roleEdit" id="roleTeacher" value="2" autocomplete="off" checked="">
                                     <label class="btn btn-outline-primary" for="roleTeacher">Teacher</label>
-                                    <input type="radio" class="btn-check" name="role" id="roleAdmin" value="0"
-                                           autocomplete="off">
-                                    <input type="radio" class="btn-check" name="role" id="roleStudent" value="1"
-                                           autocomplete="off" checked>
-                                    <label class="btn btn-outline-primary" for="roleStudent">Student</label>
-                                    <input type="radio" class="btn-check" name="role" id="roleTeacher" value="2"
-                                           autocomplete="off">
+                                    <input type="radio" class="btn-check" name="roleEdit" id="roleStudent" value="1" autocomplete="off">
+                                    <label class="btn btn-secondary" for="roleStudent">Student</label>
+                                    <input type="radio" class="btn-check" name="roleEdit" id="roleAdmin" value="0" autocomplete="off">
                                     <label class="btn btn-outline-primary" for="roleAdmin">Admin</label>
+                                    <%
+                                        break;
+                                    case 0:
+                                    %>
+                                    <input type="radio" class="btn-check" name="roleEdit" id="roleTeacher" value="2" autocomplete="off"/>
+                                    <label class="btn btn-outline-primary" for="roleTeacher">Teacher</label>
+                                    <input type="radio" class="btn-check" name="roleEdit" id="roleStudent" value="1" hidden>
+                                    <input type="radio" class="btn-check" id="roleStudent" autocomplete="off" disabled="">
+                                    <label class="btn btn-secondary" for="roleStudent">Student</label>
+                                    <input type="radio" class="btn-check" name="roleEdit" id="roleAdmin" value="0" autocomplete="off" checked="">
+                                    <label class="btn btn-outline-primary" for="roleAdmin">Admin</label>
+                                    <%
+                                        break;
+                                }%>
                                 </div>
                             </div>
-                            <div class="" id="studentClass">
+                            <div class="fade" id="studentClassEdit">
                                 <div class="form-group">
                                     <label class="form-label">Class</label>
                                     <select name="class" class="form-select bg-transparent">
                                         <%
                                             if(listClass!=null){
                                                 for(Classroom c : listClass){
-                                                    if(dao.getClassByID(editPerson.getId()).get(0).equals(c.getName())){
+                                                    if(editPerson.getRoleID()==1&&dao.getClassByID(editPerson.getId()).get(0).equals(c.getName())){
                                         %>
                                         <option selected value="<%=c.getName()%>"><%=c.getName()%></option>
                                         <%}else{%>
@@ -493,7 +459,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="d-flex flex-wrap justify-content-around" id="teacherClasses">
+                            <div class="d-flex flex-wrap justify-content-around fade" id="teacherClassesEdit">
                                 <%
                                     if(listClass!=null){
                                         int count  = 0;
@@ -524,7 +490,7 @@
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-light" type="button"  href="javascript:window.history.back()">Cancel</a>
-                    <button class="btn btn-primary" name="action" value="addPerson">Save</button>
+                    <button class="btn btn-primary" name="action" value="editPerson">Save</button>
                 </div>
             </form>
         </div>
@@ -664,7 +630,7 @@
                                     <label class="btn btn-outline-primary" for="noticeNoAll">Notice</label>
                                 </div>
                                 <div class="btn-group" role="group">
-                                    <input type="checkbox" class="btn-check" name="selectAll" id="selectAll" value="1" onclick="toggle(this)"
+                                    <input type="checkbox" class="btn-check" name="selectAll" id="selectAll" value="1" onclick="toggle(this,'classid')"
                                            autocomplete="off">
                                     <label class="btn btn-outline-primary" id="selectAllLabel" for="selectAll">Select All Classes</label>
                                 </div>
@@ -900,6 +866,138 @@
         </div>
     </div>
 </div>
+<%
+String submit = (String)request.getAttribute("submit");
+if(submit!=null){
+%>
+<div class="modal" tabindex="-1" style="display:block; background: rgba(0,0,0,0.5);;overflow-y: scroll;">
+    <div class="modal-dialog modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Student/Teacher</h5>
+                <a type="button" class="btn-close" href="detail"></a>
+            </div>
+            <form action="add" method="POST">
+                <div class="modal-body">
+                    <div class="row d-flex justify-content-around align-items-start" style="margin: 0;padding: 0;">
+                        <div class="col-lg-6 col-sm-12" style="margin: 0;padding: 0;">
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label class="form-label">ID</label>
+                                    <input type="text" required="" name="id" pattern="\d*" class="form-control mb-1 bg-transparent">
+                                </div>
+                                <div class="form-group col">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" name="name" required="" class="form-control mb-1">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label class="form-label">Gender</label>
+                                    <select name="gender" required="" class="form-select bg-transparent">
+                                        <option value="1">Male</option>
+                                        <option value="0">Female</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col">
+                                    <label class="form-label">Pasword</label>
+                                    <input type="text" required="" name="password" class="form-control mb-1">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col" id="teacherRole">
+                                    <label class="form-label">Role</label>
+                                    <select name="roleID" class="form-select bg-transparent" onchange="window.location.href = 'add?action=addPerson&submit=add&teacherRole=' + this.value" class="form-select bg-transparent">
+                                        <%
+                                            if(listSubject!=null){
+                                                for(Teacher c : listSubject){
+                                                if(teacherRole!=null&&teacherRole==c.getSubjectID()){
+                                        %>
+                                        <option value="<%=c.getSubjectID()%>" selected=""><%=c.getSubjectName()%></option>
+                                        <%
+                                            }else{
+                                        %>
+                                        <option value="<%=c.getSubjectID()%>"><%=c.getSubjectName()%></option>
+                                        <%
+                                        }
+                                                                                        }
+                                                                                    }
+                                        %>
+                                    </select>
+                                    <br>
+                                    <span class="text-danger"><strong>Note:</strong> <span id="Notice" class=""><%=subjectClassList.toString()%>&nbsp;has been signed</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 ">
+                            <div class="d-flex justify-content-end">
+                                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                    <input type="radio" class="btn-check" name="role" id="roleTeacher" value="2"
+                                           autocomplete="off" checked>
+                                    <label class="btn btn-outline-primary" for="roleTeacher">Teacher</label>
+                                    <input type="radio" class="btn-check" name="role" id="roleStudent" value="1"
+                                           autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="roleStudent">Student</label>
+                                    <input type="radio" class="btn-check" name="role" id="roleAdmin" value="0"
+                                           autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="roleAdmin">Admin</label>
+                                </div>
+                            </div>
+                            <div class="fade" id="studentClass">
+                                <div class="form-group">
+                                    <label class="form-label">Class</label>
+                                    <select name="class" class="form-select bg-transparent">
+                                        <%
+                                            if(listClass!=null){
+                                                for(Classroom c : listClass){
+                                        %>
+                                        <option value="<%=c.getName()%>"><%=c.getName()%></option>
+                                        <%
+                                                }
+                                            }
+                                        %>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-wrap justify-content-around" id="teacherClasses">
+                                <%
+                                    if(listClass!=null){
+                                        int count  = 0;
+                                        if(subjectClassList==null){
+                                            subjectClassList=new ArrayList<>();
+                                        }
+                                        for(Classroom c : listClass){
+                                            if(subjectClassList.size()>0&&c.getName().equals(subjectClassList.get(count))){
+                                %>
+                                <input disabled type="checkbox" class="btn-check" name="class" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
+                                <label class="btn btn-secondary" for="<%=c.getName()%>"><%=c.getName()%></label>
+                                <%
+                                            if(count<subjectClassList.size()-1){
+                                                count++;
+                                            }
+                                        }else{
+                                %>
+                                <input type="checkbox" class="btn-check" name="class" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="<%=c.getName()%>"><%=c.getName()%></label>
+                                <%
+                                }
+                            }
+                        }
+                                %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="text" name="submit" value="add" hidden="">
+                <div class="modal-footer">
+                    <a class="btn btn-light" type="button"  href="javascript:window.history.back()">Cancel</a>
+                    <button class="btn btn-primary" name="action" value="addPerson">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<%}%>
 <div class="modal fade" id="viewStudent" tabindex="-1" role="dialog" aria-labelledby="viewStudent" aria-hidden="true"
      style="">
     <div class="modal-dialog modal-xl" role="document">
@@ -937,48 +1035,6 @@
     </div>
 </div>
 <script>
-    $(document).ready(function () {
-        $('#tableViewClassStudent').DataTable();
-        $("#preloader").hide();
-        $('#taskTable').DataTable();
-        $('#studentTable').DataTable();
-        $('#taskDetail').DataTable();
-        $('#studentDetail').DataTable();
-        CKEDITOR.replace('postEdit');
-        CKEDITOR.replace('postAdd');
-        CKEDITOR.replace('postAddAll');
-        var inputDatePublic = document.querySelectorAll('#dateInputPublic')[0];
-        var datePublic = document.querySelectorAll('#valueDatePublic')[0];
-        var day = datePublic.value.split(' ')[0].split('-');
-        var time = datePublic.value.split(' ')[1].split(':');
-        inputDatePublic.value = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
-        if (new Date().getTime() < new Date(day[0], day[1] - 1, day[2], time[0], time[1]).getTime()) {
-            inputDatePublic.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-        } else {
-            inputDatePublic.min = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
-        }
-        var newDateInput = document.querySelector('#dateInputAll');
-        newDateInput.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-        newDateInput.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-        var datePublished = document.querySelector('#datePublishedAll');
-        datePublished.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-        datePublished.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-        var inputDateDeadline = document.querySelectorAll('#dateInputDeadline')[0];
-        var dateDeadline = document.querySelectorAll('#valueDateDeadline')[0];
-        if (dateDeadline !== null) {
-            day = dateDeadline.value.split(' ')[0].split('-');
-            time = dateDeadline.value.split(' ')[1].split(':');
-            inputDateDeadline.value = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
-            if (new Date().getTime() < new Date(day[0], day[1] - 1, day[2], time[0], time[1]).getTime()) {
-                inputDateDeadline.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-            } else {
-                inputDateDeadline.min = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
-            }
-        } else {
-            inputDateDeadline.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-            inputDateDeadline.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
-        }
-    });
     function getColumn(table_id, col) {
         var tab = document.getElementById(table_id),
                 n = tab.rows.length,
@@ -1015,6 +1071,147 @@
         console.log(arr);
         return arr;
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        $("#preloader").hide();
+        $('#tableViewClassStudent').DataTable();
+        $('#taskTable').DataTable();
+        $('#studentTable').DataTable();
+        $('#taskDetail').DataTable();
+        $('#studentDetail').DataTable();
+        CKEDITOR.replace('postEdit');
+        CKEDITOR.replace('postAdd');
+        CKEDITOR.replace('postAddAll');
+        var datePublishedNo = document.querySelector('#datePublished');
+        datePublishedNo.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+        datePublishedNo.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+        var newDateInputNo = document.querySelector('#dateInput');
+        newDateInputNo.min = datePublishedNo.value;
+        newDateInputNo.value = datePublishedNo.value;
+        var newDateInput = document.querySelector('#dateInputAll');
+        newDateInput.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+        newDateInput.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+        var datePublished = document.querySelector('#datePublishedAll');
+        datePublished.min = newDateInput.value;
+        datePublished.value = newDateInput.value;
+        var inputDatePublic = document.querySelectorAll('#dateInputPublic')[0];
+        var datePublic = document.querySelectorAll('#valueDatePublic')[0];
+        var inputDateDeadline = document.querySelectorAll('#dateInputDeadline')[0];
+        var dateDeadline = document.querySelectorAll('#valueDateDeadline')[0];
+        if (datePublic !== undefined) {
+            var day = datePublic.value.split(' ')[0].split('-');
+            var time = datePublic.value.split(' ')[1].split(':');
+            inputDatePublic.value = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+            if (new Date().getTime() < new Date(day[0], day[1] - 1, day[2], time[0], time[1]).getTime()) {
+                inputDatePublic.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+            } else {
+                inputDatePublic.min = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+            }
+            if (dateDeadline !== undefined) {
+                day = dateDeadline.value.split(' ')[0].split('-');
+                time = dateDeadline.value.split(' ')[1].split(':');
+                inputDateDeadline.value = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+                if (new Date().getTime() < new Date(day[0], day[1] - 1, day[2], time[0], time[1]).getTime()) {
+                    inputDateDeadline.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
+                } else {
+                    inputDateDeadline.min = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+                }
+            } else {
+                inputDateDeadline.min = inputDatePublic.value;
+                inputDateDeadline.value = inputDatePublic.value;
+            }
+        }
+        var roleEdit = document.getElementsByName('roleEdit');
+        if (roleEdit !== undefined) {
+            if (roleEdit[0].checked) {
+                document.querySelector('#teacherClassesEdit').classList.remove('fade');
+                document.querySelector('#teacherRoleEdit').classList.remove('fade');
+            } else if (roleEdit[1].checked) {
+                document.querySelector('#studentClassEdit').classList.remove('fade');
+            } else {
+                document.querySelector('#teacherRoleEdit').classList.add('fade');
+                document.querySelector('#teacherClassesEdit').classList.add('fade');
+                document.querySelector('#studentClassEdit').classList.add('fade');
+            }
+        }
+        if (document.querySelector('#highestMark') !== null) {
+            document.querySelector('#highestMark').innerHTML = highest;
+        }
+        if (document.querySelector('#averageStudent') !== null) {
+            document.querySelector('#averageStudent').value = markAvg / count;
+        }
+        if (document.getElementById('pieChart') !== null) {
+            const pieChart = new Chart(document.getElementById('pieChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        'Yếu (0-5)',
+                        'Trung bình - Khá (5-8)',
+                        'Giỏi (8-10)'
+                    ],
+                    datasets: [{
+                            label: 'Mark Task #1',
+                            data: sortClass(),
+                            backgroundColor: [
+                                'rgb(246,151,125)',
+                                'rgb(255,243,121)',
+                                'rgb(150,205,138)'
+                            ],
+                            hoverOffset: 4
+                        }]
+                }
+            });
+        }
+        if (document.getElementById('lineChart') !== null) {
+            const lineChart = new Chart(document.getElementById('lineChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: getColumn('studentDetail', 0),
+                    datasets: [{
+                            label: '',
+                            data: getColumn('studentDetail', 2),
+                            fill: false,
+                            backgroundColor: 'rgb(246,151,121)',
+                            borderColor: 'rgb(246,151,125)',
+                            tension: 0.1
+                        }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Mark của <%=userChoose%>'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 10
+                        },
+                        x: {
+                            ticks: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+    var option = document.getElementsByName('notice');
+    option = [...option];
+    option.forEach((item) => {
+        item.addEventListener('click', () => {
+            if (option[0].checked || option[2].checked) {
+                document.querySelector('#deadlineAll').classList.remove('fade');
+                document.querySelector('#deadline').classList.remove('fade');
+            } else {
+                document.querySelector('#deadlineAll').classList.add('fade');
+                document.querySelector('#deadline').classList.add('fade');
+            }
+        });
+    });
     var optionEdit = document.getElementsByName('noticeEdit');
     optionEdit = [...optionEdit];
     optionEdit.forEach((item) => {
@@ -1026,63 +1223,51 @@
             }
         });
     });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelector('#highestMark').innerHTML = highest;
-        document.querySelector('#averageStudent').value = markAvg / count;
-        const pieChart = new Chart(document.getElementById('pieChart').getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: [
-                    'Yếu (0-5)',
-                    'Trung bình - Khá (5-8)',
-                    'Giỏi (8-10)'
-                ],
-                datasets: [{
-                        label: 'Mark Task #1',
-                        data: sortClass(),
-                        backgroundColor: [
-                            'rgb(246,151,125)',
-                            'rgb(255,243,121)',
-                            'rgb(150,205,138)'
-                        ],
-                        hoverOffset: 4
-                    }]
+    var roleEdit = document.getElementsByName('roleEdit');
+    roleEdit = [...roleEdit];
+    roleEdit.forEach((item) => {
+        item.addEventListener('click', () => {
+            if (roleEdit[0].checked) {
+                console.log(roleEdit[0]);
+                document.querySelector('#teacherClassesEdit').classList.remove('fade');
+                document.querySelector('#teacherRoleEdit').classList.remove('fade');
+                document.querySelector('#studentClassEdit').classList.add('fade');
+            } else if (roleEdit[1].checked) {
+                console.log(roleEdit[1]);
+                document.querySelector('#teacherClassesEdit').classList.add('fade');
+                document.querySelector('#teacherRoleEdit').classList.add('fade');
+                document.querySelector('#studentClassEdit').classList.remove('fade');
+            } else {
+                console.log(roleEdit[2]);
+                document.querySelector('#teacherRoleEdit').classList.add('fade');
+                document.querySelector('#teacherClassesEdit').classList.add('fade');
+                document.querySelector('#studentClassEdit').classList.add('fade');
             }
-        });
-        const lineChart = new Chart(document.getElementById('lineChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: getColumn('studentDetail', 0),
-                datasets: [{
-                        label: '',
-                        data: getColumn('studentDetail', 2),
-                        fill: false,
-                        backgroundColor: 'rgb(246,151,121)',
-                        borderColor: 'rgb(246,151,125)',
-                        tension: 0.1
-                    }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Mark của <%=userChoose%>'
-                    }
-                },
-                scales: {
-                    y: {
-                        min: 0,
-                        max: 10
-                    },
-                    x: {
-                        ticks: {
-                            display: false
-                        }
-                    }
-                }
-            }
+            console.log(item);
         });
     });
+    if (document.querySelector('#datePublished') === undefined) {
+        document.querySelector('#datePublished').oninput(function () {
+            var day = this.value.split('T')[0].split('-');
+            var time = this.value.split('T')[1].split(':');
+            document.querySelector('#datePublished').min = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+            document.querySelector('#datePublished').value = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+        });
+    }
+    if (document.querySelector('#datePublishedAll') === undefined) {
+        document.querySelector('#datePublishedAll').oninput(function () {
+            var day = this.value.split('T')[0].split('-');
+            var time = this.value.split('T')[1].split(':');
+            document.querySelector('#dateInputAll').min = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+            document.querySelector('#dateInputAll').value = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+        });
+    }
+    if (document.querySelector('#dateInputPublic') === undefined) {
+        document.querySelector('#dateInputPublic').onblur(function () {
+            var day = this.value.split('T')[0].split('-');
+            var time = this.value.split('T')[1].split(':');
+            document.querySelector('#dateInputDeadline').min = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+            document.querySelector('#dateInputDeadline').value = moment(new Date(day[0], day[1] - 1, day[2], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
+        });
+    }
 </script>
