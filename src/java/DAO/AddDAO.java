@@ -20,6 +20,62 @@ import java.sql.SQLException;
  */
 public class AddDAO {
 
+    public boolean checkWorkDetailDuplicate(int work,String name) throws SQLException{
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                String sql = "select * from work_detail where workid = " + work + " and work='" + name+"'";
+                stm = conn.prepareStatement(sql);
+                rs = stm.executeQuery();
+                while (rs.next()) {
+                    check=true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+    
+    public boolean addWorkDetail(int work,String name) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement("INSERT INTO work_detail VALUES (?,?)");
+                stm.setInt(1, work);
+                stm.setString(2, name);
+                check = stm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+    
     public boolean addClass(String name) throws SQLException {
         boolean check = false;
         Connection conn = null;
@@ -117,7 +173,7 @@ public class AddDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String sql = "INSERT INTO task_work (id,userid) VALUES (?,?)";
+                String sql = "INSERT INTO task_work (id,userid,doneAt) VALUES (?,?,null)";
                 stm = conn.prepareStatement(sql);
                 stm.setInt(1, task);
                 stm.setInt(2, user);

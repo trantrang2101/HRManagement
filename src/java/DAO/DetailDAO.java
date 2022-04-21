@@ -321,7 +321,7 @@ public class DetailDAO {
                     PreparedStatement stm1 = conn.prepareStatement( "select * from work_detail where workid = " + work);
                     ResultSet rs1 = stm1.executeQuery();
                     while (rs1.next()) {                        
-                        list.add(rs.getString(2));
+                        list.add(rs1.getString(2));
                     }
                     workDone = new Work(taskid, userid, work, mark, comment, doneAt, list);
                 }

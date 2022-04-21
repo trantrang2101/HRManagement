@@ -4,9 +4,12 @@
  */
 package Controller;
 
+import DAO.AddDAO;
+import DAO.EditDeleteDAO;
 import entity.Classroom;
 import entity.Notice;
 import entity.User;
+import entity.Work;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -17,6 +20,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
+import java.sql.SQLException;
+import java.util.Collection;
 
 /**
  *
@@ -38,25 +43,41 @@ public class FileUpload extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
-        Classroom choosenClass = (Classroom) session.getAttribute("classChoose");
+        Work taskHW = (Work) session.getAttribute("taskHW");
+        String action = request.getParameter("action");
+        String applicationPath = getServletContext().getRealPath("");
+        User loginUser = (User) session.getAttribute("loginUser");
+        String uploadPath = applicationPath.replace("build\\", "") + "homework" + File.separator + taskHW.getTaskid() + File.separator + loginUser.getId();
         try {
-            String applicationPath = getServletContext().getRealPath("");
-            User loginUser = (User) session.getAttribute("loginUser");
-            Notice taskHW = (Notice) session.getAttribute("taskHW");
-            String uploadPath = applicationPath.replace("build\\", "") + "homework" + File.separator + taskHW.getId() + File.separator + loginUser.getId();
-            File fileUploadDirectory = new File(uploadPath);
-            if (!fileUploadDirectory.exists()) {
-                fileUploadDirectory.mkdirs();
-            }
-            Part filePart = request.getPart("file");
-            String fileName = filePart.getSubmittedFileName();
-            for (Part part : request.getParts()) {
-                part.write(uploadPath + File.separator + fileName);
+            if (action.equals("upfile")) {
+                File fileUploadDirectory = new File(uploadPath);
+                if (!fileUploadDirectory.exists()) {
+                    fileUploadDirectory.mkdirs();
+                }
+                AddDAO dao = new AddDAO();
+                EditDeleteDAO edit = new EditDeleteDAO();
+                Part filePart = request.getPart("file");
+                String fileName = filePart.getSubmittedFileName();
+                for (Part part : request.getParts()) {
+                    part.write(uploadPath + File.separator + fileName);
+                    if (!dao.checkWorkDetailDuplicate(taskHW.getWork(), fileName)) {
+                        dao.addWorkDetail(taskHW.getWork(), fileName);
+                        edit.updateTimeDone(taskHW.getWork());
+                    }
+                }
+            } else {
+                String work = request.getParameter("work");
+                EditDeleteDAO dao = new EditDeleteDAO();
+                dao.deleteWorkDetail(taskHW.getWork(), work);
+                File file = new File(uploadPath + File.separator + work);
+                if (file.exists()) {
+                    file.delete();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            response.sendRedirect("detail?class=" + choosenClass.getName());
+            response.sendRedirect("detail?id=" + taskHW.getTaskid());
         }
     }
 

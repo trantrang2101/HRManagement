@@ -18,6 +18,33 @@ import java.text.SimpleDateFormat;
  */
 public class EditDeleteDAO {
 
+    public boolean updateTimeDone(int work) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement("update task_work set doneAt=getDate() where work = "+work);
+                check = stm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+    
     public boolean updateNotice(Notice noti) throws SQLException {
         boolean check = false;
         Connection conn = null;
@@ -42,6 +69,29 @@ public class EditDeleteDAO {
             if (rs != null) {
                 rs.close();
             }
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+    
+    public boolean deleteWorkDetail(int id,String name) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement("delete from work_detail where workid=" + id +" and work like '"+name+"'");
+                check = stm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             if (stm != null) {
                 stm.close();
             }

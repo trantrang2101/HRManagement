@@ -70,7 +70,18 @@ public class DetailSevrlet extends HttpServlet {
                 session.setAttribute("classChoose", dao.getClass(classname));
                 session.setAttribute("classNotice", dao.getNoticeList(user, classname, value, search));
                 request.getRequestDispatcher("classroom.jsp").forward(request, response);
-            } else if (action != null) {
+            } else if (task != null) {
+                Notice taskDetail = dao.getTask(Integer.parseInt(task));
+                request.setAttribute("task", Integer.parseInt(task));
+                request.setAttribute("choosenTask", taskDetail);
+                if (user.getRoleID() == 1) {
+                    request.getRequestDispatcher("student_task.jsp").forward(request, response);
+                } else {
+                    request.setAttribute("choosenTask", taskDetail);
+                    request.setAttribute("taskWorkChoosen", dao.getWorkList(Integer.parseInt(task)));
+                    request.getRequestDispatcher("teacher_task.jsp").forward(request, response);
+                }
+            } else if (action != null && !action.equals("close")) {
                 if (submit != null && submit.equals("deleteClass")) {
                     session.removeAttribute("deleteClass");
                 }
@@ -86,28 +97,21 @@ public class DetailSevrlet extends HttpServlet {
             } else if (taskid != null) {
                 request.setAttribute("taskChoose", taskid);
                 request.getRequestDispatcher("report.jsp").forward(request, response);
-            } else if (task != null) {
-                Notice taskDetail = dao.getTask(Integer.parseInt(task));
-                request.setAttribute("task", Integer.parseInt(task));
-                request.setAttribute("choosenTask", taskDetail);
-                if (user.getRoleID() == 1) {
-                    request.getRequestDispatcher("student_task.jsp").forward(request, response);
-                } else {
-                    request.setAttribute("choosenTask", taskDetail);
-                    request.setAttribute("taskWorkChoosen", dao.getWorkList(Integer.parseInt(task)));
-                    request.getRequestDispatcher("teacher_task.jsp").forward(request, response);
-                }
             } else if (id != null) {
                 Integer studentid = request.getParameter("studentid") == null ? -1 : Integer.parseInt(request.getParameter("studentid"));
                 User loginUser = (User) session.getAttribute("loginUser");
-                Notice noti = dao.getTask(Integer.parseInt(id));
-                if (studentid < 0) {
-                    session.setAttribute("taskHW", noti);
-                    if (loginUser.getRoleID() == 1) {
-                        request.getRequestDispatcher("detail?task=" + id).forward(request, response);
+                if (action != null && action.equals("close")) {
+                    session.removeAttribute("taskHW");
+                    response.sendRedirect("detail?task=" + id);
+                } else {
+                    if (studentid < 0) {
+                        if (loginUser.getRoleID() == 1) {
+                            session.setAttribute("taskHW", dao.getWork(Integer.parseInt(id), loginUser.getId()));
+                            response.sendRedirect("detail?task=" + id);
+                        } else {
+                        }
                     } else {
                     }
-                } else {
                 }
             } else {
                 if (submit != null && submit.equals("deleteUser")) {

@@ -36,7 +36,7 @@
         <a href="detail?class=${sessionScope.classChoose.getName()}"  class="more float-end">
             <span>Return Class<i class="fas fa-long-arrow-alt-right"></i></span>
         </a>
-        <nav class="container row">
+        <nav class="container row align-items-start">
             <div class="col-8 d-flex flex-column">
                 <div class="d-flex justify-content-start">
                     <div class="icon-large rounded-circle bg-primary d-flex align-items-center">
@@ -58,12 +58,20 @@
                     <i class="fa-solid fa-plus"></i>
                     <span> Task</span>
                 </a>
-                <div class="text-center align-items-center row fw-bold">
-                    <span class="col border-end"><%=work==null?"Not Done":"Done"%> </span>
+                <div class="text-center align-items-center row fw-bold" style="margin-top: 30px;">
+                    <%if(work.getWorkAddress().size()==0){%>
+                    <span class="col border-end text-danger">Not Done</span>
                     <span class="col d-flex flex-column justify-content-between">
                         <span>Mark</span>
-                        <span><%=work==null?"Not Done":work.getMark()==-1?"Not Marked":work.getMark()%></span>
+                        <span class=" text-danger">Not Done</span>
                     </span>
+                    <%}else{%>
+                    <span class="col border-end text-success">Done</span>
+                    <span class="col d-flex flex-column justify-content-between">
+                        <span>Mark</span>
+                        <span class=" text-success"><%=work.getMark()==-1?"Waiting for your mark":work.getMark()%></span>
+                    </span>
+                    <%}%>
                 </div>
             </nav>
         </nav>

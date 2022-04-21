@@ -53,7 +53,7 @@
     Notice deleteNotice = (Notice) session.getAttribute("deleteNotice");
     Integer teacherRole =(Integer) request.getAttribute("teacherRole");
     String deleteClass = (String) session.getAttribute("deleteClass");
-    Notice taskHW = (Notice) session.getAttribute("taskHW");
+    Work taskHW = (Work) session.getAttribute("taskHW");
 %>
 <div id="preloader">
     <div class="loader">
@@ -71,17 +71,19 @@
         </div>
     </div>
 </div>
-<%if(taskHW!=null){%>
+<%if(taskHW!=null){
+    Notice thisNotice = dao.getNotice(taskHW.getTaskid());
+%>
 <div class="modal" tabindex="-1" id="fileOpenStudent" style="display:block; background: rgba(0,0,0,0.5);;">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Task của <%=loginUser.getName()%></h5>
-                <a type="button" class="btn-close" href="detail?task=<%=taskHW.getId()%>"></a>
+                <a type="button" class="btn-close" href="detail?action=close&id=<%=taskHW.getTaskid()%>"></a>
             </div>
             <div class="modal-body row">
-                <input type="text" name="studentid" hidden="" value="<%=loginUser.getId()%>"/>
-                <input type="text" name="task" hidden="" value="<%=taskHW.getId()%>"/>
+                <input type="text" name="studentid" hidden="" value="<%=taskHW.getUserid()%>"/>
+                <input type="text" name="task" hidden="" value="<%=taskHW.getTaskid()%>"/>
                 <div class="col-2 d-flex flex-column justify-content-between">
                     <div class="list-group list-group-flush" id="listFile">
                         <a class="list-group-item active" data-toggle="list" onclick="changeValue(this)"
@@ -91,18 +93,37 @@
                             <span>Add Image/PDF</span>
                         </label>
                         <form action="file" method="POST" enctype="multipart/form-data">
+                            <input hidden type="text" name="action" value="upfile">
                             <input hidden type="file" name="file" id="addImgPDFHW" accept="image/*, .pdf">
                         </form>
+                        <%for(int p = 0; p<taskHW.getWorkAddress().size();p++){%>
+                        <a class="list-group-item" data-toggle="list" href="#file<%=p%>" onclick="changeValue(this)">
+                            <form class="d-flex justify-content-between" action="file" method="POST" enctype="multipart/form-data">
+                                <span>Task homework <%=p%></span>
+                                <input type="text" hidden="" name="work" value="<%=taskHW.getWorkAddress().get(p)%>"/>
+                                <input hidden type="text" name="action" value="deleteFile">
+                                <button class="btn-close" aria-label="Close" onclick="deleteURL(this.parentNode)"></button>
+                            </form>
+                        </a>
+                        <%}%>
                     </div>
                     <div class="comment">
                         <label for="status">Status</label>
-                        <div id="status" class="text-success fw-bold">On Time</div>
+                        <%if(taskHW.getWorkAddress().size()==0){%>
+                        <div id="status" class="text-danger fw-bold">Not Done</div>
+                        <%}else{%>
+                        <%if(taskHW.getDoneAt().compareTo(thisNotice.getDeadline())>0){%>
+                        <div id="status" class="text-warning fw-bold">Done Late</div>
+                        <%}else{%>
+                        <div id="status" class="text-success fw-bold">Done on Time</div>
+                        <%}%>
                         <label for="mark">Mark Task</label>
-                        <div class="d-flex justify-content-start align-items-center" id="mark">
-                            <span>6/10</span>
+                        <div class="d-flex justify-content-start align-items-center fw-bold" id="mark">
+                            <span><%=taskHW.getMark()==-1?"Not Marked Yet":(taskHW.getMark()+"/10")%></span>
                         </div>
                         <label for="comment">Comment Task</label>
-                        <textarea name="comment" disabled id="comment" rows="10"></textarea>
+                        <textarea name="comment" disabled="" id="comment" rows="10"><%=taskHW.getComment()!=null?taskHW.getComment():"No Comment"%></textarea>
+                        <%}%>
                     </div>
                 </div>
                 <div class="col-10 h-100">
@@ -110,12 +131,17 @@
                         <div class="tab-pane fade active show h-100" id="guide">
                             <embed src="homework/Guid.pdf" type="application/pdf" />
                         </div>
+                        <%for(int p = 0; p<taskHW.getWorkAddress().size();p++){%>
+                        <div class="tab-content fade h-100" id="file<%=p%>">
+                            <%if(taskHW.getWorkAddress().get(p).endsWith(".pdf")){%>
+                            <embed class="w-100" src="homework/<%=taskHW.getTaskid()%>/<%=taskHW.getUserid()%>/<%=taskHW.getWorkAddress().get(p)%>" type="application/pdf" />
+                            <%}else{%>
+                            <img class="w-100" src="homework/<%=taskHW.getTaskid()%>/<%=taskHW.getUserid()%>/<%=taskHW.getWorkAddress().get(p)%>" alt="">
+                            <%}%>
+                        </div>
+                        <%}%>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <a class="btn btn-light" href="detail?task=<%=taskHW.getId()%>">Cancel</a>
-                <button class="btn btn-primary" name="action" value="Save">Save</button>
             </div>
         </div>
     </div>
@@ -777,59 +803,6 @@
     </div>
 </div>
 <%}%>
-<div class="modal fade" id="fileOpenTeacher" tabindex="-1" role="dialog" aria-labelledby="fileOpenTeacher"
-     aria-hidden="true" style="">
-    <div class="modal-dialog modal-fullscreen" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Phạm Tường's Task </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body row">
-                <div class="col-2 d-flex flex-column justify-content-between">
-                    <div class="list-group list-group-flush">
-                        <a class="list-group-item active" data-toggle="list" onclick="changeValue(this)"
-                           href="#file1">An item</a>
-                        <a class="list-group-item" data-toggle="list" onclick="changeValue(this)" href="#file2">A
-                            second item</a>
-                        <a class="list-group-item" data-toggle="list" onclick="changeValue(this)" href="#file3">A
-                            third item</a>
-                    </div>
-                    <div class="comment">
-                        <label for="status">Status</label>
-                        <div id="status" class="text-success fw-bold">On Time</div>
-                        <label for="mark">Mark Task</label>
-                        <div class="d-flex justify-content-start align-items-center" id="mark">
-                            <input type="number" class="mark bg-transparent">
-                            <span>/10</span>
-                        </div>
-                        <label for="comment">Comment Task</label>
-                        <textarea name="comment" id="comment" rows="10"></textarea>
-                    </div>
-                </div>
-                <div class="col-10">
-                    <div class="tab-content h-100">
-                        <div class="tab-pane fade active show h-100" id="file1">
-                            <embed src="homework/Guid.pdf" type="application/pdf" />
-                        </div>
-                        <div class="tab-pane fade h-100" id="file2">
-                            <img src="assests/image/JS.png" alt="">
-                        </div>
-                        <div class="tab-pane fade h-100" id="file3">
-                            <embed src="homework/Guid.pdf" type="application/pdf" />
-                            <div id="docPreview"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-light" type="button" data-bs-dismiss="modal"
-                        aria-label="Close">Cancel</button>
-                <button class="btn btn-primary" name="action" value="Save">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="modal fade" id="viewMark" tabindex="-1" role="dialog" aria-labelledby="viewMark" aria-hidden="true" style="">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
