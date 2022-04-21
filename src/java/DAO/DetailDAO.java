@@ -335,6 +335,44 @@ public class DetailDAO {
         }
         return workDone;
     }
+
+    public Notice getNotice(int id) throws SQLException {
+        Notice noti = null;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                String sql = "select * from notice where id=" + id;
+                stm = conn.prepareStatement(sql);
+                rs = stm.executeQuery();
+                while (rs.next()) {
+                    int author = rs.getInt(2);
+                    String title = rs.getString(3);
+                    String describe = rs.getString(4);
+                    String classid = rs.getString(5);
+                    String publicAt = rs.getString(6);
+                    boolean task = rs.getBoolean(7);
+                    String deadline = rs.getString(8);
+                    noti = new Notice(id, author, title, describe, classid, publicAt, task, deadline);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return noti;
+    }
     
     public List<Work> getWorkList(int taskid) throws SQLException {
         List<Work> list = new ArrayList<>();

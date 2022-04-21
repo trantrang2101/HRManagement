@@ -54,10 +54,10 @@
                 </div>
             </div>
             <nav class="col-4 d-flex flex-column justify-content-around">
-                <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#fileOpenStudent" style="margin: 0;">
+                <a class="btn btn-primary float-end" href="submit?id=<%=noti.getId()%>" style="margin: 0;">
                     <i class="fa-solid fa-plus"></i>
                     <span> Task</span>
-                </button>
+                </a>
                 <div class="text-center align-items-center row fw-bold">
                     <span class="col border-end"><%=work==null?"Not Done":"Done"%> </span>
                     <span class="col d-flex flex-column justify-content-between">
@@ -89,6 +89,55 @@
                 document.getElementById("remain").innerHTML = "EXPIRED";
             }
         }, 1000);
+        $('input[type="file"]').change(function () {
+            $.each(this.files, function () {
+                readURL(this);
+            });
+        });
+        var listFile = document.querySelector('#listFile');
+        var output = document.querySelector('#outputFile');
+        function readURL(file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var button = document.createElement('button');
+                button.classList.add('btn-close');
+                button.setAttribute('aria-label', 'Close');
+                button.setAttribute('onclick', 'deleteURL(this.parentNode)');
+                var num = listFile.querySelectorAll('.list-group-item').length - 2;
+                var p = document.createElement('span');
+                p.innerHTML = 'Task homework ' + num;
+                var href = document.createElement('a');
+                href.classList.add('list-group-item', 'd-flex', 'justify-content-between');
+                href.setAttribute('data-toggle', 'list');
+                href.href = '#file' + num;
+                href.setAttribute('onclick', 'changeValue(this)');
+                href.appendChild(p);
+                href.appendChild(button);
+                listFile.appendChild(href);
+                var div = document.createElement('div');
+                div.classList.add('tab-pane', 'fade', 'h-100');
+                div.id = 'file' + num;
+                if (file.name.includes('pdf')) {
+                    var embed = document.createElement('embed');
+                    embed.src = e.target.result;
+                    embed.type = 'application/pdf';
+                    div.appendChild(embed);
+                } else {
+                    var image = document.createElement("img");
+                    image.src = e.target.result;
+                    div.appendChild(image);
+                }
+                output.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function deleteURL(file) {
+            var outputFile = document.querySelector('#' + file.href.split("#")[1]);
+            output.removeChild(outputFile);
+            listFile.removeChild(file);
+        }
+
     </script>
 
 </body>

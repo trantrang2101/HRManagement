@@ -54,7 +54,7 @@ public class LoginDAO {
         return list;
     }
 
-    public List<Classroom> getClassList(int id) throws SQLException {
+    public List<Classroom> getClassList(int id,int role) throws SQLException {
         List<Classroom> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stm = null;
@@ -62,7 +62,7 @@ public class LoginDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String sql = id != 1 ? "select * from classroom order by id" : "select classroom.id from classroom,classroom_detail where classroom.id=classroom_detail.id and userid=" + id + "  order by id";
+                String sql = role == 0 ? "select * from classroom order by id" : "select classroom.id from classroom,classroom_detail where classroom.id=classroom_detail.id and userid=" + id + "  order by id";
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {

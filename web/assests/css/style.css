@@ -286,13 +286,6 @@ table#tableMark th {
     border: 1px solid black;
     padding: 0.5rem 1rem;
 }
-table#tableMark thead th {
-    padding: 3px;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    width: 15vw;
-}
 table#tableMark td {
     padding: 4px 5px;
     text-align: center;
@@ -303,8 +296,15 @@ table#tableMark tbody th {
     text-align: left;
     position: relative;
 }
-table#tableMark thead th:first-child,
-table#tableMark tbody td:first-child {
+table#tableMark thead th {
+    padding: 3px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    width: 15vw;
+}
+table#tableMark tbody td:first-child,
+table#tableMark thead th:first-child{
     position: sticky;
     left: 0;
     width: 100px;

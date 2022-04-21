@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author Tran Trang
  */
-public class DetailSeverlet extends HttpServlet {
+public class DetailSevrlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -74,7 +74,7 @@ public class DetailSeverlet extends HttpServlet {
                     session.removeAttribute("deleteClass");
                 }
                 LoginDAO login = new LoginDAO();
-                List<Classroom> list = login.getClassList(user.getId());
+                List<Classroom> list = login.getClassList(user.getId(),user.getRoleID());
                 session.setAttribute("listClass", list);
                 List<Teacher> listSubject = login.getTeacherRoleList();
                 session.setAttribute("listSubject", listSubject);

@@ -45,7 +45,7 @@ public class EditServlet extends HttpServlet {
             if (action.equals("editNotice")) {
                 if (request.getParameter("submit") == null) {
                     int taskid = Integer.parseInt(request.getParameter("id"));
-                    request.setAttribute("editNotice", dao.getNotice(taskid));
+                    request.setAttribute("editNotice", detail.getNotice(taskid));
                     edit = true;
                     request.getRequestDispatcher("classroom.jsp").forward(request, response);
                 } else {
@@ -67,13 +67,16 @@ public class EditServlet extends HttpServlet {
                     }
                 }
             } else if (action.equals("editPerson")) {
-                Classroom choosenClass = (Classroom) session.getAttribute("classChoose");
                 int userid = Integer.parseInt(request.getParameter("user"));
                 Teacher previous = detail.getUser(userid);
                 if (request.getParameter("submit") == null) {
                     request.setAttribute("editPerson", previous);
                     edit = true;
-                    request.setAttribute("subjectClassList", detail.getClassByRole(1));
+                    if (previous.getRoleID() == 2) {
+                        request.setAttribute("subjectClassList", detail.getClassByRole(previous.getSubjectID()));
+                    } else {
+                        request.setAttribute("subjectClassList", detail.getClassByRole(1));
+                    }
                     request.getRequestDispatcher("detail").forward(request, response);
                 } else {
                     int role = request.getParameter("roleEdit") == null ? 2 : Integer.parseInt(request.getParameter("roleEdit"));
@@ -81,7 +84,7 @@ public class EditServlet extends HttpServlet {
                         String name = request.getParameter("name");
                         boolean gender = request.getParameter("gender").equals("1");
                         String password = request.getParameter("password");
-                        String[] classList = request.getParameterValues("class");
+                        String[] classList = role == 1 ? request.getParameterValues("class") : request.getParameterValues("classTeacher");
                         int roleID = request.getParameter("roleID") != null
                                 ? Integer.parseInt(request.getParameter("roleID"))
                                 : 0;
@@ -89,19 +92,29 @@ public class EditServlet extends HttpServlet {
                         if (previous.getRoleID() == 2 && userGet.getRoleID() != 2) {
                             dao.deleteTeacher(userid);
                         }
-                        if (dao.editUser(userGet)) {
-                            if (classList != null && classList.length > 0) {
-                                for (String c : classList) {
-                                    if (!dao.editUserClass(c, userid)) {
-                                        edit = false;
-                                        break;
-                                    } else {
-                                        edit = true;
+                        if (role == 2 && classList == null) {
+                            out.print("<script>alert('Must choose class for teacher!');window.history.back()</script>");
+                        } else {
+                            try {
+                                if (dao.editUser(userGet)) {
+                                    dao.deleteAllClass(userGet.getId());
+                                    if (classList != null && classList.length > 0) {
+                                        for (String c : classList) {
+                                            AddDAO add = new AddDAO();
+                                            if (!add.addUserClass(c, userid)) {
+                                                edit = false;
+                                                break;
+                                            }else{
+                                                edit=true;
+                                            }
+                                        }
+                                    }
+                                    if (edit) {
+                                        response.sendRedirect("detail");
                                     }
                                 }
-                            }
-                            if (edit) {
-                                response.sendRedirect("detail");
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     } else {

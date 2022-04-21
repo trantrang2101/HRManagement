@@ -4,8 +4,10 @@
  */
 package Controller;
 
-import DAO.LoginDAO;
-import entity.*;
+import DAO.DetailDAO;
+import DAO.EditDeleteDAO;
+import entity.Notice;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,13 +15,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  *
- * @author Tran Trang
+ * @author hanhu
  */
-public class LoginSeverlet extends HttpServlet {
+public class HomeworkServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,38 +34,28 @@ public class LoginSeverlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            HttpSession session = request.getSession();
-            String action = request.getParameter("action");
-            if (action.equals("Login")) {
-                int id = Integer.parseInt(request.getParameter("id"));
-                String password = request.getParameter("password");
-                LoginDAO dao = new LoginDAO();
-                User user = dao.login(id, password);
-                if (user != null) {
-                    session.setAttribute("loginUser", user);
-                    if (user.getRoleID() == 1) {
-                        List<Classroom> list = dao.getClassList(id,user.getRoleID());
-                        response.sendRedirect("detail?class=" + list.get(0).getName());
-                    } else {
-                        response.sendRedirect("detail?action=return");
-                    }
+        PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            Integer studentid = request.getParameter("studentid") == null ? -1 : Integer.parseInt(request.getParameter("studentid"));
+            User loginUser = (User) session.getAttribute("loginUser");
+            DetailDAO detail = new DetailDAO();
+            Notice noti = detail.getNotice(id);
+            if (studentid < 0) {
+                if (loginUser.getRoleID() == 1) {
+                    request.setAttribute("taskHW", noti);
+                    request.getRequestDispatcher("detail?task="+id).forward(request, response);
                 } else {
-                    out.print("<script>alert('Wrong id or password');</script>");
-                    request.getRequestDispatcher("index.html").include(request, response);
                 }
-            } else if (action.equals("Logout")) {
-                session.invalidate();
-                response.sendRedirect("index.html");
+            } else {
             }
-
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.html");
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the    // + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

@@ -51,11 +51,13 @@
                 <span>View Member</span>
             </button>
         </nav>
+        <%if(loginUser.getRoleID()!=1){%>
         <nav class="container d-flex justify-content-end">
             <a href="detail?action=return" class="more float-end">
                 <span>Return list classes<i class="fas fa-long-arrow-alt-right"></i></span>
             </a>
         </nav>
+        <%}%>
         <div class="filter container flex-column">
             <div class="d-flex justify-content-between">
                 <div class="d-flex">
@@ -113,6 +115,8 @@
                     %>
                     <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="1" id="excercise">
                     <label class="btn btn-outline-primary" for="excercise">Task</label>
+                    <input class="form-control search-form fade" hidden="" name="search" type="search" placeholder="Search" value="<%=searchWords%>" aria-label="Search">
+                    <input type="text" hidden="" class="fade" name="class" value="<%=clsl.getName()%>"/>
                     <input type="checkbox" onchange="this.parentNode.submit()" class="btn-check" name="option" value="0" id="notice" checked>
                     <label class="btn btn-primary" for="notice">Notice</label>
                     <%}}%>

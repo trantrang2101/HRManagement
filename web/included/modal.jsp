@@ -53,6 +53,7 @@
     Notice deleteNotice = (Notice) session.getAttribute("deleteNotice");
     Integer teacherRole =(Integer) request.getAttribute("teacherRole");
     String deleteClass = (String) session.getAttribute("deleteClass");
+    Notice taskHW = (Notice) request.getAttribute("taskHW");
 %>
 <div id="preloader">
     <div class="loader">
@@ -70,15 +71,17 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="fileOpenStudent" tabindex="-1" role="dialog" aria-labelledby="fileOpen"
-     aria-hidden="true" style="">
+<%if(taskHW!=null){%>
+<div class="modal" tabindex="-1" id="fileOpenStudent" style="display:block; background: rgba(0,0,0,0.5);;">
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Task của Phạm Tường</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Task của <%=loginUser.getName()%></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body row">
+                <input type="text" name="studentid" hidden="" value="<%=loginUser.getId()%>"/>
+                <input type="text" name="id" hidden="" value="<%=taskHW.getId()%>"/>
                 <div class="col-2 d-flex flex-column justify-content-between">
                     <div class="list-group list-group-flush" id="listFile">
                         <a class="list-group-item active" data-toggle="list" onclick="changeValue(this)"
@@ -121,6 +124,7 @@
         </div>
     </div>
 </div>
+<%}%>
 <%if(taskid!=null){%>
 <div class="modal" tabindex="-1" style="display:block; background: rgba(0,0,0,0.5);;">
     <div class="modal-dialog modal-fullscreen" role="document">
@@ -462,14 +466,23 @@
                             <div class="d-flex flex-wrap justify-content-around fade" id="teacherClassesEdit">
                                 <%
                                     if(listClass!=null){
-                                        int count  = 0;
+                                        int count  = 0,getCount=0;
                                         if(subjectClassList==null){
                                             subjectClassList=new ArrayList<>();
                                         }
+                                        List<String> listClassForTeacher = dao.getClassByID(editPerson.getId());
                                         for(Classroom c : listClass){
-                                            if(subjectClassList.size()>0&&c.getName().equals(subjectClassList.get(count))){
+                                            if(listClassForTeacher.size()>0&&listClassForTeacher.get(getCount).equals(c.getName())){
                                 %>
-                                <input disabled type="checkbox" class="btn-check" name="class" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
+                                <input checked="" type="checkbox" class="btn-check" name="classTeacher" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="<%=c.getName()%>"><%=c.getName()%></label>
+                                <%
+                                            if(getCount<listClassForTeacher.size()-1){
+                                                getCount++;
+                                            }
+                                }else if(subjectClassList.size()>0&&c.getName().equals(subjectClassList.get(count))){
+                                %>
+                                <input disabled type="checkbox" class="btn-check" name="classTeacher" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
                                 <label class="btn btn-secondary" for="<%=c.getName()%>"><%=c.getName()%></label>
                                 <%
                                             if(count<subjectClassList.size()-1){
@@ -477,7 +490,7 @@
                                             }
                                         }else{
                                 %>
-                                <input type="checkbox" class="btn-check" name="class" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
+                                <input type="checkbox" class="btn-check" name="classTeacher" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
                                 <label class="btn btn-outline-primary" for="<%=c.getName()%>"><%=c.getName()%></label>
                                 <%
                                 }
@@ -969,7 +982,7 @@ if(submit!=null){
                                         for(Classroom c : listClass){
                                             if(subjectClassList.size()>0&&c.getName().equals(subjectClassList.get(count))){
                                 %>
-                                <input disabled type="checkbox" class="btn-check" name="class" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
+                                <input disabled type="checkbox" class="btn-check" name="classTeacher" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
                                 <label class="btn btn-secondary" for="<%=c.getName()%>"><%=c.getName()%></label>
                                 <%
                                             if(count<subjectClassList.size()-1){
@@ -977,7 +990,7 @@ if(submit!=null){
                                             }
                                         }else{
                                 %>
-                                <input type="checkbox" class="btn-check" name="class" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
+                                <input type="checkbox" class="btn-check" name="classTeacher" value="<%=c.getName()%>" id="<%=c.getName()%>" autocomplete="off">
                                 <label class="btn btn-outline-primary" for="<%=c.getName()%>"><%=c.getName()%></label>
                                 <%
                                 }
@@ -1082,6 +1095,65 @@ if(submit!=null){
         CKEDITOR.replace('postEdit');
         CKEDITOR.replace('postAdd');
         CKEDITOR.replace('postAddAll');
+        
+        if (document.getElementById('pieChart') !== null) {
+            const pieChart = new Chart(document.getElementById('pieChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        'Yếu (0-5)',
+                        'Trung bình - Khá (5-8)',
+                        'Giỏi (8-10)'
+                    ],
+                    datasets: [{
+                            label: 'Mark Task #1',
+                            data: sortClass(),
+                            backgroundColor: [
+                                'rgb(246,151,125)',
+                                'rgb(255,243,121)',
+                                'rgb(150,205,138)'
+                            ],
+                            hoverOffset: 4
+                        }]
+                }
+            });
+        }
+        if (document.getElementById('lineChart') !== null) {
+            const lineChart = new Chart(document.getElementById('lineChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: getColumn('studentDetail', 0),
+                    datasets: [{
+                            label: '',
+                            data: getColumn('studentDetail', 2),
+                            fill: false,
+                            backgroundColor: 'rgb(246,151,121)',
+                            borderColor: 'rgb(246,151,125)',
+                            tension: 0.1
+                        }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Mark Details'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 10
+                        },
+                        x: {
+                            ticks: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
         var datePublishedNo = document.querySelector('#datePublished');
         datePublishedNo.min = moment(new Date()).format('YYYY-MM-DDTHH:mm');
         datePublishedNo.value = moment(new Date()).format('YYYY-MM-DDTHH:mm');
@@ -1139,64 +1211,6 @@ if(submit!=null){
         }
         if (document.querySelector('#averageStudent') !== null) {
             document.querySelector('#averageStudent').value = markAvg / count;
-        }
-        if (document.getElementById('pieChart') !== null) {
-            const pieChart = new Chart(document.getElementById('pieChart').getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: [
-                        'Yếu (0-5)',
-                        'Trung bình - Khá (5-8)',
-                        'Giỏi (8-10)'
-                    ],
-                    datasets: [{
-                            label: 'Mark Task #1',
-                            data: sortClass(),
-                            backgroundColor: [
-                                'rgb(246,151,125)',
-                                'rgb(255,243,121)',
-                                'rgb(150,205,138)'
-                            ],
-                            hoverOffset: 4
-                        }]
-                }
-            });
-        }
-        if (document.getElementById('lineChart') !== null) {
-            const lineChart = new Chart(document.getElementById('lineChart').getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: getColumn('studentDetail', 0),
-                    datasets: [{
-                            label: '',
-                            data: getColumn('studentDetail', 2),
-                            fill: false,
-                            backgroundColor: 'rgb(246,151,121)',
-                            borderColor: 'rgb(246,151,125)',
-                            tension: 0.1
-                        }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Mark của <%=userChoose%>'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            min: 0,
-                            max: 10
-                        },
-                        x: {
-                            ticks: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
         }
     });
     var option = document.getElementsByName('notice');

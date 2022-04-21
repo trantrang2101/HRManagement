@@ -89,25 +89,26 @@ public class AddServlet extends HttpServlet {
                             boolean gender = request.getParameter("gender").equals("1");
                             String password = request.getParameter("password");
                             int role = Integer.parseInt(request.getParameter("role"));
-                            String[] classList = request.getParameterValues("class");
+                            String[] classList = role==1?request.getParameterValues("class"):request.getParameterValues("classTeacher");
                             int roleID = request.getParameter("roleID") != null
                                     ? Integer.parseInt(request.getParameter("roleID"))
                                     : 0;
-                            Teacher user = new Teacher(id, name, gender, password, role, roleID);
-                            if (dao.addUser(user)) {
-                                if (classList != null && classList.length > 0) {
-                                    for (String c : classList) {
-                                        if (!dao.addUserClass(c, id)) {
-                                            dao.addClass(c);
-                                            dao.addUserClass(c, id);
+                            if (role ==2 && classList==null) {
+                                out.print("<script>alert('Must choose class for teacher!');window.history.back()</script>");
+                            } else {
+                                Teacher user = new Teacher(id, name, gender, password, role, roleID);
+                                if (dao.addUser(user)) {
+                                    if (classList != null && classList.length > 0) {
+                                        for (String c : classList) {
+                                            if (!dao.addUserClass(c, id)) {
+                                                dao.addClass(c);
+                                                dao.addUserClass(c, id);
+                                            }
                                         }
                                     }
+                                    add = true;
+                                    response.sendRedirect("detail");
                                 }
-                                List<Teacher> listUser = (List<Teacher>) session.getAttribute("listUser");
-                                listUser.add(user);
-                                session.setAttribute("listUser", listUser);
-                                add = true;
-                                response.sendRedirect("detail");
                             }
                         } else {
                             int teacherRole = Integer.parseInt(request.getParameter("teacherRole"));

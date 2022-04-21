@@ -26,8 +26,8 @@ public class EditDeleteDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String deadline = noti.getDeadline() == null ? "" : ",deadline=select * from (CONVERT(datetime,'" + noti.getDeadline() + "',120))";
-                stm = conn.prepareStatement("update Blogs set createBy=?,Title=?,describe=?,classid=?,isTask=?,publicAt= select * from (CONVERT(datetime,'" + noti.getPublicAt() + "',120)" + deadline + ") where id = ?");
+                String deadline = noti.getDeadline() == null ? "" : ",deadline=(CONVERT(datetime,'" + noti.getDeadline() + "',120))";
+                stm = conn.prepareStatement("update notice set createdBy=?,Title=?,describe=?,classid=?,isTask=?,publicAt= (CONVERT(datetime,'" + noti.getPublicAt() + "',120))" + deadline + " where id = ?");
                 stm.setInt(1, noti.getCreateBy());
                 stm.setNString(2, noti.getTitle());
                 stm.setNString(3, noti.getDescribe());
@@ -52,6 +52,29 @@ public class EditDeleteDAO {
         return check;
     }
 
+    public boolean deleteAllClass(int id) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement("delete from classroom_detail where userid=" + id);
+                check = stm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+
     public boolean deleteTeacher(int id) throws SQLException {
         boolean check = false;
         Connection conn = null;
@@ -61,8 +84,7 @@ public class EditDeleteDAO {
             if (conn != null) {
                 stm = conn.prepareStatement("delete from teacher where userid=" + id);
                 if (stm.executeUpdate() > 0) {
-                    stm = conn.prepareStatement("delete from classroom_detail where userid=" + id);
-                    check = stm.executeUpdate() > 0;
+                    check=deleteAllClass(id);
                 }
             }
         } catch (Exception e) {
@@ -176,44 +198,6 @@ public class EditDeleteDAO {
         return check;
     }
 
-    public Notice getNotice(int id) throws SQLException {
-        Notice noti = null;
-        Connection conn = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
-        try {
-            conn = ConnectJDBC.getConnection();
-            if (conn != null) {
-                String sql = "select * from notice where id=" + id;
-                stm = conn.prepareStatement(sql);
-                rs = stm.executeQuery();
-                while (rs.next()) {
-                    int author = rs.getInt(2);
-                    String title = rs.getString(3);
-                    String describe = rs.getString(4);
-                    String classid = rs.getString(5);
-                    String publicAt = rs.getString(6);
-                    boolean task = rs.getBoolean(7);
-                    String deadline = rs.getString(8);
-                    noti = new Notice(id, author, title, describe, classid, publicAt, task, deadline);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (stm != null) {
-                stm.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
-        }
-        return noti;
-    }
-
     public boolean editUser(Teacher user) throws SQLException {
         boolean check = false;
         Connection conn = null;
@@ -232,8 +216,9 @@ public class EditDeleteDAO {
                 if (user.getRoleID() == 2) {
                     stm = conn.prepareStatement("select * from [teacher] where userid = ?");
                     stm.setInt(1, user.getId());
-                    if (stm.executeUpdate() > 0) {
-                        stm = conn.prepareStatement("update from [teacher] set roleid=? where userid = ?");
+                    rs = stm.executeQuery();
+                    if (rs!=null) {
+                        stm = conn.prepareStatement("update [teacher] set roleid=? where userid = ?");
                         stm.setInt(1, user.getSubjectID());
                         stm.setInt(2, user.getId());
                     } else {

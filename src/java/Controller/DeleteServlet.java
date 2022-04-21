@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author Tran Trang
  */
-public class DeleteSeverlet extends HttpServlet {
+public class DeleteServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -49,7 +49,7 @@ public class DeleteSeverlet extends HttpServlet {
                         response.sendRedirect("detail?submit=deleteNotice&class=" + cl.getName());
                     }
                 } else {
-                    session.setAttribute("deleteNotice", dao.getNotice(notice));
+                    session.setAttribute("deleteNotice", detail.getNotice(notice));
                     response.sendRedirect("detail?class=" + cl.getName());
                 }
             } else if (action.equals("deleteClass")) {

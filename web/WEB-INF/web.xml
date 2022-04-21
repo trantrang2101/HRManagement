@@ -14,15 +14,19 @@
     </servlet>
     <servlet>
         <servlet-name>DetailSeverlet</servlet-name>
-        <servlet-class>Controller.DetailSeverlet</servlet-class>
+        <servlet-class>Controller.DetailSevrlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>DeleteSeverlet</servlet-name>
-        <servlet-class>Controller.DeleteSeverlet</servlet-class>
+        <servlet-class>Controller.DeleteServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>EditServlet</servlet-name>
         <servlet-class>Controller.EditServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>HomeworkServlet</servlet-name>
+        <servlet-class>Controller.HomeworkServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginSeverlet</servlet-name>
@@ -47,6 +51,10 @@
     <servlet-mapping>
         <servlet-name>EditServlet</servlet-name>
         <url-pattern>/edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HomeworkServlet</servlet-name>
+        <url-pattern>/submit</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
