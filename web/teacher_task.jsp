@@ -110,11 +110,11 @@
                     </div>
                     <div class="col-2 row row-cols-2">
                         <div class="col d-flex flex-column">
-                            <h2><%=dao.getWorkList(task).size()%></h2>
+                            <h2><%=dao.getDoneTask(task)%></h2>
                             <p>Done</p>
                         </div>
                         <div class="col d-flex flex-column">
-                            <h2><%= choosenClass.getList().size()-dao.getWorkList(task).size()%></h2>
+                            <h2><%= choosenClass.getList().size()-dao.getDoneTask(task)%></h2>
                             <p>Not Done</p>
                         </div>
                     </div>

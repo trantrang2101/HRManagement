@@ -25,8 +25,8 @@
         <servlet-class>Controller.EditServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>HomeworkServlet</servlet-name>
-        <servlet-class>Controller.HomeworkServlet</servlet-class>
+        <servlet-name>FileUpload</servlet-name>
+        <servlet-class>Controller.FileUpload</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginSeverlet</servlet-name>
@@ -53,8 +53,8 @@
         <url-pattern>/edit</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>HomeworkServlet</servlet-name>
-        <url-pattern>/submit</url-pattern>
+        <servlet-name>FileUpload</servlet-name>
+        <url-pattern>/file</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

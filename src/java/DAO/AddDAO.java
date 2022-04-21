@@ -8,8 +8,10 @@ import connectDB.ConnectJDBC;
 import entity.Notice;
 import entity.Teacher;
 import entity.User;
+import entity.Work;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -107,11 +109,38 @@ public class AddDAO {
         }
         return check;
     }
-
-    public boolean addNotice(Notice noti) throws SQLException {
+    
+    public boolean addWork(int task,int user) throws SQLException {
         boolean check = false;
         Connection conn = null;
         PreparedStatement stm = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                String sql = "INSERT INTO task_work (id,userid) VALUES (?,?)";
+                stm = conn.prepareStatement(sql);
+                stm.setInt(1, task);
+                stm.setInt(2, user);
+                check = stm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+    
+    public int addNotice(Notice noti) throws SQLException {
+        int check = -1;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
@@ -123,7 +152,13 @@ public class AddDAO {
                 stm.setNString(3, noti.getDescribe());
                 stm.setString(4, noti.getClassroom());
                 stm.setBoolean(5, noti.isTask());
-                check = stm.executeUpdate() > 0;
+                if (stm.executeUpdate() > 0) {
+                    stm = conn.prepareStatement("select * from notice");
+                    rs=stm.executeQuery();
+                    while(rs.next()){
+                        check = rs.getInt(1);
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

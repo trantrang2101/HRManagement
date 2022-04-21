@@ -44,6 +44,7 @@ public class DetailSevrlet extends HttpServlet {
         try {
             String classname = request.getParameter("class");
             String task = request.getParameter("task");
+            String id = request.getParameter("id");
             String action = request.getParameter("action");
             String submit = request.getParameter("submit");
             Integer userid = request.getParameter("userid") != null ? Integer.parseInt(request.getParameter("userid")) : null;
@@ -74,7 +75,7 @@ public class DetailSevrlet extends HttpServlet {
                     session.removeAttribute("deleteClass");
                 }
                 LoginDAO login = new LoginDAO();
-                List<Classroom> list = login.getClassList(user.getId(),user.getRoleID());
+                List<Classroom> list = login.getClassList(user.getId(), user.getRoleID());
                 session.setAttribute("listClass", list);
                 List<Teacher> listSubject = login.getTeacherRoleList();
                 session.setAttribute("listSubject", listSubject);
@@ -92,8 +93,21 @@ public class DetailSevrlet extends HttpServlet {
                 if (user.getRoleID() == 1) {
                     request.getRequestDispatcher("student_task.jsp").forward(request, response);
                 } else {
+                    request.setAttribute("choosenTask", taskDetail);
                     request.setAttribute("taskWorkChoosen", dao.getWorkList(Integer.parseInt(task)));
                     request.getRequestDispatcher("teacher_task.jsp").forward(request, response);
+                }
+            } else if (id != null) {
+                Integer studentid = request.getParameter("studentid") == null ? -1 : Integer.parseInt(request.getParameter("studentid"));
+                User loginUser = (User) session.getAttribute("loginUser");
+                Notice noti = dao.getTask(Integer.parseInt(id));
+                if (studentid < 0) {
+                    session.setAttribute("taskHW", noti);
+                    if (loginUser.getRoleID() == 1) {
+                        request.getRequestDispatcher("detail?task=" + id).forward(request, response);
+                    } else {
+                    }
+                } else {
                 }
             } else {
                 if (submit != null && submit.equals("deleteUser")) {
@@ -120,7 +134,7 @@ public class DetailSevrlet extends HttpServlet {
                 request.setAttribute("roleList", roleList);
                 request.setAttribute("roleName", roleName);
                 request.setAttribute("roleSearch", roleSearch);
-                request.setAttribute("searchWords",search);
+                request.setAttribute("searchWords", search);
                 session.setAttribute("thisPage", page);
                 session.setAttribute("pages", noPages);
                 request.getRequestDispatcher("view_people.jsp").forward(request, response);

@@ -37,10 +37,14 @@ create table notice(
 create table task_work(
 	id int foreign key references notice(id)  on delete  NO ACTION on update  NO ACTION,
 	userid int foreign key references [user](id)  on delete  NO ACTION on update  NO ACTION,
-	work nvarchar(255) not null,
+	work  int identity(1,1) primary key,
 	mark int default -1,
 	comment text,
 	doneAt datetime default getDate()
+);
+create table work_detail(
+	workid int references task_work(work)  on delete  NO ACTION on update  NO ACTION,
+	work nvarchar(max)
 );
 insert into [user](id,name,roleID,gender,password) values (0,N'Phạm Thu Hương',0,0,0),(1901781017,N'Lô Căm Sánh Anh',1,0,'150049')
 insert into [teacher_role] (name) values (N'Maths'),(N'Literature'),(N'History'),(N'Geography'),(N'Civic Education'),(N'Physics'),(N'Chemistry'),(N'Biology')

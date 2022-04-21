@@ -31,7 +31,7 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                stm = conn.prepareStatement("select * from teacher_role,teacher where userid=" + userid +" and id=roleid");
+                stm = conn.prepareStatement("select * from teacher_role,teacher where userid=" + userid + " and id=roleid");
                 rs = stm.executeQuery();
                 while (rs.next()) {
                     int id = rs.getInt(1);
@@ -54,7 +54,7 @@ public class DetailDAO {
         return teacher;
     }
 
-    public int getTotal(String[] roleSearch,String search) throws SQLException {
+    public int getTotal(String[] roleSearch, String search) throws SQLException {
         int login = -1;
         Connection conn = null;
         PreparedStatement stm = null;
@@ -65,13 +65,13 @@ public class DetailDAO {
                 String sql = "";
                 switch (roleSearch.length) {
                     case 3:
-                        sql = "select top 1  row_number() OVER(ORDER BY [user].id ASC) as counts from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or (classroom_detail.id like'%"+search+"%' and classroom_detail.userid=[user].id )) group by [user].id order by counts desc";
+                        sql = "select top 1  row_number() OVER(ORDER BY [user].id ASC) as counts from [user],classroom_detail where ([user].id like '%" + search + "%' or name like '%" + search + "%' or (classroom_detail.id like'%" + search + "%' and classroom_detail.userid=[user].id )) group by [user].id order by counts desc";
                         break;
                     case 2:
-                        sql = "select top 1  row_number() OVER(ORDER BY [user].id ASC) as counts from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or (classroom_detail.id like'%"+search+"%' and classroom_detail.userid=[user].id )) and roleID = " + roleSearch[0] + " or roleID = " + roleSearch[1] + " group by [user].id order by counts desc";
+                        sql = "select top 1  row_number() OVER(ORDER BY [user].id ASC) as counts from [user],classroom_detail where ([user].id like '%" + search + "%' or name like '%" + search + "%' or (classroom_detail.id like'%" + search + "%' and classroom_detail.userid=[user].id )) and roleID = " + roleSearch[0] + " or roleID = " + roleSearch[1] + " group by [user].id order by counts desc";
                         break;
                     case 1:
-                        sql = "select top 1  row_number() OVER(ORDER BY [user].id ASC) as counts from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or (classroom_detail.id like'%"+search+"%' and classroom_detail.userid=[user].id )) and roleID = " + roleSearch[0] + " group by [user].id order by counts desc";
+                        sql = "select top 1  row_number() OVER(ORDER BY [user].id ASC) as counts from [user],classroom_detail where ([user].id like '%" + search + "%' or name like '%" + search + "%' or (classroom_detail.id like'%" + search + "%' and classroom_detail.userid=[user].id )) and roleID = " + roleSearch[0] + " group by [user].id order by counts desc";
                         break;
                     default:
                         break;
@@ -98,7 +98,7 @@ public class DetailDAO {
         return login;
     }
 
-    public List<Teacher> getUserList(int current, int total, String[] roleSearch,String search) throws SQLException {
+    public List<Teacher> getUserList(int current, int total, String[] roleSearch, String search) throws SQLException {
         List<Teacher> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stm = null;
@@ -109,13 +109,13 @@ public class DetailDAO {
                 String sql = "";
                 switch (roleSearch.length) {
                     case 3:
-                        sql = "select distinct [user].id,name,gender,roleID,password from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or (classroom_detail.id like'%"+search+"%' and classroom_detail.userid=[user].id )) order by [user].id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+                        sql = "select distinct [user].id,name,gender,roleID,password from [user],classroom_detail where ([user].id like '%" + search + "%' or name like '%" + search + "%' or (classroom_detail.id like'%" + search + "%' and classroom_detail.userid=[user].id )) order by [user].id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
                         break;
                     case 2:
-                        sql = "select distinct [user].id,name,gender,roleID,password from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or (classroom_detail.id like'%"+search+"%' and classroom_detail.userid=[user].id )) and roleID = " + roleSearch[0] + " or roleID = " + roleSearch[1] + " order by [user].id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+                        sql = "select distinct [user].id,name,gender,roleID,password from [user],classroom_detail where ([user].id like '%" + search + "%' or name like '%" + search + "%' or (classroom_detail.id like'%" + search + "%' and classroom_detail.userid=[user].id )) and roleID = " + roleSearch[0] + " or roleID = " + roleSearch[1] + " order by [user].id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
                         break;
                     case 1:
-                        sql = "select distinct [user].id,name,gender,roleID,password from [user],classroom_detail where ([user].id like '%"+search+"%' or name like '%"+search+"%' or (classroom_detail.id like'%"+search+"%' and classroom_detail.userid=[user].id )) and roleID = " + roleSearch[0] + " order by [user].id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+                        sql = "select distinct [user].id,name,gender,roleID,password from [user],classroom_detail where ([user].id like '%" + search + "%' or name like '%" + search + "%' or (classroom_detail.id like'%" + search + "%' and classroom_detail.userid=[user].id )) and roleID = " + roleSearch[0] + " order by [user].id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
                         break;
                     default:
                         break;
@@ -173,10 +173,10 @@ public class DetailDAO {
                     String password = rs.getString(5);
                     int roleID = rs.getInt(4);
                     login = new Teacher(id, name, gender, password, roleID);
-                    if (roleID==2) {
-                        stm = conn.prepareStatement("select * from Teacher where userid="+id);
-                        rs=stm.executeQuery();
-                        while (rs.next()) {                            
+                    if (roleID == 2) {
+                        stm = conn.prepareStatement("select * from Teacher where userid=" + id);
+                        rs = stm.executeQuery();
+                        while (rs.next()) {
                             login.setSubjectID(rs.getInt(2));
                         }
                     }
@@ -206,7 +206,7 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                
+
                 String sql = "select distinct * from [classroom_detail] where userid=" + userid;
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
@@ -238,7 +238,7 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                
+
                 String sql = "select distinct id from classroom_detail,teacher where teacher.userid=classroom_detail.userid and roleid=" + role;
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
@@ -313,11 +313,17 @@ public class DetailDAO {
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {
-                    String work = rs.getString(3);
+                    int work = rs.getInt(3);
                     double mark = rs.getInt(4);
                     String comment = rs.getString(5);
                     String doneAt = rs.getString(6);
-                    workDone = new Work(taskid, userid, work, mark, comment, doneAt);
+                    List<String> list = new ArrayList<>();
+                    PreparedStatement stm1 = conn.prepareStatement( "select * from work_detail where workid = " + work);
+                    ResultSet rs1 = stm1.executeQuery();
+                    while (rs1.next()) {                        
+                        list.add(rs.getString(2));
+                    }
+                    workDone = new Work(taskid, userid, work, mark, comment, doneAt, list);
                 }
             }
         } catch (Exception e) {
@@ -373,7 +379,7 @@ public class DetailDAO {
         }
         return noti;
     }
-    
+
     public List<Work> getWorkList(int taskid) throws SQLException {
         List<Work> list = new ArrayList<>();
         Connection conn = null;
@@ -387,11 +393,17 @@ public class DetailDAO {
                 rs = stm.executeQuery();
                 while (rs.next()) {
                     int userid = rs.getInt(2);
-                    String work = rs.getString(3);
+                    int work = rs.getInt(3);
                     double mark = rs.getDouble(4);
                     String comment = rs.getString(5);
                     String doneAt = rs.getString(6);
-                    list.add(new Work(taskid, userid, work, mark, comment, doneAt));
+                    List<String> listAddress = new ArrayList<>();
+                    PreparedStatement stm1 = conn.prepareStatement( "select * from work_detail where workid = " + work);
+                    ResultSet rs1 = stm1.executeQuery();
+                    while (rs1.next()) {                        
+                        listAddress.add(rs.getString(2));
+                    }
+                    list.add(new Work(taskid, userid, work, mark, comment, doneAt,listAddress));
                 }
             }
         } catch (Exception e) {
@@ -449,7 +461,38 @@ public class DetailDAO {
         return task;
     }
     
-    public double[] getTaskAverage(int id)throws SQLException{
+    public int getDoneTask(int task) throws SQLException{
+        int done = 0;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                String sql = "select count(*) from task_work,work_detail where task_work.work=work_detail.workid and task_work.id="+task;
+                stm = conn.prepareStatement(sql);
+                rs = stm.executeQuery();
+                while (rs.next()) {
+                    done = rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return done;
+    }
+
+    public double[] getTaskAverage(int id) throws SQLException {
         double[] average = new double[2];
         Connection conn = null;
         PreparedStatement stm = null;
@@ -457,7 +500,7 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String sql = "select avg(mark),count(*) from task_work where userid="+id+" group by mark";
+                String sql = "select avg(mark) as average ,count(*) as number from task_work,work_detail where task_work.work=work_detail.workid and userid="+id+" group by mark";
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {
@@ -481,7 +524,7 @@ public class DetailDAO {
         return average;
     }
 
-    public Double getAverageTask(int id) throws SQLException{
+    public Double getAverageTask(int id) throws SQLException {
         Double average = Double.parseDouble("-1");
         Connection conn = null;
         PreparedStatement stm = null;
@@ -489,7 +532,7 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String sql = "select avg(mark) from task_work where id="+id+"";
+                String sql = "select avg(mark) from task_work where id=" + id + "";
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {
@@ -511,8 +554,8 @@ public class DetailDAO {
         }
         return average;
     }
-    
-    public List<Notice> getNoticeList(User user, String classid, String[] value,String search) throws SQLException {
+
+    public List<Notice> getNoticeList(User user, String classid, String[] value, String search) throws SQLException {
         List<Notice> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stm = null;
@@ -523,13 +566,13 @@ public class DetailDAO {
                 String sql = "";
                 switch (user.getRoleID()) {
                     case 0:
-                        sql = value.length==1 ? "select * from notice where classid='" + classid + "' and isTask="+Integer.parseInt(value[0])+" and (title like'%"+search+"%' or describe like '%"+search+"%') order by publicAt desc" : "select * from notice where classid='" + classid + "' and (title like'%"+search+"%' or describe like '%"+search+"%') order by publicAt desc";
+                        sql = value.length == 1 ? "select * from notice where classid='" + classid + "' and isTask=" + Integer.parseInt(value[0]) + " and (title like'%" + search + "%' or describe like '%" + search + "%') order by publicAt desc" : "select * from notice where classid='" + classid + "' and (title like'%" + search + "%' or describe like '%" + search + "%') order by publicAt desc";
                         break;
                     case 2:
-                        sql = value.length==2? "select * from notice where classid='" + classid + "' and (title like'%"+search+"%' or describe like '%"+search+"%') and createdBy=" + user.getId() + " order by publicAt desc":"select * from notice where classid='" + classid + "' and createdBy=" + user.getId() + " and isTask="+Integer.parseInt(value[0])+" and (title like'%"+search+"%' or describe like '%"+search+"%') order by publicAt desc";
+                        sql = value.length == 2 ? "select * from notice where classid='" + classid + "' and (title like'%" + search + "%' or describe like '%" + search + "%') and createdBy=" + user.getId() + " order by publicAt desc" : "select * from notice where classid='" + classid + "' and createdBy=" + user.getId() + " and isTask=" + Integer.parseInt(value[0]) + " and (title like'%" + search + "%' or describe like '%" + search + "%') order by publicAt desc";
                         break;
                     default:
-                        sql = value.length==1 ? "select * from notice where getDate()>publicAt and classid='" + classid + "' and isTask="+Integer.parseInt(value[0])+" and (title like'%"+search+"%' or describe like '%"+search+"%') order by publicAt desc" : "select * from notice where getDate()>publicAt and classid='" + classid + "' and (title like'%"+search+"%' or describe like '%"+search+"%') order by publicAt desc";
+                        sql = value.length == 1 ? "select * from notice where getDate()>publicAt and classid='" + classid + "' and isTask=" + Integer.parseInt(value[0]) + " and (title like'%" + search + "%' or describe like '%" + search + "%') order by publicAt desc" : "select * from notice where getDate()>publicAt and classid='" + classid + "' and (title like'%" + search + "%' or describe like '%" + search + "%') order by publicAt desc";
                         break;
                 }
                 stm = conn.prepareStatement(sql);

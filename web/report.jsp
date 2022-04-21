@@ -71,8 +71,8 @@
                             <tr>
                                 <td><%=c.getTitle()%></td>
                                 <td><%=c.getDeadline()%></td>
-                                <td><%=dao.getWorkList(c.getId()).size()%></td>
-                                <td><%= choosenClass.getList().size()-dao.getWorkList(c.getId()).size()%></td>
+                                <td><%=dao.getDoneTask(c.getId())%></td>
+                                <td><%= choosenClass.getList().size()-dao.getDoneTask(c.getId())%></td>
                                 <td><%=average%></td>
                                 <td>
                                     <form action="detail" method="POST">

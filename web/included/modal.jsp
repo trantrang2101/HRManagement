@@ -53,7 +53,7 @@
     Notice deleteNotice = (Notice) session.getAttribute("deleteNotice");
     Integer teacherRole =(Integer) request.getAttribute("teacherRole");
     String deleteClass = (String) session.getAttribute("deleteClass");
-    Notice taskHW = (Notice) request.getAttribute("taskHW");
+    Notice taskHW = (Notice) session.getAttribute("taskHW");
 %>
 <div id="preloader">
     <div class="loader">
@@ -77,25 +77,22 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Task của <%=loginUser.getName()%></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <a type="button" class="btn-close" href="detail?task=<%=taskHW.getId()%>"></a>
             </div>
             <div class="modal-body row">
                 <input type="text" name="studentid" hidden="" value="<%=loginUser.getId()%>"/>
-                <input type="text" name="id" hidden="" value="<%=taskHW.getId()%>"/>
+                <input type="text" name="task" hidden="" value="<%=taskHW.getId()%>"/>
                 <div class="col-2 d-flex flex-column justify-content-between">
                     <div class="list-group list-group-flush" id="listFile">
                         <a class="list-group-item active" data-toggle="list" onclick="changeValue(this)"
                            href="#guide">Guide</a>
-                        <label class="list-group-item" data-toggle="list" for="addImgHW">
+                        <label class="list-group-item" data-toggle="list" for="addImgPDFHW">
                             <i class="fa-solid fa-plus"></i>
-                            <span>Add Image</span>
+                            <span>Add Image/PDF</span>
                         </label>
-                        <label class="list-group-item" data-toggle="list" for="addPDFHW">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Add PDF</span>
-                        </label>
-                        <input hidden type="file" name="" id="addImgHW" accept="image/*">
-                        <input hidden type="file" name="" id="addPDFHW" accept=".pdf">
+                        <form action="file" method="POST" enctype="multipart/form-data">
+                            <input hidden type="file" name="file" id="addImgPDFHW" accept="image/*, .pdf">
+                        </form>
                     </div>
                     <div class="comment">
                         <label for="status">Status</label>
@@ -117,8 +114,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-light" type="button" data-bs-dismiss="modal"
-                        aria-label="Close">Cancel</button>
+                <a class="btn btn-light" href="detail?task=<%=taskHW.getId()%>">Cancel</a>
                 <button class="btn btn-primary" name="action" value="Save">Save</button>
             </div>
         </div>
@@ -155,7 +151,7 @@
                                 <td><%=user.getName()%></td>
                                 <%
                                             Work studentWork = dao.getWork(taskid,user.getId());
-                                            if(studentWork!=null){
+                                            if(studentWork.getWorkAddress().size()>0){
                                 %>
                                 <td><%=studentWork.getMark()%></td>
                                 <td><%=studentWork.getComment()%></td>
@@ -211,7 +207,7 @@
                                 for(Notice c : classNoticeView){
                                     if(c.isTask()){
                                         Work workUser = dao.getWork(c.getId(),userChoose);
-                                        if(workUser!=null){
+                                        if(workUser.getWorkAddress().size()>0){
                             %>
                             <tr>
                                 <td><%=c.getTitle()%></td>
@@ -222,9 +218,9 @@
                             <%}else{%>
                             <tr class="text-danger">
                                 <td class="text-dark"><%=c.getTitle()%></td>
-                                <td>Not Done</td>
-                                <td>0</td>
-                                <td class="line-5">Not Done</td>
+                                <td class="fw-bold">Not Done</td>
+                                <td class="fw-bold">0</td>
+                                <td class="line-5 fw-bold">Not Done</td>
                             </tr>
                             <%}}}%>
                         </tbody>
@@ -643,7 +639,7 @@
                                     <label class="btn btn-outline-primary" for="noticeNoAll">Notice</label>
                                 </div>
                                 <div class="btn-group" role="group">
-                                    <input type="checkbox" class="btn-check" name="selectAll" id="selectAll" value="1" onclick="toggle(this,'classid')"
+                                    <input type="checkbox" class="btn-check" name="selectAll" id="selectAll" value="1" onclick="toggle(this, 'classid')"
                                            autocomplete="off">
                                     <label class="btn btn-outline-primary" id="selectAllLabel" for="selectAll">Select All Classes</label>
                                 </div>
@@ -1090,12 +1086,10 @@ if(submit!=null){
         $('#tableViewClassStudent').DataTable();
         $('#taskTable').DataTable();
         $('#studentTable').DataTable();
-        $('#taskDetail').DataTable();
-        $('#studentDetail').DataTable();
         CKEDITOR.replace('postEdit');
         CKEDITOR.replace('postAdd');
         CKEDITOR.replace('postAddAll');
-        
+
         if (document.getElementById('pieChart') !== null) {
             const pieChart = new Chart(document.getElementById('pieChart').getContext('2d'), {
                 type: 'doughnut',

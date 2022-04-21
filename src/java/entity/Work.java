@@ -4,26 +4,29 @@
  */
 package entity;
 
+import java.util.List;
+
 /**
  *
  * @author Tran Trang
  */
 public class Work {
-    private int taskid,userid;
-    private String work;
+    private int taskid,userid, work;
     private double mark;
     private String comment,doneAt;
+    private List<String> workAddress;
 
     public Work() {
     }
 
-    public Work(int taskid, int userid, String work, double mark, String comment, String doneAt) {
+    public Work(int taskid, int userid, int work, double mark, String comment, String doneAt, List<String> workAddress) {
         this.taskid = taskid;
         this.userid = userid;
         this.work = work;
         this.mark = mark;
         this.comment = comment;
         this.doneAt = doneAt;
+        this.workAddress = workAddress;
     }
 
     public int getTaskid() {
@@ -34,6 +37,14 @@ public class Work {
         this.taskid = taskid;
     }
 
+    public List<String> getWorkAddress() {
+        return workAddress;
+    }
+
+    public void setWorkAddress(List<String> workAddress) {
+        this.workAddress = workAddress;
+    }
+
     public int getUserid() {
         return userid;
     }
@@ -42,11 +53,11 @@ public class Work {
         this.userid = userid;
     }
 
-    public String getWork() {
+    public int getWork() {
         return work;
     }
 
-    public void setWork(String work) {
+    public void setWork(int work) {
         this.work = work;
     }
 

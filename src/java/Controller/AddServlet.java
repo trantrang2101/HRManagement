@@ -61,16 +61,25 @@ public class AddServlet extends HttpServlet {
                     String content = request.getParameter("content");
                     for (String classid : classls) {
                         Notice noti = new Notice(0, authorid, name, content, classid, publish, isTask, deadline);
-                        if (dao.addNotice(noti)) {
+                        int id = dao.addNotice(noti);
+                        if (id > 0) {
                             add = true;
                         } else {
                             add = false;
                             break;
                         }
+                        if (isTask) {
+                            Classroom cl = detail.getClass(classid);
+                            for (User user : cl.getList()) {
+                                if (!dao.addWork(id, user.getId())) {
+                                    add = false;
+                                    break;
+                                }
+                            }
+                        }
                     }
                     if (classls.length == 1) {
                         response.sendRedirect("detail?class=" + classls[0]);
-
                     } else {
                         response.sendRedirect("teacher_home.jsp");
                     }
@@ -89,11 +98,11 @@ public class AddServlet extends HttpServlet {
                             boolean gender = request.getParameter("gender").equals("1");
                             String password = request.getParameter("password");
                             int role = Integer.parseInt(request.getParameter("role"));
-                            String[] classList = role==1?request.getParameterValues("class"):request.getParameterValues("classTeacher");
+                            String[] classList = role == 1 ? request.getParameterValues("class") : request.getParameterValues("classTeacher");
                             int roleID = request.getParameter("roleID") != null
                                     ? Integer.parseInt(request.getParameter("roleID"))
                                     : 0;
-                            if (role ==2 && classList==null) {
+                            if (role == 2 && classList == null) {
                                 out.print("<script>alert('Must choose class for teacher!');window.history.back()</script>");
                             } else {
                                 Teacher user = new Teacher(id, name, gender, password, role, roleID);

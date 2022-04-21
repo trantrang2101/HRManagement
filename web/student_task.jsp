@@ -54,7 +54,7 @@
                 </div>
             </div>
             <nav class="col-4 d-flex flex-column justify-content-around">
-                <a class="btn btn-primary float-end" href="submit?id=<%=noti.getId()%>" style="margin: 0;">
+                <a class="btn btn-primary float-end" href="detail?id=<%=noti.getId()%>" style="margin: 0;">
                     <i class="fa-solid fa-plus"></i>
                     <span> Task</span>
                 </a>
@@ -93,6 +93,7 @@
             $.each(this.files, function () {
                 readURL(this);
             });
+            this.parentNode.submit();
         });
         var listFile = document.querySelector('#listFile');
         var output = document.querySelector('#outputFile');

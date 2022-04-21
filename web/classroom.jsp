@@ -157,7 +157,10 @@
                                         <a class="dropdown-item" href="edit?action=editNotice&id=<%=c.getId()%>" >Edit</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="delete?notice=<%=c.getId()%>">Delete</a>
+                                        <form action="delete" method="POST">
+                                            <input type="text" name="noticeDelete" value="<%=c.getId()%>" hidden/>
+                                            <button class="dropdown-item" name="action" value="deleteNotice" type="submit">Delete</button>
+                                        </form>
                                     </li>
                                 </ul>
                             </div>
@@ -172,11 +175,11 @@
                         </div>
                         <div class="col-2 row row-cols-2">
                             <div class="col d-flex flex-column">
-                                <h2><%=dao.getWorkList(c.getId()).size()%></h2>
+                                <h2><%=dao.getDoneTask(c.getId())%></h2>
                                 <p>Done</p>
                             </div>
                             <div class="col d-flex flex-column">
-                                <h2><%= choosenClass.getList().size()-dao.getWorkList(c.getId()).size()%></h2>
+                                <h2><%= choosenClass.getList().size()-dao.getDoneTask(c.getId())%></h2>
                                 <p>Not Done</p>
                             </div>
                         </div>

@@ -4,23 +4,26 @@
  */
 package Controller;
 
-import DAO.DetailDAO;
-import DAO.EditDeleteDAO;
+import entity.Classroom;
 import entity.Notice;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
+import java.io.File;
 
 /**
  *
  * @author hanhu
  */
-public class HomeworkServlet extends HttpServlet {
+@MultipartConfig
+public class FileUpload extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,24 +37,26 @@ public class HomeworkServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
         HttpSession session = request.getSession();
+        Classroom choosenClass = (Classroom) session.getAttribute("classChoose");
         try {
-            int id = Integer.parseInt(request.getParameter("id"));
-            Integer studentid = request.getParameter("studentid") == null ? -1 : Integer.parseInt(request.getParameter("studentid"));
+            String applicationPath = getServletContext().getRealPath("");
             User loginUser = (User) session.getAttribute("loginUser");
-            DetailDAO detail = new DetailDAO();
-            Notice noti = detail.getNotice(id);
-            if (studentid < 0) {
-                if (loginUser.getRoleID() == 1) {
-                    request.setAttribute("taskHW", noti);
-                    request.getRequestDispatcher("detail?task="+id).forward(request, response);
-                } else {
-                }
-            } else {
+            Notice taskHW = (Notice) session.getAttribute("taskHW");
+            String uploadPath = applicationPath.replace("build\\", "") + "homework" + File.separator + taskHW.getId() + File.separator + loginUser.getId();
+            File fileUploadDirectory = new File(uploadPath);
+            if (!fileUploadDirectory.exists()) {
+                fileUploadDirectory.mkdirs();
+            }
+            Part filePart = request.getPart("file");
+            String fileName = filePart.getSubmittedFileName();
+            for (Part part : request.getParts()) {
+                part.write(uploadPath + File.separator + fileName);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            response.sendRedirect("detail?class=" + choosenClass.getName());
         }
     }
 
