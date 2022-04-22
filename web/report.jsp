@@ -76,7 +76,7 @@
                                 <td><%=average%></td>
                                 <td>
                                     <form action="detail" method="POST">
-                                        <input type="text" name="taskid" value="<%=c.getId()%>"/>
+                                        <input type="text" name="taskid" value="<%=c.getId()%>" hidden=""/>
                                         <button type="submit" name="submit" value="detail" class="more btn bg-transparent" style="margin: 0;">
                                             <span> Task<i class="fas fa-long-arrow-alt-right"></i></span>
                                         </button>
@@ -108,9 +108,9 @@
                             <tr>
                                 <td><%=user.getId()%></td>
                                 <td><%=user.getName()%></td>
-                                <td class="text-center"><%=(int)average[0]%></td>
-                                <td class="text-center"><%=task-(int)average[0]%></td>
-                                <td class="text-center"><%=average[1]%></td>
+                                <td class="text-center"><%=(int)average[1]%></td>
+                                <td class="text-center"><%=task-(int)average[1]%></td>
+                                <td class="text-center"><%=average[0]==-1?"Not marked":average[0]%></td>
                                 <td class="text-center">
                                     <form action="detail">
                                         <button type="submit" name="userid" value="<%=user.getId()%>" class="more btn bg-transparent" style="margin: 0;">

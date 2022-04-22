@@ -66,6 +66,13 @@ public class EditServlet extends HttpServlet {
                         edit = false;
                     }
                 }
+            } else if (action.equals("submitTask")) {
+                String id = request.getParameter("id");
+                double mark = Double.parseDouble(request.getParameter("mark"));
+                String comment = request.getParameter("comment") != null ? request.getParameter("comment") : "";
+                int work = Integer.parseInt(request.getParameter("work"));
+                dao.updateMark(work, comment, mark);
+                response.sendRedirect("detail?task=" + id);
             } else if (action.equals("editPerson")) {
                 int userid = Integer.parseInt(request.getParameter("user"));
                 Teacher previous = detail.getUser(userid);
@@ -104,8 +111,8 @@ public class EditServlet extends HttpServlet {
                                             if (!add.addUserClass(c, userid)) {
                                                 edit = false;
                                                 break;
-                                            }else{
-                                                edit=true;
+                                            } else {
+                                                edit = true;
                                             }
                                         }
                                     }

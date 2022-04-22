@@ -6,6 +6,7 @@ package Controller;
 
 import DAO.AddDAO;
 import DAO.DetailDAO;
+import DAO.EditDeleteDAO;
 import DAO.LoginDAO;
 import entity.Classroom;
 import entity.Notice;
@@ -98,21 +99,21 @@ public class DetailSevrlet extends HttpServlet {
                 request.setAttribute("taskChoose", taskid);
                 request.getRequestDispatcher("report.jsp").forward(request, response);
             } else if (id != null) {
-                Integer studentid = request.getParameter("studentid") == null ? -1 : Integer.parseInt(request.getParameter("studentid"));
-                User loginUser = (User) session.getAttribute("loginUser");
+                Integer studentid = request.getParameter("student") == null ? -1 : Integer.parseInt(request.getParameter("student"));
                 if (action != null && action.equals("close")) {
                     session.removeAttribute("taskHW");
-                    response.sendRedirect("detail?task=" + id);
+                    session.removeAttribute("taskSubmit");
                 } else {
                     if (studentid < 0) {
-                        if (loginUser.getRoleID() == 1) {
-                            session.setAttribute("taskHW", dao.getWork(Integer.parseInt(id), loginUser.getId()));
-                            response.sendRedirect("detail?task=" + id);
-                        } else {
+                        if (user.getRoleID() == 1) {
+                            session.setAttribute("taskHW", dao.getWork(Integer.parseInt(id), user.getId()));
                         }
                     } else {
+                        session.setAttribute("taskSubmit", dao.getWork(Integer.parseInt(id), studentid));
                     }
                 }
+                response.sendRedirect("detail?task=" + id);
+
             } else {
                 if (submit != null && submit.equals("deleteUser")) {
                     session.removeAttribute("deletePerson");

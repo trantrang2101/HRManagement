@@ -18,6 +18,35 @@ import java.text.SimpleDateFormat;
  */
 public class EditDeleteDAO {
 
+    public boolean updateMark(int work,String comment,  double mark) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement("update task_work set mark=?,comment=? where work = "+work);
+                stm.setDouble(1, mark);
+                stm.setNString(2, comment);
+                check = stm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+    
     public boolean updateTimeDone(int work) throws SQLException {
         boolean check = false;
         Connection conn = null;

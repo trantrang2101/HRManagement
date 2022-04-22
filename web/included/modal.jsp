@@ -54,6 +54,7 @@
     Integer teacherRole =(Integer) request.getAttribute("teacherRole");
     String deleteClass = (String) session.getAttribute("deleteClass");
     Work taskHW = (Work) session.getAttribute("taskHW");
+    Work taskSubmit = (Work) session.getAttribute("taskSubmit");
 %>
 <div id="preloader">
     <div class="loader">
@@ -71,6 +72,72 @@
         </div>
     </div>
 </div>
+<%if(taskSubmit!=null){
+    Notice thisNotice = dao.getNotice(taskSubmit.getTaskid());
+    User submitUser = dao.getUser(taskSubmit.getUserid());
+%>
+<div class="modal" tabindex="-1" id="fileOpenStudent" style="display:block; background: rgba(0,0,0,0.5);;">
+    <div class="modal-dialog modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Task của <%=submitUser.getName()%></h5>
+                <a type="button" class="btn-close" href="detail?action=close&id=<%=taskSubmit.getTaskid()%>"></a>
+            </div>
+            <div class="modal-body row">
+                <div class="col-2 d-flex h-100 flex-column justify-content-between" id="fileSubmit">
+                    <div class="list-group list-group-flush" id="listFile">
+                        <%for(int p = 0; p<taskSubmit.getWorkAddress().size();p++){%>
+                        <a class="list-group-item" data-toggle="list" href="#file<%=p%>" onclick="changeValue(this)">
+                            <span>Task homework <%=p%></span>
+                        </a>
+                        <%}%>
+                    </div>
+                    <form action="edit" class="w-100" method="POST">
+                        <div class="comment">
+                            <label for="status">Status</label>
+                            <%if(taskSubmit.getWorkAddress().size()==0){%>
+                            <div id="status" class="text-danger fw-bold">Not Done</div>
+                            <%}else{%>
+                            <%if(taskSubmit.getDoneAt().compareTo(thisNotice.getDeadline())>0){%>
+                            <div id="status" class="text-warning fw-bold">Done Late</div>
+                            <%}else{%>
+                            <div id="status" class="text-success fw-bold">Done on Time</div>
+                            <%}%>
+                            <label for="mark">Mark Task</label>
+                            <div class="d-flex justify-content-start margin-0 align-items-center fw-bold" id="mark">
+                                <span><input class="border-0 border-bottom" min="0" max="10" required="" value="<%=taskSubmit.getMark()!=0?taskSubmit.getMark():0%>" type="number" name="mark" step="0.1"/>/10</span>
+                            </div>
+                <input type="text" name="work" hidden="" value="<%=taskSubmit.getWork()%>"/>
+                <input type="text" name="id" hidden="" value="<%=taskSubmit.getTaskid()%>"/>
+                            <label for="comment">Comment Task</label>
+                            <textarea class="w-100" name="comment" required="" rows="10"><%=taskSubmit.getComment()!=null?taskSubmit.getComment():""%></textarea>
+                            <%}%>
+                        </div>
+                </div>
+                <div class="col-10">
+                    <div class="tab-content" id="outputFile">
+                        <%for(int p = 0; p<taskSubmit.getWorkAddress().size();p++){%>
+                        <div class="tab-content fade h-100" id="file<%=p%>">
+                            <%if(taskSubmit.getWorkAddress().get(p).endsWith(".pdf")){%>
+                            <embed class="w-100" src="homework/<%=taskSubmit.getTaskid()%>/<%=taskSubmit.getUserid()%>/<%=taskSubmit.getWorkAddress().get(p)%>" type="application/pdf" />
+                            <%}else{%>
+                            <img class="w-100" src="homework/<%=taskSubmit.getTaskid()%>/<%=taskSubmit.getUserid()%>/<%=taskSubmit.getWorkAddress().get(p)%>" alt="">
+                            <%}%>
+                        </div>
+                        <%}%>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" type="button" data-bs-dismiss="modal"
+                        aria-label="Close">Cancel</button>
+                <button class="btn btn-primary" type="submit" name="action" value="submitTask">Save</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<%}%>
 <%if(taskHW!=null){
     Notice thisNotice = dao.getNotice(taskHW.getTaskid());
 %>
@@ -122,7 +189,7 @@
                             <span><%=taskHW.getMark()==-1?"Not Marked Yet":(taskHW.getMark()+"/10")%></span>
                         </div>
                         <label for="comment">Comment Task</label>
-                        <textarea name="comment" disabled="" id="comment" rows="10"><%=taskHW.getComment()!=null?taskHW.getComment():"No Comment"%></textarea>
+                        <textarea name="comment" disabled="" rows="10"><%=taskHW.getComment()!=null?taskHW.getComment():"No Comment"%></textarea>
                         <%}%>
                     </div>
                 </div>
@@ -153,7 +220,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Mark Task <%=taskid%> - Class 7C</h5>
-                <a type="button" class="btn-close" href="javascript:window.history.back()"></a>
+                <a type="button" class="btn-close" href="report.jsp"></a>
             </div>
             <div class="modal-body table-mark row">
                 <div class="col-8">
@@ -179,11 +246,11 @@
                                             Work studentWork = dao.getWork(taskid,user.getId());
                                             if(studentWork.getWorkAddress().size()>0){
                                 %>
-                                <td><%=studentWork.getMark()%></td>
-                                <td><%=studentWork.getComment()%></td>
+                                <td class="text-center"><%=studentWork.getMark()<0?0:studentWork.getMark()%></td>
+                                <td class=" text-justify"><%=studentWork.getComment()==null?"Not Mark Yet":studentWork.getComment()%></td>
                                 <%}else{%>
-                                <td class="text-danger">0</td>
-                                <td class="text-danger fw-bold">Not Done</td>
+                                <td class="text-center">0</td>
+                                <td class="text-danger text-center fw-bold">Not Done</td>
                                 <%
                                             }
                                 %>
@@ -238,8 +305,8 @@
                             <tr>
                                 <td><%=c.getTitle()%></td>
                                 <td><%=workUser.getDoneAt()%></td>
-                                <td><%=workUser.getMark()%></td>
-                                <td class="line-5"><%=workUser.getComment()%></td>
+                                <td><%=workUser.getMark()<0?"Not Marked":workUser.getMark()%></td>
+                                <td class="line-5"><%=workUser.getComment()==null?"No Commnent":workUser.getComment()%></td>
                             </tr>
                             <%}else{%>
                             <tr class="text-danger">
@@ -837,8 +904,10 @@
                             <%
                                 if(classNoticeView!=null){
                                     for(Notice c : classNoticeView){
-                                        if(c.isTask()){%>
-                            <td><%=dao.getWork(c.getId(),user.getId())!=null?dao.getWork(c.getId(),user.getId()).getMark():"Not Done"%></td>
+                                        if(c.isTask()){
+                                        Work studentWork = dao.getWork(c.getId(),user.getId());
+                            %>
+                            <td><%=studentWork.getWorkAddress().size()>0?(studentWork.getMark()<0?"Not Mark":studentWork.getMark()):"Not Done"%></td>
                             <%}}}%>
                         </tr>
                         <%}}}%>
@@ -1059,6 +1128,7 @@ if(submit!=null){
         $('#tableViewClassStudent').DataTable();
         $('#taskTable').DataTable();
         $('#studentTable').DataTable();
+        $('#getSubmittedDetail').DataTable();
         CKEDITOR.replace('postEdit');
         CKEDITOR.replace('postAdd');
         CKEDITOR.replace('postAddAll');

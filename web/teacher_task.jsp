@@ -14,6 +14,7 @@
                     int task = Integer.parseInt(request.getParameter("task"));
                     DetailDAO dao = new DetailDAO();
                     Notice noti = (Notice) request.getAttribute("choosenTask");
+                    Classroom choosenClass = (Classroom)session.getAttribute("classChoose");
     %>
     <title><%=noti.getTitle()%></title>
     <script src="assests/js/moment.js"></script>
@@ -37,47 +38,39 @@
         </a>
     </nav>
     <div class="row">
-        <div class="col-2 student-mark-list">
-            <table class="table table-hover">
-                <tr>
-                    <td colspan="3">Done</td>
-                </tr>
+        <div class="col-3 student-mark-list">
+            <table class="table table-hover" id="getSubmittedDetail">
+                <thead>
+                    <th>Student Name</th>
+                    <th>Status</th>
+                </thead>
+                <tbody>
                 <%
-                    List<Work> taskWorkChoosen = (List<Work>)session.getAttribute("taskWorkChoosen");
-                    if(taskWorkChoosen!=null){
-                        for(Work work : taskWorkChoosen){
-                        User user = dao.getUser(work.getUserid());
+                    for(User user : choosenClass.getList()){
+                        Work work = dao.getWork(task,user.getId());
+                        if(work.getWorkAddress().size()>0){
                 %>
                 <tr>
                     <td>
                         <%=user.getName()%><br>
-                        <a href="" class="more"><span>More details<i class="fas fa-long-arrow-alt-right"></i></span></a>
+                        <a href="detail?student=<%=user.getId()%>&id=<%=work.getTaskid()%>" class="more"><span>More details<i class="fas fa-long-arrow-alt-right"></i></span></a>
                     </td>
-                    <td>
-                    <td><%=work.getMark()%></td>
-                </tr>
-                <%}}%>
-                <tr>
-                    <td colspan="3">Not Done</td>
+                    <td class="text-success"><%=work.getMark()<0?"Not marked":work.getMark()%></td>
                 </tr>
                 <%
-                    Classroom choosenClass = (Classroom)session.getAttribute("classChoose");
-                    if(choosenClass!=null){
-                        for(User user : choosenClass.getList()){
-                        Work work = dao.getWork(user.getId(),task);
-                        if(work==null){
+                    }else{
                 %>
                 <tr>
                     <td>
                         <%=user.getName()%><br>
-                        <a href="" class="more"><span>More details<i class="fas fa-long-arrow-alt-right"></i></span></a>
                     </td>
                     <td class="text-danger">Not done</td>
                 </tr>
-                <%}}}%>
+                <%}}%>
+                </tbody>
             </table>
         </div>
-        <div class="col-10">
+        <div class="col-9">
             <nav class="container">
                 <div class="d-flex justify-content-between">
                     <div class="d-flex justify-content-start">
@@ -131,36 +124,36 @@
                     <%
                         if(choosenClass!=null){
                         for(User user : choosenClass.getList()){
-                        Work work = dao.getWork(user.getId(),task);
-                        if(work==null){
+                        Work work = dao.getWork(task,user.getId());
+                        if(work.getWorkAddress().size()==0){
                     %>
                     <div class="shadow-sm rounded-2">
                         <h6><%=user.getName()%></h6>
-                        <button class="btn btn-light d-flex flex-column justify-content-between">
+                        <button class="btn btn-light submit-folder d-flex flex-column justify-content-between">
                             <i class="fa-solid fa-folder center margin-0"></i>
                             <span class="text-muted">Not submitted</span>
                         </button>
                         <p class="text-danger">Not Done</p>
                     </div>
                     <%}else{
-                        if(noti.getDeadline().compareTo(work.getDoneAt())>0){
+                        if(noti.getDeadline().compareTo(work.getDoneAt())<0){
                     %>
 
                     <div class="shadow-sm rounded-2">
                         <h6><%=user.getName()%></h6>
-                        <button class="btn btn-light d-flex flex-column justify-content-between" data-bs-toggle="modal" data-bs-target="#fileOpenTeacher">
+                        <a class="btn btn-light submit-folder d-flex flex-column justify-content-between" href="detail?student=<%=user.getId()%>&id=<%=work.getTaskid()%>">
                             <i class="fa-solid fa-folder center margin-0"></i>
-                            <span><%=work.getWork()%></span>
-                        </button>
+                            <span><%=user.getId()%></span>
+                        </a>
                         <p class="text-warning">Done late</p>
                     </div>
                     <%}else{%>
                     <div class="shadow-sm rounded-2">
                         <h6><%=user.getName()%></h6>
-                        <button class="btn btn-light d-flex flex-column justify-content-between" data-bs-toggle="modal" data-bs-target="#fileOpenTeacher">
+                        <a class="btn btn-light submit-folder d-flex flex-column justify-content-between" href="detail?student=<%=user.getId()%>&id=<%=work.getTaskid()%>">
                             <i class="fa-solid fa-folder-open center margin-0"></i>
-                            <span><%=work.getWork()%></span>
-                        </button>
+                            <span><%=user.getId()%></span>
+                        </a>
                         <p class="text-success">Done on time</p>
                     </div>
                     <%}}}}%>
@@ -181,7 +174,6 @@
             inputDate.min = moment(new Date(day[2], day[1] - 1, day[0], time[0], time[1])).format('YYYY-MM-DDTHH:mm');
         }
     </script>
-
 </body>
 
 </html>

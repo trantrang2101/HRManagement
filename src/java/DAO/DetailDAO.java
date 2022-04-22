@@ -401,7 +401,7 @@ public class DetailDAO {
                     PreparedStatement stm1 = conn.prepareStatement( "select * from work_detail where workid = " + work);
                     ResultSet rs1 = stm1.executeQuery();
                     while (rs1.next()) {                        
-                        listAddress.add(rs.getString(2));
+                        listAddress.add(rs1.getString(2));
                     }
                     list.add(new Work(taskid, userid, work, mark, comment, doneAt,listAddress));
                 }
@@ -469,7 +469,7 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String sql = "select count(*) from task_work,work_detail where task_work.work=work_detail.workid and task_work.id="+task;
+                String sql = "select count(distinct workid) as workdone from task_work,work_detail where task_work.work=work_detail.workid and task_work.id="+task;
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {
@@ -500,7 +500,7 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String sql = "select avg(mark) as average ,count(*) as number from task_work,work_detail where task_work.work=work_detail.workid and userid="+id+" group by mark";
+                String sql = "select avg(mark) as average ,count(distinct work_detail.workid) as number from task_work,work_detail where task_work.work=work_detail.workid and userid="+id+" group by mark";
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {
