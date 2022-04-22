@@ -155,10 +155,12 @@
                     <div class="list-group list-group-flush" id="listFile">
                         <a class="list-group-item active" data-toggle="list" onclick="changeValue(this)"
                            href="#guide">Guide</a>
+                        <%if(taskHW.getMark()<0){%>
                         <label class="list-group-item" data-toggle="list" for="addImgPDFHW">
                             <i class="fa-solid fa-plus"></i>
                             <span>Add Image/PDF</span>
                         </label>
+                        <%}%>
                         <form action="file" method="POST" enctype="multipart/form-data">
                             <input hidden type="text" name="action" value="upfile">
                             <input hidden type="file" name="file" id="addImgPDFHW" accept="image/*, .pdf">

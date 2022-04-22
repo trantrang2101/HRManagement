@@ -68,7 +68,7 @@ public class EditServlet extends HttpServlet {
                 }
             } else if (action.equals("submitTask")) {
                 String id = request.getParameter("id");
-                double mark = Double.parseDouble(request.getParameter("mark"));
+                double mark = request.getParameter("mark") == null ? -1 : Double.parseDouble(request.getParameter("mark"));
                 String comment = request.getParameter("comment") != null ? request.getParameter("comment") : "";
                 int work = Integer.parseInt(request.getParameter("work"));
                 dao.updateMark(work, comment, mark);
