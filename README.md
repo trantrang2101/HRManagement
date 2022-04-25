@@ -36,4 +36,4 @@ Trần Thùy Trang
 ## Giấy phép
 
 Copyright (c) <a href="https://github.com/trantrang2101">@trantrang2101</a> 2022. Bảo lưu mọi quyền  
-Được cấp phép theo giấy phép <a href="https://github.com/trantrang2101/HRManagement/LICENSE.txt">MIT</a>.
+Được cấp phép theo giấy phép <a href="https://github.com/trantrang2101/HRManagement/blob/main/LICENSE.txt">MIT</a>.
