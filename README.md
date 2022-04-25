@@ -1,7 +1,7 @@
 # HRManagement
  
 <p align="center">
-  <img alt="JPro logo" width="200" src="build/web/assests/image/logo.png">
+  <img alt="Quốc học Vinh logo" width="200" src="web/assests/image/logo.png">
 </p>
 <p align="center">Một dự án của bộ môn PRJ301 của sinh viên Trần Thùy Trang với sự chỉ dẫn của giảng viên Trần Quý Ban</p>
 
@@ -30,6 +30,7 @@ Repository này là một trang mạng tạo ra cho học sinh trường Quốc 
 ## Người đóng góp
 Trần Thùy Trang  
 <a href="https://github.com/trantrang2101">@trantrang2101</a>
+
 <a href="https://www.facebook.com/profile.php?id=100026792671879">https://www.facebook.com/profile.php?id=100026792671879</a> 
 
 ## Giấy phép
