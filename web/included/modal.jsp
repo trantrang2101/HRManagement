@@ -81,7 +81,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Task của <%=submitUser.getName()%></h5>
-                <a type="button" class="btn-close" href="detail?action=close&id=<%=taskSubmit.getTaskid()%>"></a>
+                <a type="button" class="btn-close" href="detail?action=close&id=<%=taskSubmit.getTaskid()%>#studentTableCover"></a>
             </div>
             <div class="modal-body row">
                 <div class="col-2 d-flex h-100 flex-column justify-content-between" id="fileSubmit">
@@ -105,17 +105,17 @@
                             <%}%>
                             <label for="mark">Mark Task</label>
                             <div class="d-flex justify-content-start margin-0 align-items-center fw-bold" id="mark">
-                                <span><input class="border-0 border-bottom" min="0" max="10" required="" value="<%=taskSubmit.getMark()!=0?taskSubmit.getMark():0%>" type="number" name="mark" step="0.1"/>/10</span>
+                                <span><input class="border-0 border-bottom" min="0" max="10" required="" value="<%=taskSubmit.getMark()!=-1?taskSubmit.getMark():0%>" type="number" name="mark" step="0.1"/>/10</span>
                             </div>
-                <input type="text" name="work" hidden="" value="<%=taskSubmit.getWork()%>"/>
-                <input type="text" name="id" hidden="" value="<%=taskSubmit.getTaskid()%>"/>
+                            <input type="text" name="work" hidden="" value="<%=taskSubmit.getWork()%>"/>
+                            <input type="text" name="id" hidden="" value="<%=taskSubmit.getTaskid()%>"/>
                             <label for="comment">Comment Task</label>
                             <textarea class="w-100" name="comment" required="" rows="10"><%=taskSubmit.getComment()!=null?taskSubmit.getComment():""%></textarea>
                             <%}%>
                         </div>
                 </div>
-                <div class="col-10">
-                    <div class="tab-content" id="outputFile">
+                <div class="col-10 h-100">
+                    <div class="tab-content h-100" id="outputFile">
                         <%for(int p = 0; p<taskSubmit.getWorkAddress().size();p++){%>
                         <div class="tab-content fade h-100" id="file<%=p%>">
                             <%if(taskSubmit.getWorkAddress().get(p).endsWith(".pdf")){%>
@@ -612,7 +612,7 @@
                 <div class="d-flex flex-column justify-content-around">
                     <form action="loadExcel" method="POST" enctype="multipart/form-data">
                         <input type="file" name="excel" hidden accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                               onchange="this.parentNode.submit()" id="inputExcel" />
+                               onchange="this.parentNode.submit();document.querySelector('#preloader').style.display = 'block'" id="inputExcel" />
                     </form>
                     <div class="w-100 d-flex justify-content-around">
                         <label for="inputExcel" class="btn padding-0 icon rounded-circle bg-primary">
@@ -903,14 +903,25 @@
                         <tr>
                             <td><%=user.getId()%></td>
                             <td><%=user.getName()%></td>
-                            <%
-                                if(classNoticeView!=null){
-                                    for(Notice c : classNoticeView){
-                                        if(c.isTask()){
-                                        Work studentWork = dao.getWork(c.getId(),user.getId());
-                            %>
-                            <td><%=studentWork.getWorkAddress().size()>0?(studentWork.getMark()<0?"Not Mark":studentWork.getMark()):"Not Done"%></td>
-                            <%}}}%>
+                            <td><%
+                if(classNoticeView!=null){
+                    for(Notice c : classNoticeView){
+                        if(c.isTask()){
+                            Work studentWork = dao.getWork(c.getId(),user.getId());
+                            if(studentWork.getWorkAddress().size()>0){
+                                if(studentWork.getMark()<0){
+                                    out.print("Not Mark");
+                                }else{
+                                    out.print(studentWork.getMark());
+                                }
+                            }
+                            else{
+                                out.print("Not Done");
+                            }
+                        }
+                    }
+                }%>
+                                </td>
                         </tr>
                         <%}}}%>
                     </tbody>

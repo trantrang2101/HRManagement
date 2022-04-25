@@ -14,7 +14,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  *
@@ -73,6 +78,51 @@ public class EditServlet extends HttpServlet {
                 int work = Integer.parseInt(request.getParameter("work"));
                 dao.updateMark(work, comment, mark);
                 response.sendRedirect("detail?task=" + id);
+            } else if (action.equals("forgot")) {
+                int id = Integer.parseInt(request.getParameter("id"));
+                edit = true;
+                String name = request.getParameter("name");
+                String[] classL = request.getParameterValues("classTeacher");
+                List<String> classList = new ArrayList<>(Arrays.asList(classL));
+                if (classList.size() == 3 && classList.get(1).isEmpty() && classList.get(2).isEmpty() && classList.get(0).isEmpty()) {
+                    classList = new ArrayList<>();
+                    classList.add(request.getParameter("class"));
+                }
+                if (classList.size() == 3) {
+                    out.print("<script>alert('If you are teacher please insert at least 3 class you're teaching!')</script>");
+                    request.getRequestDispatcher("forgot.html").include(request, response);
+                } else {
+                    boolean check = true;
+                    Teacher get = detail.getUser(id);
+                    if (get == null) {
+                        check = false;
+                    } else {
+                        if (!get.getName().equals(name)) {
+                            check = false;
+                        }
+                    }
+                    List<String> classroom = detail.getClassByID(id);
+                    for (String string : classList) {
+                        if (!classroom.contains(string)) {
+                            check = false;
+                            break;
+                        }
+                    }
+                    if (!check) {
+                        out.print("<script>alert('Information wrong! Input again!');</script>");
+                        request.getRequestDispatcher("forgot.html").include(request, response);
+                    } else {
+                        Random rand = new Random();
+                        int value = rand.nextInt(999999);
+                        if (dao.changePW(id, value)) {
+                            out.print("<script>alert('Your new password is:  '"+value+");</script>");
+                            response.sendRedirect("login?action=Login&id=" + id + "&password=" + value);
+                        } else {
+                            out.print("<script>alert('Change password failed!');</script>");
+                            request.getRequestDispatcher("forgot.html").include(request, response);
+                        }
+                    }
+                }
             } else if (action.equals("editPerson")) {
                 int userid = Integer.parseInt(request.getParameter("user"));
                 Teacher previous = detail.getUser(userid);

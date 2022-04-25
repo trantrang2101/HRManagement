@@ -17,7 +17,34 @@ import java.text.SimpleDateFormat;
  * @author Tran Trang
  */
 public class EditDeleteDAO {
-
+    public boolean changePW(int id,int password) throws SQLException{
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement("update [user] set password=? where id=?");
+                stm.setInt(1, password);
+                stm.setInt(2, id);
+                check = stm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
     public boolean updateMark(int work,String comment,  double mark) throws SQLException {
         boolean check = false;
         Connection conn = null;

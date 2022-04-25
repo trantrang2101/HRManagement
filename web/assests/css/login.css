@@ -6,6 +6,20 @@ body {
 *:not(i) {
   font-family: "Roboto", sans-serif;
 }
+#forgot > * {
+  margin-top: 30px;
+}
+.fade {
+  display: none !important;
+}
+.teacher-form {
+  margin-top: 20px;
+  flex: 0 0 20%;
+}
+.teacher-form:not(:nth-child(4n)),
+.teacher-form:not(#add) {
+  margin-right: 20px !important;
+}
 a {
   -webkit-transition: 0.3s all ease;
   -o-transition: 0.3s all ease;
@@ -36,7 +50,12 @@ h5,
   font-family: "Lato", Arial, sans-serif;
   color: white;
 }
-
+.center {
+  margin-top: 50px;
+  margin-bottom: auto !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
 .bg-primary {
   background: #cfe2ff !important;
 }
@@ -108,10 +127,12 @@ h5,
 .form-group .icon span {
   color: black;
 }
-
+#add {
+  cursor: pointer;
+}
 .form-control {
   height: 48px;
-  background: #cfe2ff;
+  background: #cfe2ff !important;
   color: white !important;
   font-size: 14px;
   -webkit-box-shadow: none;
