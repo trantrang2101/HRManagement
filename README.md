@@ -31,7 +31,7 @@ Repository này là một trang mạng tạo ra cho học sinh trường Quốc 
 Trần Thùy Trang  
 <a href="https://github.com/trantrang2101">@trantrang2101</a>
 
-<a href="https://www.facebook.com/profile.php?id=100026792671879">https://www.facebook.com/profile.php?id=100026792671879</a> 
+<a href="https://www.facebook.com/thuytrang.tuyetvan/">https://www.facebook.com/thuytrang.tuyetvan/</a> 
 
 ## Giấy phép
 
