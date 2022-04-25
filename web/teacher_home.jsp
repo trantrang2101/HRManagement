@@ -10,6 +10,7 @@
 <!DOCTYPE html>
 <head>
     <title>Teacher - Homepage</title>
+<link rel="stylesheet" href="assests/css/style.css">
     <script src="assests/ckeditor/ckeditor.js"></script>
     <script src="assests/js/moment.js"></script>
 </head>
@@ -29,7 +30,13 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
         <div class="container container-fluid">
             <h2>Hi ${sessionScope.loginUser.isGender()?"Mr.":"Mrs."} <i>${sessionScope.loginUser.getName()}</i>!</h2>
-            <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+                <div class="d-flex flex-column justify-content-around align-items-center">
+                    <button class="d-flex btn btn-danger float-end text-center
+" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+                    <button data-bs-toggle="modal" data-bs-target="#changePW" class="btn btn-outline-primary float-end">
+                        Change Password
+                    </button>
+                </div>
         </div>
     </nav>
 

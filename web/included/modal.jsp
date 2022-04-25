@@ -13,7 +13,6 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"></script>
-<script src="assests/js/script.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -23,10 +22,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
 <link rel="icon" type="image/x-icon" href="assests/image/logo.png" />
-<link rel="stylesheet" href="assests/css/style.css">
 <script src="assests/js/moment.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js" crossorigin="anonymous"></script>
 <script src="assests/ckeditor/ckeditor.js"></script>
+<script src="assests/js/script.js"></script>
 <script>
     CKEDITOR.config.pasteFromWordPromptCleanup = true;
     CKEDITOR.config.pasteFromWordRemoveFontStyles = false;
@@ -72,6 +71,7 @@
         </div>
     </div>
 </div>
+<div id="google_translate_element" class="float-end"></div>
 <%if(taskSubmit!=null){
     Notice thisNotice = dao.getNotice(taskSubmit.getTaskid());
     User submitUser = dao.getUser(taskSubmit.getUserid());
@@ -437,6 +437,51 @@
                     <button class="btn btn-danger" type="submit" name="action" value="Logout">Logout</button>
                 </form>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="changePW" tabindex="-1" role="dialog" aria-labelledby="changePW">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="edit" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Current Password</label>
+                        <div class="form-group d-flex bg-transparent border-bottom justify-content-between">
+                            <input type="password" name="current" class="border-0 bg-transparent" id="current" onclick="showPassword(this)">
+                            <label for="current">
+                                <i class="fa-solid fa-eye"></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <div class="form-group d-flex bg-transparent border-bottom justify-content-between">
+                            <input type="password" name="password" class="border-0 bg-transparent" id="password" onclick="showPassword(this)">
+                            <label for="password">
+                                <i class="fa-solid fa-eye"></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm new Password</label>
+                        <div class="form-group d-flex bg-transparent border-bottom justify-content-between">
+                            <input type="password" name="repw" class="border-0 bg-transparent" id="repw" onclick="showPassword(this)">
+                            <label for="repw">
+                                <i class="fa-solid fa-eye"></i>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn btn-danger" type="submit" name="action" value="changePW">Save</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -921,7 +966,7 @@
                         }
                     }
                 }%>
-                                </td>
+                            </td>
                         </tr>
                         <%}}}%>
                     </tbody>
@@ -1099,6 +1144,17 @@ if(submit!=null){
     </div>
 </div>
 <script>
+    function showPassword(item) {
+        var inputPW = item.parentElement.children[0];
+        var eye = item.parentElement.getElementsByClassName('fa-solid')[0];
+        if (inputPW.type === 'text') {
+            inputPW.type = 'password';
+            eye.classList = "fa-solid fa-eye";
+        } else {
+            inputPW.type = 'text';
+            eye.classList = "fa-solid fa-eye-slash";
+        }
+    }
     function getColumn(table_id, col) {
         var tab = document.getElementById(table_id),
                 n = tab.rows.length,
@@ -1335,3 +1391,9 @@ if(submit!=null){
         });
     }
 </script>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>

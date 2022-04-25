@@ -19,6 +19,7 @@
     %>
     <head>
         <title>Report Class <%=clsl.getName()%></title>
+<link rel="stylesheet" href="assests/css/style.css">
     </head>
     <body>
         <jsp:include page="included/modal.jsp"/>
@@ -28,7 +29,13 @@
                     <h1>Class <%=clsl.getName()%></h1>
                     <h2>Hi ${sessionScope.loginUser.isGender()?"Mr.":"Mrs."} <i><%=loginUser.getName()%></i>!</h2>
                 </div>
-                <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+                <div class="d-flex flex-column justify-content-around align-items-center">
+                    <button class="d-flex btn btn-danger float-end text-center
+" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+                    <button data-bs-toggle="modal" data-bs-target="#changePW" class="btn btn-outline-primary float-end">
+                        Change Password
+                    </button>
+                </div>
             </div>
         </nav>
         <nav class="container d-flex justify-content-end">

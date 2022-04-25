@@ -13,6 +13,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>View Students/Teacher</title>
+        <link rel="stylesheet" href="assests/css/style.css">
     </head>
     <body>
         <%
@@ -32,7 +33,13 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
             <div class="container container-fluid">
                 <h2>Hi ${sessionScope.loginUser.isGender()?"Mr.":"Mrs."} <i>${sessionScope.loginUser.getName()}</i>!</h2>
-                <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+                <div class="d-flex flex-column justify-content-around align-items-center">
+                    <button class="d-flex btn btn-danger float-end text-center
+                            " data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+                    <button data-bs-toggle="modal" data-bs-target="#changePW" class="btn btn-outline-primary float-end">
+                        Change Password
+                    </button>
+                </div>
             </div>
         </nav>
         <nav class="container d-flex justify-content-end">
@@ -234,17 +241,6 @@
                     if (i < thisPage - Math.floor(k / 2) - 1 || i > thisPage + Math.floor(k / 2) - 1) {
                         pageNormal[i].classList.add('fade');
                     }
-                }
-            }
-            function showPassword(item) {
-                var inputPW = item.parentElement.children[0];
-                var eye = item.parentElement.getElementsByClassName('fa-solid')[0];
-                if (inputPW.type === 'text') {
-                    inputPW.type = 'password';
-                    eye.classList = "fa-solid fa-eye";
-                } else {
-                    inputPW.type = 'text';
-                    eye.classList = "fa-solid fa-eye-slash";
                 }
             }
             var role = document.getElementsByName('role');

@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
  * @author Tran Trang
  */
 public class EditDeleteDAO {
-    public boolean changePW(int id,int password) throws SQLException{
+    public boolean changePW(int id,String password) throws SQLException{
         boolean check = false;
         Connection conn = null;
         PreparedStatement stm = null;
@@ -26,7 +26,7 @@ public class EditDeleteDAO {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
                 stm = conn.prepareStatement("update [user] set password=? where id=?");
-                stm.setInt(1, password);
+                stm.setString(1, password);
                 stm.setInt(2, id);
                 check = stm.executeUpdate() > 0;
             }

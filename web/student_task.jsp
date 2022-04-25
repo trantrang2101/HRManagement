@@ -17,6 +17,7 @@
                     Work work = (Work)dao.getWork(noti.getId(),loginUser.getId());
     %>
     <title><%=noti.getTitle()%></title>
+<link rel="stylesheet" href="assests/css/style.css">
     <script src="assests/js/moment.js"></script>
     <script src="assests/ckeditor/ckeditor.js"></script>
 </head>
@@ -29,7 +30,13 @@
                 <h1>Class ${sessionScope.classChoose.getName()}</h1>
                 <h2>Hi <i>${sessionScope.loginUser.getName()}</i>!</h2>
             </div>
-            <button class="d-flex btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+                <div class="d-flex flex-column justify-content-around align-items-center">
+                    <button class="d-flex btn btn-danger float-end text-center
+" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+                    <button data-bs-toggle="modal" data-bs-target="#changePW" class="btn btn-outline-primary float-end">
+                        Change Password
+                    </button>
+                </div>
         </div>
     </nav>
     <div class="container center">

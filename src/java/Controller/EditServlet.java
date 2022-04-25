@@ -13,13 +13,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  *
@@ -71,6 +68,23 @@ public class EditServlet extends HttpServlet {
                         edit = false;
                     }
                 }
+            } else if (action.equals("changePW")) {
+                String current = request.getParameter("current");
+                edit = true;
+                if (!user.getPassword().equals(current)) {
+                    edit = false;
+                }
+                String password = request.getParameter("password");
+                String repassword = request.getParameter("repw");
+                if (!password.equals(repassword)) {
+                    edit = false;
+                } else {
+                    if (!dao.changePW(user.getId(), password)) {
+                        edit = false;
+                    } else {
+                        out.print("<script>window.history.back();</script>");
+                    }
+                }
             } else if (action.equals("submitTask")) {
                 String id = request.getParameter("id");
                 double mark = request.getParameter("mark") == null ? -1 : Double.parseDouble(request.getParameter("mark"));
@@ -114,12 +128,11 @@ public class EditServlet extends HttpServlet {
                     } else {
                         Random rand = new Random();
                         int value = rand.nextInt(999999);
-                        if (dao.changePW(id, value)) {
-                            out.print("<script>alert('Your new password is:  '"+value+");</script>");
+                        if (dao.changePW(id, Integer.toString(value))) {
+                            out.print("<script>alert('Your new password is:  '" + value + ");</script>");
                             response.sendRedirect("login?action=Login&id=" + id + "&password=" + value);
                         } else {
-                            out.print("<script>alert('Change password failed!');</script>");
-                            request.getRequestDispatcher("forgot.html").include(request, response);
+                            edit = false;
                         }
                     }
                 }

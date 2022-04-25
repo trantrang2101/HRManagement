@@ -10,7 +10,6 @@ option.forEach((item) => {
         }
     });
 });
-
 function changeValue(value) {
     var item = document.querySelectorAll('.list-group-item');
     var active = document.querySelectorAll('.active');
