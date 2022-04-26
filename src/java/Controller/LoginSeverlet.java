@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,8 +37,8 @@ public class LoginSeverlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
             HttpSession session = request.getSession();
-            LoginDAO dao = new LoginDAO();
             String action = request.getParameter("action");
+<<<<<<< HEAD
             if (action != null) {
                 if (action.equals("Login")) {
                     String userid = request.getParameter("id");
@@ -49,6 +48,18 @@ public class LoginSeverlet extends HttpServlet {
                     if (user != null) {
                         id = user.getId();
                         password = user.getPassword();
+=======
+            if (action.equals("Login")) {
+                int id = Integer.parseInt(request.getParameter("id"));
+                String password = request.getParameter("password");
+                LoginDAO dao = new LoginDAO();
+                User user = dao.login(id, password);
+                if (user != null) {
+                    session.setAttribute("loginUser", user);
+                    if (user.getRoleID() == 1) {
+                        List<Classroom> list = dao.getClassList(id,user.getRoleID());
+                        response.sendRedirect("detail?class=" + list.get(0).getName());
+>>>>>>> parent of dc990ff (remember me)
                     } else {
                         id = Integer.parseInt(userid);
                         user = dao.login(id, password);
@@ -87,6 +98,7 @@ public class LoginSeverlet extends HttpServlet {
                     }
                     response.sendRedirect("index.html");
                 }
+<<<<<<< HEAD
             } else {
                 int id = -1;
                 String password = "";
@@ -106,6 +118,11 @@ public class LoginSeverlet extends HttpServlet {
                     session.setAttribute("loginUser", dao.login(id, password));
                     response.sendRedirect("login?action=Login&id=" + id + "&password=" + password);
                 }
+=======
+            } else if (action.equals("Logout")) {
+                session.invalidate();
+                response.sendRedirect("index.html");
+>>>>>>> parent of dc990ff (remember me)
             }
 
         } catch (Exception e) {
