@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,16 +38,31 @@ public class LoginSeverlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
             HttpSession session = request.getSession();
+            LoginDAO dao = new LoginDAO();
             String action = request.getParameter("action");
             if (action.equals("Login")) {
-                int id = Integer.parseInt(request.getParameter("id"));
+                String userid = request.getParameter("id");
                 String password = request.getParameter("password");
-                LoginDAO dao = new LoginDAO();
-                User user = dao.login(id, password);
+                int id = -1000;
+                User user = (User) session.getAttribute("loginUser");
+                if (user !=null) {
+                    id = user.getId();
+                    password=user.getPassword();
+                } else {
+                    id = Integer.parseInt(userid);
+                    user=dao.login(id, password);
+                }
                 if (user != null) {
                     session.setAttribute("loginUser", user);
+                    if (Boolean.parseBoolean(request.getParameter("remember"))) {
+                        Cookie cookie = new Cookie("username", Integer.toString(id));
+                        cookie.setMaxAge(3600 * 24 * 30);
+                        Cookie pcookie = new Cookie("password", password);
+                        cookie.setMaxAge(3600 * 24 * 30);
+                        response.addCookie(cookie);
+                    }
                     if (user.getRoleID() == 1) {
-                        List<Classroom> list = dao.getClassList(id,user.getRoleID());
+                        List<Classroom> list = dao.getClassList(id, user.getRoleID());
                         response.sendRedirect("detail?class=" + list.get(0).getName());
                     } else {
                         response.sendRedirect("detail?action=return");
@@ -58,6 +74,23 @@ public class LoginSeverlet extends HttpServlet {
             } else if (action.equals("Logout")) {
                 session.invalidate();
                 response.sendRedirect("index.html");
+            } else {
+                int id = -1;
+                String password = "";
+                Cookie[] cookies = request.getCookies();
+                for (Cookie cooky : cookies) {
+                    if (cooky.getName().equals("username")) {
+                        id = Integer.parseInt(cooky.getValue());
+                    } else if (cooky.getName().equals("password")) {
+                        password = cooky.getValue();
+                    }
+                }
+                if (password.isEmpty() || id == -1) {
+                    request.getRequestDispatcher("index.html").forward(request, response);
+                } else {
+                    session.setAttribute("loginUser", dao.login(id, password));
+                    response.sendRedirect("login?action=Login&id="+id+"&password="+password);
+                }
             }
 
         } catch (Exception e) {
