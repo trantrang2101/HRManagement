@@ -38,93 +38,27 @@ public class LoginSeverlet extends HttpServlet {
         try ( PrintWriter out = response.getWriter()) {
             HttpSession session = request.getSession();
             String action = request.getParameter("action");
-<<<<<<< HEAD
-            if (action != null) {
-                if (action.equals("Login")) {
-                    String userid = request.getParameter("id");
-                    String password = request.getParameter("password");
-                    int id = -1000;
-                    User user = (User) session.getAttribute("loginUser");
-                    if (user != null) {
-                        id = user.getId();
-                        password = user.getPassword();
-=======
+            LoginDAO dao = new LoginDAO();
             if (action.equals("Login")) {
-                int id = Integer.parseInt(request.getParameter("id"));
                 String password = request.getParameter("password");
-                LoginDAO dao = new LoginDAO();
+                int id = Integer.parseInt(request.getParameter("id"));
                 User user = dao.login(id, password);
                 if (user != null) {
                     session.setAttribute("loginUser", user);
                     if (user.getRoleID() == 1) {
-                        List<Classroom> list = dao.getClassList(id,user.getRoleID());
+                        List<Classroom> list = dao.getClassList(id, user.getRoleID());
                         response.sendRedirect("detail?class=" + list.get(0).getName());
->>>>>>> parent of dc990ff (remember me)
                     } else {
-                        id = Integer.parseInt(userid);
-                        user = dao.login(id, password);
+                        response.sendRedirect("detail?action=return");
                     }
-                    if (user != null) {
-                        session.setAttribute("loginUser", user);
-                        if (Boolean.parseBoolean(request.getParameter("remember"))) {
-                            Cookie cookie = new Cookie("id", Integer.toString(id));
-                            cookie.setMaxAge(3600 * 24 * 30);
-                            Cookie pcookie = new Cookie("password", password);
-                            cookie.setMaxAge(3600 * 24 * 30);
-                            response.addCookie(cookie);
-                            response.addCookie(pcookie);
-                        }
-                        if (user.getRoleID() == 1) {
-                            List<Classroom> list = dao.getClassList(id, user.getRoleID());
-                            response.sendRedirect("detail?class=" + list.get(0).getName());
-                        } else {
-                            response.sendRedirect("detail?action=return");
-                        }
-                    } else {
-                        out.print("<script>alert('Wrong id or password');</script>");
-                        request.getRequestDispatcher("index.html").include(request, response);
-                    }
-                } else if (action.equals("Logout")) {
-                    session.invalidate();
-                    Cookie[] cookies = request.getCookies();
-                    if (cookies != null) {
-                        for (Cookie cookie : cookies) {
-                            if (cookie.getName().equals("id") || cookie.getName().equals("password")) {
-                                cookie.setValue("");
-                                cookie.setMaxAge(0);
-                                response.addCookie(cookie);
-                            }
-                        }
-                    }
-                    response.sendRedirect("index.html");
-                }
-<<<<<<< HEAD
-            } else {
-                int id = -1;
-                String password = "";
-                Cookie[] cookies = request.getCookies();
-                if (cookies != null) {
-                    for (Cookie cooky : cookies) {
-                        if (cooky.getName().equals("id")) {
-                            id = Integer.parseInt(cooky.getValue());
-                        } else if (cooky.getName().equals("password")) {
-                            password = cooky.getValue();
-                        }
-                    }
-                }
-                if (password.isEmpty() || id == -1) {
-                    request.getRequestDispatcher("index.html").forward(request, response);
                 } else {
-                    session.setAttribute("loginUser", dao.login(id, password));
-                    response.sendRedirect("login?action=Login&id=" + id + "&password=" + password);
+                    out.print("<script>alert('Wrong id or password');</script>");
+                    request.getRequestDispatcher("index.html").include(request, response);
                 }
-=======
             } else if (action.equals("Logout")) {
                 session.invalidate();
                 response.sendRedirect("index.html");
->>>>>>> parent of dc990ff (remember me)
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("error.html");
