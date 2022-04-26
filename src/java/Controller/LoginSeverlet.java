@@ -40,56 +40,71 @@ public class LoginSeverlet extends HttpServlet {
             HttpSession session = request.getSession();
             LoginDAO dao = new LoginDAO();
             String action = request.getParameter("action");
-            if (action.equals("Login")) {
-                String userid = request.getParameter("id");
-                String password = request.getParameter("password");
-                int id = -1000;
-                User user = (User) session.getAttribute("loginUser");
-                if (user !=null) {
-                    id = user.getId();
-                    password=user.getPassword();
-                } else {
-                    id = Integer.parseInt(userid);
-                    user=dao.login(id, password);
-                }
-                if (user != null) {
-                    session.setAttribute("loginUser", user);
-                    if (Boolean.parseBoolean(request.getParameter("remember"))) {
-                        Cookie cookie = new Cookie("username", Integer.toString(id));
-                        cookie.setMaxAge(3600 * 24 * 30);
-                        Cookie pcookie = new Cookie("password", password);
-                        cookie.setMaxAge(3600 * 24 * 30);
-                        response.addCookie(cookie);
-                    }
-                    if (user.getRoleID() == 1) {
-                        List<Classroom> list = dao.getClassList(id, user.getRoleID());
-                        response.sendRedirect("detail?class=" + list.get(0).getName());
+            if (action != null) {
+                if (action.equals("Login")) {
+                    String userid = request.getParameter("id");
+                    String password = request.getParameter("password");
+                    int id = -1000;
+                    User user = (User) session.getAttribute("loginUser");
+                    if (user != null) {
+                        id = user.getId();
+                        password = user.getPassword();
                     } else {
-                        response.sendRedirect("detail?action=return");
+                        id = Integer.parseInt(userid);
+                        user = dao.login(id, password);
                     }
-                } else {
-                    out.print("<script>alert('Wrong id or password');</script>");
-                    request.getRequestDispatcher("index.html").include(request, response);
+                    if (user != null) {
+                        session.setAttribute("loginUser", user);
+                        if (Boolean.parseBoolean(request.getParameter("remember"))) {
+                            Cookie cookie = new Cookie("id", Integer.toString(id));
+                            cookie.setMaxAge(3600 * 24 * 30);
+                            Cookie pcookie = new Cookie("password", password);
+                            cookie.setMaxAge(3600 * 24 * 30);
+                            response.addCookie(cookie);
+                            response.addCookie(pcookie);
+                        }
+                        if (user.getRoleID() == 1) {
+                            List<Classroom> list = dao.getClassList(id, user.getRoleID());
+                            response.sendRedirect("detail?class=" + list.get(0).getName());
+                        } else {
+                            response.sendRedirect("detail?action=return");
+                        }
+                    } else {
+                        out.print("<script>alert('Wrong id or password');</script>");
+                        request.getRequestDispatcher("index.html").include(request, response);
+                    }
+                } else if (action.equals("Logout")) {
+                    session.invalidate();
+                    Cookie[] cookies = request.getCookies();
+                    if (cookies != null) {
+                        for (Cookie cookie : cookies) {
+                            if (cookie.getName().equals("id") || cookie.getName().equals("password")) {
+                                cookie.setValue("");
+                                cookie.setMaxAge(0);
+                                response.addCookie(cookie);
+                            }
+                        }
+                    }
+                    response.sendRedirect("index.html");
                 }
-            } else if (action.equals("Logout")) {
-                session.invalidate();
-                response.sendRedirect("index.html");
             } else {
                 int id = -1;
                 String password = "";
                 Cookie[] cookies = request.getCookies();
-                for (Cookie cooky : cookies) {
-                    if (cooky.getName().equals("username")) {
-                        id = Integer.parseInt(cooky.getValue());
-                    } else if (cooky.getName().equals("password")) {
-                        password = cooky.getValue();
+                if (cookies != null) {
+                    for (Cookie cooky : cookies) {
+                        if (cooky.getName().equals("id")) {
+                            id = Integer.parseInt(cooky.getValue());
+                        } else if (cooky.getName().equals("password")) {
+                            password = cooky.getValue();
+                        }
                     }
                 }
                 if (password.isEmpty() || id == -1) {
                     request.getRequestDispatcher("index.html").forward(request, response);
                 } else {
                     session.setAttribute("loginUser", dao.login(id, password));
-                    response.sendRedirect("login?action=Login&id="+id+"&password="+password);
+                    response.sendRedirect("login?action=Login&id=" + id + "&password=" + password);
                 }
             }
 
