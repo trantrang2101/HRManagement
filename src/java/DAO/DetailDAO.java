@@ -262,6 +262,40 @@ public class DetailDAO {
         return login;
     }
 
+    public Classroom getClassroom(String id) throws SQLException {
+        Classroom login = null;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                String sql = "select * from classroom where id=?";
+                stm = conn.prepareStatement(sql);
+                stm.setString(1, id);
+                rs = stm.executeQuery();
+                while (rs.next()) {
+                    String building = rs.getString(2);
+                    int room = rs.getInt(3);
+                    login = new Classroom(id, building, room);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return login;
+    }
+
     public Classroom getClass(String id) throws SQLException {
         Classroom login = null;
         Connection conn = null;
@@ -318,9 +352,9 @@ public class DetailDAO {
                     String comment = rs.getString(5);
                     String doneAt = rs.getString(6);
                     List<String> list = new ArrayList<>();
-                    PreparedStatement stm1 = conn.prepareStatement( "select * from work_detail where workid = " + work);
+                    PreparedStatement stm1 = conn.prepareStatement("select * from work_detail where workid = " + work);
                     ResultSet rs1 = stm1.executeQuery();
-                    while (rs1.next()) {                        
+                    while (rs1.next()) {
                         list.add(rs1.getString(2));
                     }
                     workDone = new Work(taskid, userid, work, mark, comment, doneAt, list);
@@ -398,12 +432,12 @@ public class DetailDAO {
                     String comment = rs.getString(5);
                     String doneAt = rs.getString(6);
                     List<String> listAddress = new ArrayList<>();
-                    PreparedStatement stm1 = conn.prepareStatement( "select * from work_detail where workid = " + work);
+                    PreparedStatement stm1 = conn.prepareStatement("select * from work_detail where workid = " + work);
                     ResultSet rs1 = stm1.executeQuery();
-                    while (rs1.next()) {                        
+                    while (rs1.next()) {
                         listAddress.add(rs1.getString(2));
                     }
-                    list.add(new Work(taskid, userid, work, mark, comment, doneAt,listAddress));
+                    list.add(new Work(taskid, userid, work, mark, comment, doneAt, listAddress));
                 }
             }
         } catch (Exception e) {
@@ -460,8 +494,8 @@ public class DetailDAO {
         }
         return task;
     }
-    
-    public int getDoneTask(int task) throws SQLException{
+
+    public int getDoneTask(int task) throws SQLException {
         int done = 0;
         Connection conn = null;
         PreparedStatement stm = null;
@@ -469,7 +503,7 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String sql = "select count(distinct workid) as workdone from task_work,work_detail where task_work.work=work_detail.workid and task_work.id="+task;
+                String sql = "select count(distinct workid) as workdone from task_work,work_detail where task_work.work=work_detail.workid and task_work.id=" + task;
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {
@@ -500,7 +534,7 @@ public class DetailDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                String sql = "select avg(mark) as average ,count(distinct work_detail.workid) as number from task_work,work_detail where task_work.work=work_detail.workid and userid="+id+" group by mark";
+                String sql = "select avg(mark) as average ,count(distinct work_detail.workid) as number from task_work,work_detail where task_work.work=work_detail.workid and userid=" + id + " group by mark";
                 stm = conn.prepareStatement(sql);
                 rs = stm.executeQuery();
                 while (rs.next()) {

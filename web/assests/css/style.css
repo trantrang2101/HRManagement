@@ -5,6 +5,9 @@
     border: 0 !important;
     box-shadow: none !important;
 }
+a{
+    text-decoration: none !important;
+}
 .goog-te-banner{
     background-image: none !important;
 }
@@ -306,6 +309,9 @@ html {
 .notice,
 .accordion-footer {
     padding: 1rem 1.25rem;
+}
+.notice:not(:first-child),
+.accordion-footer {
     margin-top: 20px;
 }
 a {

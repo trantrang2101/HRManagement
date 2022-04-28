@@ -8,7 +8,7 @@
 <%@page import="entity.*" %>
 <%@page import="DAO.*" %>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, inaditial-scale=1.0">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -54,6 +54,7 @@
     String deleteClass = (String) session.getAttribute("deleteClass");
     Work taskHW = (Work) session.getAttribute("taskHW");
     Work taskSubmit = (Work) session.getAttribute("taskSubmit");
+    Classroom editClassroom = (Classroom)request.getAttribute("editClassroom");
 %>
 <div id="preloader">
     <div class="loader">
@@ -333,19 +334,65 @@
     </div>
 </div>
 <%}%>
+<%if(editClassroom!=null){%>
+<div class="modal" tabindex="-1" style="display:block; background: rgba(0,0,0,0.5);;">
+    <form action="edit" method="POST">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Class <%=editClassroom.getId()%></h5>
+                <a type="button" class="btn-close" href="javascript:window.history.back()"></a>
+                </div>
+                <div class="modal-body row w-100 padding-0 margin-0">
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" maxlength="5" name="name" hidden="" class="form-control mb-1" value="<%=editClassroom.getId()%>">
+                        <input type="text" maxlength="5" disabled="" class="form-control mb-1" value="<%=editClassroom.getId()%>">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col">
+                            <label class="form-label">Building</label>
+                            <input type="text" required="" maxlength="10" name="building" value="<%=editClassroom.getBuilding()==null?"":editClassroom.getBuilding()%>" class="form-control mb-1">
+                        </div>
+                        <div class="form-group col">
+                            <label class="form-label">Room</label>
+                            <input type="text" required="" maxlength="3" name="room" value="<%=editClassroom.getRoom()==0?"":editClassroom.getRoom()%>" class="form-control mb-1">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-light" href="javascript:window.history.back()">Cancel</a>
+                    <input hidden name="submit" value="editClass">
+                    <button class="btn btn-primary" name="action" value="editClass">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<%}%>
 <div class="modal fade" id="addClass" tabindex="-1" role="dialog" aria-labelledby="addClass"
      aria-hidden="true" style="">
     <form action="add" method="POST">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Add Class</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group col">
+                <div class="modal-body row w-100 padding-0 margin-0">
+                    <div class="form-group">
                         <label class="form-label">Name</label>
                         <input type="text" maxlength="5" name="name" class="form-control mb-1">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col">
+                            <label class="form-label">Building</label>
+                            <input type="text" maxlength="10" name="building" class="form-control mb-1">
+                        </div>
+                        <div class="form-group col">
+                            <label class="form-label">Room</label>
+                            <input type="text" maxlength="3" name="room" class="form-control mb-1">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -650,7 +697,7 @@
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Student / Teacher</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add Student</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -1392,8 +1439,8 @@ if(submit!=null){
     }
 </script>
 <script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-}
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>

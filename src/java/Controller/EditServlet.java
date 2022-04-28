@@ -44,7 +44,24 @@ public class EditServlet extends HttpServlet {
             EditDeleteDAO dao = new EditDeleteDAO();
             boolean edit = false;
             DetailDAO detail = new DetailDAO();
-            if (action.equals("editNotice")) {
+            if (action.equals("editClass")) {
+                if (request.getParameter("submit")==null) {
+                    String classid = request.getParameter("id");
+                    request.setAttribute("editClassroom", detail.getClassroom(classid));
+                    edit = true;
+                    request.getRequestDispatcher("detail?action=return").forward(request, response);
+                } else {
+                    String classid = request.getParameter("name");
+                    String building = request.getParameter("building");
+                    int room = Integer.parseInt(request.getParameter("room"));
+                    if (dao.updateClassroom(classid, building, room)) {
+                        edit=true;
+                        request.getRequestDispatcher("detail?action=return").forward(request, response);
+                    } else {
+                        edit = false;
+                    }
+                }
+            } else if (action.equals("editNotice")) {
                 if (request.getParameter("submit") == null) {
                     int taskid = Integer.parseInt(request.getParameter("id"));
                     request.setAttribute("editNotice", detail.getNotice(taskid));

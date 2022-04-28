@@ -18,15 +18,18 @@
     <body>
         <jsp:include page="included/modal.jsp"/>
         <%
+        DetailDAO dao = new DetailDAO();
         User loginUser = (User) session.getAttribute("loginUser");
         Classroom clsl = (Classroom) session.getAttribute("classChoose");
         String optionChoose = (String) request.getAttribute("optionChoose");
         String searchWords = request.getAttribute("searchWords")==null?"":(String) request.getAttribute("searchWords");
+        Classroom detailClass = dao.getClassroom(clsl.getId());
         %>
         <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
             <div class="container container-fluid">
                 <div class="d-flex flex-column">
                     <h1>Class ${sessionScope.classChoose.getName()}</h1>
+                    <h5 class="text-muted"><%=detailClass.getBuilding()==null?"Not arrange":detailClass.getBuilding()%> · <%=detailClass.getRoom()==0?"Not arrange":detailClass.getRoom()%></h5>
                     <h2>Hi ${sessionScope.loginUser.getRoleID()!=1?sessionScope.loginUser.isGender()?"Mr.":"Mrs.":""} <i>${sessionScope.loginUser.getName()}</i>!</h2>
                 </div>
                 <div class="d-flex flex-column justify-content-around align-items-center">
@@ -134,7 +137,6 @@
         List<Notice> classNotice=(List<Notice>) session.getAttribute("classNotice");
         Classroom choosenClass = (Classroom)session.getAttribute("classChoose");
         if(classNotice!=null&&classNotice.size()>0){
-            DetailDAO dao = new DetailDAO();
             for(Notice c : classNotice){
                 if(c.isTask()){
             %>

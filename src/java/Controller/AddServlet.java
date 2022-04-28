@@ -42,7 +42,9 @@ public class AddServlet extends HttpServlet {
             switch (action) {
                 case "addClass": {
                     String name = request.getParameter("name");
-                    if (dao.addClass(name)) {
+                    String building = request.getParameter("building");
+                    int room = Integer.parseInt(request.getParameter("room"));
+                    if (dao.addClass(name, building, room)) {
                         List<Classroom> list = (List<Classroom>) session.getAttribute("listClass");
                         list.add(new Classroom(name));
                         session.setAttribute("listClass", list);

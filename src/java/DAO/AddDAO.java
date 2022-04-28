@@ -83,8 +83,34 @@ public class AddDAO {
         try {
             conn = ConnectJDBC.getConnection();
             if (conn != null) {
-                stm = conn.prepareStatement("INSERT INTO Classroom VALUES (?)");
+                stm = conn.prepareStatement("INSERT INTO Classroom (id) VALUES (?)");
                 stm.setString(1, name);
+                check = stm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+        return check;
+    }
+    
+    public boolean addClass(String name,String building,int room) throws SQLException {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement stm = null;
+        try {
+            conn = ConnectJDBC.getConnection();
+            if (conn != null) {
+                stm = conn.prepareStatement("INSERT INTO Classroom VALUES (?,?,?)");
+                stm.setString(1, name);
+                stm.setString(2, building);
+                stm.setInt(3, room);
                 check = stm.executeUpdate() > 0;
             }
         } catch (Exception e) {

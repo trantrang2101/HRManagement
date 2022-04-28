@@ -67,7 +67,9 @@ public class LoginDAO {
                 rs = stm.executeQuery();
                 while (rs.next()) {
                     String name = rs.getString(1);
-                    list.add(new Classroom(name));
+                    String building = rs.getString(2);
+                    int room =rs.getInt(3);
+                    list.add(new Classroom(name, building, room));
                 }
             }
         } catch (Exception e) {

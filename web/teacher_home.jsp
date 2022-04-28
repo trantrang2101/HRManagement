@@ -10,7 +10,7 @@
 <!DOCTYPE html>
 <head>
     <title>Teacher - Homepage</title>
-<link rel="stylesheet" href="assests/css/style.css">
+    <link rel="stylesheet" href="assests/css/style.css">
     <script src="assests/ckeditor/ckeditor.js"></script>
     <script src="assests/js/moment.js"></script>
 </head>
@@ -30,13 +30,13 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
         <div class="container container-fluid">
             <h2>Hi ${sessionScope.loginUser.isGender()?"Mr.":"Mrs."} <i>${sessionScope.loginUser.getName()}</i>!</h2>
-                <div class="d-flex flex-column justify-content-around align-items-center">
-                    <button class="d-flex btn btn-danger float-end text-center
-" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
-                    <button data-bs-toggle="modal" data-bs-target="#changePW" class="btn btn-outline-primary float-end">
-                        Change Password
-                    </button>
-                </div>
+            <div class="d-flex flex-column justify-content-around align-items-center">
+                <button class="d-flex btn btn-danger float-end text-center
+                        " data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+                <button data-bs-toggle="modal" data-bs-target="#changePW" class="btn btn-outline-primary float-end">
+                    Change Password
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -71,16 +71,32 @@
         %>
         <div class="col rounded-2 shadow-sm card">
             <div class="card-body">
-                <form action="delete" method="POST">
-                    <div class="card-title d-flex justify-content-between">
-                        <h4><%=c.getName()%></h4>
-                        <input type="text" hidden="" name="class" value="<%=c.getName()%>"/>
-                        <button type="submit" name="action" value="deleteClass" class="btn-close"></button>
+                <div class="card-title d-flex justify-content-between">
+                    <h4><%=c.getName()%></h4>
+                    <div class="dropdown">
+                        <a class="btn bg-transparent margin-0 padding-0" type="button" href="#dropdownMenuButton1"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" id="dropdownMenuButton1">
+                            <li>
+                                <a class="dropdown-item float-end" href="edit?action=editClass&id=<%=c.getName()%>">Edit</a>
+                            </li>
+                            <li>
+                                <form action="delete" method="POST">
+                                    <input type="text" hidden="" name="class" value="<%=c.getName()%>"/>
+                                    <button type="submit" name="action" value="deleteClass"  class="dropdown-item float-end">Delete</button>
+                                </form>
+                            </li>
+                        </ul>
                     </div>
-                </form>
-                <a href="detail?class=<%=c.getName()%>" class="more float-end">
-                    <span>More details<i class="fas fa-long-arrow-alt-right"></i></span>
-                </a>
+                </div>
+                <div class="card-title d-flex justify-content-between">
+                    <span class="text-muted"><%=c.getBuilding()==null?"Not arrange":c.getBuilding()%> · <%=c.getRoom()==0?"Not arrange":c.getRoom()%></span>
+                    <a href="detail?class=<%=c.getName()%>" class="more float-end">
+                        <span>More details<i class="fas fa-long-arrow-alt-right"></i></span>
+                    </a>
+                </div>
             </div>
         </div>
         <%}}%>
